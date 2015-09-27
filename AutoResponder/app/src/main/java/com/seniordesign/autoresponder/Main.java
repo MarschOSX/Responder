@@ -34,4 +34,8 @@ public class Main extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    
+    public void gotoGeneralResponse(){
+
+    }
 }
