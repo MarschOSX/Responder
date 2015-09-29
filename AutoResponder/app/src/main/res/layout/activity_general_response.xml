@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:id="@+id/generalRespone_text"
+        android:id="@+id/generalResponse_text"
         android:layout_below="@+id/generalResponse_textView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -68,5 +68,14 @@
             android:layout_gravity="center_horizontal"
             android:checked="false" />
     </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Text"
+        android:id="@+id/setTextButton"
+        android:layout_below="@+id/generalResponse_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp"/>
 
 </RelativeLayout>
