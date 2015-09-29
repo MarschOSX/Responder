@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 /**
  * Created by Garlan on 9/28/2015.
  */
+
+//note for setting up transactions: goto https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
 public class DataBase {
     private DBHelper myLittleHelper;
     private SQLiteDatabase myDB;
@@ -18,19 +20,39 @@ public class DataBase {
     }
 
     public void setReplyAll(String reply){
-        final String response = reply;
+        final String query =
+                "UPDATE " + DBHelper.TABLE_SETTINGS +
+                " SET " + DBHelper.COLUMN_VALUE[0] +" = " + reply +
+                " WHERE " + DBHelper.COLUMN_NAME[0] + " = reply_all;";
+        try{
 
+        }
+        finally {
+
+        }
     }
 
     public String getReplyAll(){
+        final String query = "SELECT " + DBHelper.COLUMN_VALUE[0] + " FROM " + DBHelper.TABLE_SETTINGS + " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + Setting.REPLY_ALL;
         return "working on it";
     }
 
     public void setDelay(int minutes){
-        final int min = minutes;
+        final String query =
+                "UPDATE " + DBHelper.TABLE_SETTINGS +
+                " SET " + DBHelper.COLUMN_VALUE[0] +" = " + minutes +
+                " WHERE " + DBHelper.COLUMN_NAME[0] + " = delay;";
+
+        try{
+
+        }
+        finally {
+
+        }
     }
 
     public int getDelay(){
+        final String query = "SELECT " + DBHelper.COLUMN_VALUE[0] + " FROM " + DBHelper.TABLE_SETTINGS + " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + Setting.TIME_DELAY;
         return 20;
     }
 }

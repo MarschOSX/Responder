@@ -16,7 +16,7 @@ public class DBHelper extends SQLiteOpenHelper{
     //follow the below format for creating tables
     public static final String TABLE_HISTORY = "history";
     public static final String[] COLUMN_TIME = {"time_stamp", "DATE"};
-    public static final String[] COLUMN_LOG  = {"log", "TEXT"};
+    public static final String[] COLUMN_LOG  = {"log_entry", "TEXT"};
     private static final String CREATE_HISTORY = "CREATE TABLE " + TABLE_HISTORY +
             "(" + COLUMN_TIME[0] + " " + COLUMN_TIME[1] + ", " +
             COLUMN_LOG[0] + " " + COLUMN_LOG[1] + ");";
