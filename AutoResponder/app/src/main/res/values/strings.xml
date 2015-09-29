@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_general_response">GeneralResponse</string>
     <string name="oneHour_option">60 Minutes</string>
+    <string name="custom_option">Custom:</string>
     <string name="twentyMinutes_option">20 Minutes</string>
     <string name="fiveMinutes_option">5 Minutes</string>
     <string name="generalResponse_title">General Response:</string>

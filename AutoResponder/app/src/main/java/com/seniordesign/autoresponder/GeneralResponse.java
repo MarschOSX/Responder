@@ -1,11 +1,13 @@
 package com.seniordesign.autoresponder;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.EditText;
 import android.view.View;
 
@@ -14,6 +16,8 @@ public class GeneralResponse extends AppCompatActivity {
 
     Button setTextButton;
     EditText setTextEdit;
+    EditText setDelayNum;
+    int responseDelay;
 
 
     @Override
@@ -24,16 +28,27 @@ public class GeneralResponse extends AppCompatActivity {
 
         setTextButton = (Button)findViewById(R.id.setTextButton);
         setTextEdit   = (EditText)findViewById(R.id.generalResponse_text);
+        setDelayNum   = (EditText)findViewById(R.id.customMin);
+        //setDelayNum.setOnFocusChangeListener(this);
 
         //This sends the General Response editText field into a string
         //Only prints out to Log.V currently
         setTextButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        Log.v("EditText", setTextEdit.getText().toString());
+                        Log.v("General Reply:", setTextEdit.getText().toString());
 
                     }
                 });
+
+        /*setDelayButton.setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View view) {
+                        responseDelay = Integer.parseInt(setDelayNum.getText().toString());
+                        Log.v("Custom Delay Num:", setDelayNum.getText().toString());
+
+                    }
+                });*/
     }
 
     @Override
@@ -43,16 +58,6 @@ public class GeneralResponse extends AppCompatActivity {
         return true;
     }
 
-
-
-    /*
-     Called when the user clicks the General Response Button
-    public void gotoGeneralResponse(View view) {
-        // Do something in response to button
-        Intent intent = new Intent(this, GeneralResponse.class);
-        startActivity(intent);
-    }
-     */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -67,5 +72,35 @@ public class GeneralResponse extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // Called when the user selects a time delay radio button
+    public void radioButtonDelaySet(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.fiveMin_radioButton:
+                if (checked)
+                    responseDelay = 5;
+                    break;
+            case R.id.twentyMin_radioButton:
+                if (checked)
+                    responseDelay = 20;
+                    break;
+            case R.id.oneHour_radioButton:
+                if (checked)
+                    responseDelay = 60;
+                    break;
+            case R.id.custom_option:
+                if (checked)
+                    //if(setDelayNum.isFocused())
+                        responseDelay = Integer.parseInt(setDelayNum.getText().toString());
+                    //else
+                       // responseDelay = 0;
+                    break;
+        }
+        Log.v("Time Delay:", Integer.toString(responseDelay));
     }
 }
