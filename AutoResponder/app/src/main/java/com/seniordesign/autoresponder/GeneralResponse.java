@@ -11,6 +11,8 @@ import android.widget.RadioButton;
 import android.widget.EditText;
 import android.view.View;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class GeneralResponse extends AppCompatActivity {
 
 
@@ -95,11 +97,12 @@ public class GeneralResponse extends AppCompatActivity {
                     break;
             case R.id.custom_option:
                 if (checked)
-                    //if(setDelayNum.isFocused())
-                        responseDelay = Integer.parseInt(setDelayNum.getText().toString());
-                    //else
-                       // responseDelay = 0;
-                    break;
+                   try{
+                       responseDelay = Integer.parseInt(setDelayNum.getText().toString());
+                   }catch(NumberFormatException e){
+                       responseDelay = Integer.parseInt(setDelayNum.getHint().toString());
+                   }
+            break;
         }
         Log.v("Time Delay:", Integer.toString(responseDelay));
     }
