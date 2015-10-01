@@ -6,9 +6,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.Switch;
+import android.util.Log;
+
+
+
 
 public class Main extends AppCompatActivity {
+
+    //Switch autoRespondOffOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,5 +50,17 @@ public class Main extends AppCompatActivity {
         // Do something in response to button
         Intent intent = new Intent(this, GeneralResponse.class);
         startActivity(intent);
+    }
+
+    // Called when the user selects a time delay radio button
+    public void switchChecker(View view) {
+        // Is the button now checked?
+        boolean checked = ((Switch) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.autoRespond_switch:
+                    Log.v("AutoResponder Active? ", java.lang.Boolean.toString(checked));
+                break;
+        }
     }
 }

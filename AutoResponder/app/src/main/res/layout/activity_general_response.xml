@@ -106,8 +106,8 @@
         android:layout_alignRight="@+id/generalResponse_textView"
         android:layout_alignEnd="@+id/generalResponse_textView"
         android:autoText="false"
-        android:text="0"
-        android:password="false" />
+        android:password="false"
+        android:hint="15" />
 
 
 </RelativeLayout>

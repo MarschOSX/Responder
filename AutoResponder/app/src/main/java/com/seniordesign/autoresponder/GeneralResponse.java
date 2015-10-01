@@ -31,6 +31,7 @@ public class GeneralResponse extends AppCompatActivity {
         setTextButton = (Button)findViewById(R.id.setTextButton);
         setTextEdit   = (EditText)findViewById(R.id.generalResponse_text);
         setDelayNum   = (EditText)findViewById(R.id.customMin);
+        setDelayNum.requestFocus();
         //setDelayNum.setOnFocusChangeListener(this);
 
         //This sends the General Response editText field into a string
