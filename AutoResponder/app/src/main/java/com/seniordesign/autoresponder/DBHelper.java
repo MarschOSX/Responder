@@ -1,5 +1,6 @@
 package com.seniordesign.autoresponder;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -21,15 +22,18 @@ public class DBHelper extends SQLiteOpenHelper{
             "(" + COLUMN_TIME[0] + " " + COLUMN_TIME[1] + ", " +
             COLUMN_LOG[0] + " " + COLUMN_LOG[1] + ");";
 
+
     public static final String TABLE_SETTINGS = "settings";
     public static final String[] COLUMN_NAME = {"setting_name", "VARCHAR(30)"};
     public static final String[] COLUMN_VALUE = {"value", "VARCHAR(30)"};
     private static final String CREATE_SETTINGS = "CREATE TABLE " + TABLE_SETTINGS +
             "(" + COLUMN_NAME[0] + " " + COLUMN_NAME[1] + ", " +
             COLUMN_VALUE[0] + " " + COLUMN_VALUE[1] + ");";
-    //add settings here
-    private static final String ROW_TIMEDELAY = "";
-    private static final String ROW_REPLYALL = "";
+
+    //private static final String ROW_TIME_DELAY = "INSERT INTO " + TABLE_SETTINGS +
+    //        " VALUES (" + Setting.TIME_DELAY + ", " + Setting.TIME_DELAY_DEF + ";";
+    //private static final String ROW_REPLY_ALL = "INSERT INTO " + TABLE_SETTINGS +
+    //        " VALUES (" + Setting.REPLY_ALL + ", " + Setting.REPLAY_ALL_DEF + ";";
 
     //all tables must be added to this list
     public static final String[] TABLE_LIST = {TABLE_HISTORY, TABLE_SETTINGS};
@@ -37,8 +41,9 @@ public class DBHelper extends SQLiteOpenHelper{
     //as well as all creation statements to this list
     private static final String[] CREATION_LIST = {CREATE_HISTORY, CREATE_SETTINGS};
 
+
     //all settings need to be added to this list
-    private static final String[] SETTING_LIST = {ROW_TIMEDELAY, ROW_REPLYALL};
+    //private static final String[] SETTING_LIST = {ROW_TIME_DELAY, ROW_REPLY_ALL};
     ////////////
 
     public DBHelper(Context context) {
@@ -53,17 +58,21 @@ public class DBHelper extends SQLiteOpenHelper{
         }
 
         //initialize settings
-        for(String setting : SETTING_LIST){
+        for(String setting[] : Setting.DEFAULT_SETTINGS){
             db.beginTransaction();
             try {
-
+                ContentValues insertSetting = new ContentValues();
+                insertSetting.put(COLUMN_NAME[0], setting[0]);
+                insertSetting.put(COLUMN_VALUE[0], setting[1]);
+                db.insert(TABLE_SETTINGS, null, insertSetting);
                 db.setTransactionSuccessful();
             }
             catch (Exception e){
-                db.setTransactionSuccessful();
+                db.endTransaction();
+                throw e;
             }
             finally {
-
+                db.endTransaction();
             }
         }
     }
