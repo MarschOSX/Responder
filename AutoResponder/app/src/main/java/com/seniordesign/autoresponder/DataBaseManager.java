@@ -8,12 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
  */
 
 //note for setting up transactions: goto https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
-public class DataBase {
+public class DataBaseManager {
     private DBHelper myLittleHelper;
     private SQLiteDatabase myDB;
 
 
-    public DataBase(Context context) {
+    public DataBaseManager(Context context) {
         //this.mDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null);
         this.myLittleHelper = new DBHelper(context);
         this.myDB = myLittleHelper.getWritableDatabase();
@@ -23,7 +23,7 @@ public class DataBase {
         final String query =
                 "UPDATE " + DBHelper.TABLE_SETTINGS +
                 " SET " + DBHelper.COLUMN_VALUE[0] +" = " + reply +
-                " WHERE " + DBHelper.COLUMN_NAME[0] + " = reply_all;";
+                " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + Setting.REPLY_ALL;
         try{
 
         }
@@ -41,7 +41,7 @@ public class DataBase {
         final String query =
                 "UPDATE " + DBHelper.TABLE_SETTINGS +
                 " SET " + DBHelper.COLUMN_VALUE[0] +" = " + minutes +
-                " WHERE " + DBHelper.COLUMN_NAME[0] + " = delay;";
+                " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + Setting.TIME_DELAY;
 
         try{
 

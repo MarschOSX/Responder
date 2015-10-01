@@ -27,12 +27,18 @@ public class DBHelper extends SQLiteOpenHelper{
     private static final String CREATE_SETTINGS = "CREATE TABLE " + TABLE_SETTINGS +
             "(" + COLUMN_NAME[0] + " " + COLUMN_NAME[1] + ", " +
             COLUMN_VALUE[0] + " " + COLUMN_VALUE[1] + ");";
+    //add settings here
+    private static final String ROW_TIMEDELAY = "";
+    private static final String ROW_REPLYALL = "";
 
     //all tables must be added to this list
     public static final String[] TABLE_LIST = {TABLE_HISTORY, TABLE_SETTINGS};
 
     //as well as all creation statements to this list
     private static final String[] CREATION_LIST = {CREATE_HISTORY, CREATE_SETTINGS};
+
+    //all settings need to be added to this list
+    private static final String[] SETTING_LIST = {ROW_TIMEDELAY, ROW_REPLYALL};
     ////////////
 
     public DBHelper(Context context) {
@@ -41,8 +47,24 @@ public class DBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //initializes tables
         for(String create : CREATION_LIST){
             db.execSQL(create);
+        }
+
+        //initialize settings
+        for(String setting : SETTING_LIST){
+            db.beginTransaction();
+            try {
+
+                db.setTransactionSuccessful();
+            }
+            catch (Exception e){
+                db.setTransactionSuccessful();
+            }
+            finally {
+
+            }
         }
     }
 

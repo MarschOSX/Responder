@@ -4,8 +4,10 @@ package com.seniordesign.autoresponder;
  * Created by Garlan on 9/28/2015.
  */
 public class Setting {
+    //all settings + default values need to be added to DBHelper
     public static final String REPLY_ALL = "reply_all";
-    public static final String TIME_DELAY = "delay";
+    public static final String TIME_DELAY = "time_delay";
+
 
     private String name;
     private String value;
