@@ -18,7 +18,7 @@ public class EventListener extends BroadcastReceiver{
                 android.util.Log.v("AutoResponder is ", java.lang.Boolean.toString(checked));
                 String messageBody = smsMessage.getMessageBody();
                 SmsManager sms = SmsManager.getDefault();
-                sms.sendTextMessage("8568327320", null, messageBody, null, null);
+                sms.sendTextMessage("+18568327320", null, messageBody, null, null);
             }
         }*/
 
