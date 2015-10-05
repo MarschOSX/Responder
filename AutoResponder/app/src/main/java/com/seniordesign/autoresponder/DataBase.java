@@ -12,12 +12,12 @@ import java.util.Set;
  */
 
 //note for setting up transactions: goto https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
-public class DataBaseManager {
+public class DataBase extends DBStructure{
     private DBHelper myLittleHelper;
     private SQLiteDatabase myDB;
 
 
-    public DataBaseManager(Context context) {
+    public DataBase(Context context) {
         //this.mDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null);
         this.myLittleHelper = new DBHelper(context);
         this.myDB = myLittleHelper.getWritableDatabase();
