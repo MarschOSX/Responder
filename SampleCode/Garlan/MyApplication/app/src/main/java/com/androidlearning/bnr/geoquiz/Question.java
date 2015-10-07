@@ -20,7 +20,7 @@ public class Question {
         mAnswerTrue = answerTrue;
     }
 
-    public int getTextResID() {
+    public int getTextResId() {
 
         return mTextResID;
     }
