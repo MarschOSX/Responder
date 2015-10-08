@@ -18,7 +18,7 @@ public class EventListener extends BroadcastReceiver{
     {
         //EventListener passes info to EventHandler
 
-        android.util.Log.v("SMSForward,", "Intent received: " + intent.getAction());
+        android.util.Log.v("EventListener,", "Intent received: " + intent.getAction());
         String phoneNumber = null;
         String message = "";
         Long timeRecieved = null;

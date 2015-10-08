@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder;
 
 
+import android.os.SystemClock;
 import android.telephony.SmsManager;
 
 /**
@@ -12,30 +13,30 @@ public class EventHandler{
     {
         if(phoneNumber != null){
 
-            //TODO get notRespTill from database (now just null, as if never recieved)
-            Long notRespTill = null;/*Get*/
+            /**This Requires Database Access, which we are still working on
+             * To prove we can delay a text
+             **/
+            //WORK IN PROGRESS
+            //TODO get lastRecieved from database
+            Long lastRecieved = null;//FROMDATABASE
+            //TODO get delaySet from database
+                //TODO TEMP
+            Long delaySet = 0L;//FROMDATABASE
 
-            if(notRespTill == null || notRespTill < timeRecieved){
-                //TODO get delaySet from database (now just 1 minute/60 seconds for testing)
-                    //TODO TEMP
-                    notRespTill = timeRecieved + /*Get*/Long.valueOf(1 * 6000);//converts int minutes to long ms
-                //TODO set notRespTill in database to timeRecieved
+            if(lastRecieved == null || lastRecieved + delaySet < timeRecieved){
+                //TODO set lastRecieved in database to timeRecieved
                     //TODO HERE
+                lastRecieved = timeRecieved;
 
                 //TODO get generalResponse from Database and set as message
                     //TODO HERE
+                    //message = FROMDATABASE;
 
                 //Send the GeneralResponse Message
                 SmsManager sms = SmsManager.getDefault();
                 sms.sendTextMessage(phoneNumber, null, message, null, null);
-                android.util.Log.v("SMSIsSent!,", "Message sent to: " + phoneNumber + " Message Body: " + message);
+                android.util.Log.v("EventHandler,", "Message sent to: " + phoneNumber + " Message Body: " + message);
             }
-
-
-
-
-
-
         }
 
 
