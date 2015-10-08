@@ -1,9 +1,11 @@
-package com.seniordesign.autoresponder;
+package com.seniordesign.autoresponder.Persistance;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.seniordesign.autoresponder.DataStructures.Setting;
 
 /**
  * Created by Garlan on 9/29/2015.

@@ -1,23 +1,23 @@
-package com.seniordesign.autoresponder;
+package com.seniordesign.autoresponder.Persistance;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 
-import java.util.Set;
+import com.seniordesign.autoresponder.DataStructures.Setting;
 
 /**
  * Created by Garlan on 9/28/2015.
  */
 
 //note for setting up transactions: goto https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
-public class DataBase extends DBStructure{
+public class PermDBInstance implements DBInstance {
     private DBHelper myLittleHelper;
     private SQLiteDatabase myDB;
 
 
-    public DataBase(Context context) {
+    public PermDBInstance(Context context) {
         //this.mDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null);
         this.myLittleHelper = new DBHelper(context);
         this.myDB = myLittleHelper.getWritableDatabase();

@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder;
+package com.seniordesign.autoresponder.DataStructures;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder;
+package com.seniordesign.autoresponder.DataStructures;
 
 /**
  * Created by Garlan on 9/28/2015.
@@ -6,13 +6,15 @@ package com.seniordesign.autoresponder;
 public class Setting {
     //all settings + default values need to be added to DBHelper
     public static final String REPLY_ALL = "reply_all";
+    public static final String REPLY_ALL_DEF = "I am busy right now";
     public static final String TIME_DELAY = "time_delay";
+    public static final String TIME_DELAY_DEF = "5";
 
     //if you are adding a new setting, it and its default value must be added here
     public static final String[][] DEFAULT_SETTINGS =
             {
-                    {REPLY_ALL, "I am busy right now"},
-                    {TIME_DELAY, "5"}
+                    {REPLY_ALL, REPLY_ALL_DEF},
+                    {TIME_DELAY, TIME_DELAY_DEF}
             };
 
 
