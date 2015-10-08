@@ -61,8 +61,6 @@ public class Main extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.autoRespond_switch:
                     Log.v("AutoResponder Active? ", java.lang.Boolean.toString(checked));
-                    SmsManager sms = SmsManager.getDefault();
-                    sms.sendTextMessage("18568327320", null, "Thunder!", null, null);
                 break;
         }
     }
