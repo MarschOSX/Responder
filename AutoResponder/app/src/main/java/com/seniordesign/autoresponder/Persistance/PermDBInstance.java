@@ -96,6 +96,7 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
+            //
             myDB.endTransaction();
         }
     }
