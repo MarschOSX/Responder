@@ -2,6 +2,7 @@ package com.seniordesign.autoresponder.Persistance;
 
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -10,6 +11,7 @@ import java.util.HashMap;
 public class TestDBInstance implements DBInstance {
 
     private HashMap<String,String> settings;
+    private ArrayList<String[]> ResponseLog;
 
     public TestDBInstance(){
         settings = new HashMap<>();

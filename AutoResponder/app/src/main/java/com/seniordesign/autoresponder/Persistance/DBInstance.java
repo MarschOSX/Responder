@@ -5,11 +5,11 @@ package com.seniordesign.autoresponder.Persistance;
  */
 public interface DBInstance {
 
-    public void setReplyAll(String reply);
+    void setReplyAll(String reply);
 
-    public String getReplyAll();
+    String getReplyAll();
 
-    public void setDelay(int minutes);
+    void setDelay(int minutes);
 
-    public int getDelay();
+    int getDelay();
 }

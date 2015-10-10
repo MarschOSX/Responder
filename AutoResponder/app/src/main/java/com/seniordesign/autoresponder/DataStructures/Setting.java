@@ -8,13 +8,16 @@ public class Setting {
     public static final String REPLY_ALL = "reply_all";
     public static final String REPLY_ALL_DEF = "I am busy right now";
     public static final String TIME_DELAY = "time_delay";
-    public static final String TIME_DELAY_DEF = "5";
+    public static final String TIME_DELAY_DEF = "20";
+    public static final String RESPONSE_TOGGLE = "response_toggle";
+    public static final String RESPONSE_TOGGLE_DEF = "true";
 
     //if you are adding a new setting, it and its default value must be added here
     public static final String[][] DEFAULT_SETTINGS =
             {
                     {REPLY_ALL, REPLY_ALL_DEF},
-                    {TIME_DELAY, TIME_DELAY_DEF}
+                    {TIME_DELAY, TIME_DELAY_DEF},
+                    {RESPONSE_TOGGLE, RESPONSE_TOGGLE_DEF}
             };
 
 

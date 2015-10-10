@@ -11,6 +11,9 @@ import android.widget.RadioButton;
 import android.widget.EditText;
 import android.view.View;
 
+import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.DBProvider;
+
 import java.lang.reflect.InvocationTargetException;
 
 public class GeneralResponse extends AppCompatActivity {
@@ -105,4 +108,5 @@ public class GeneralResponse extends AppCompatActivity {
         //TODO push responseDelay to DB
         //Default is 20 and the RadioButton is set to this
     }
+
 }

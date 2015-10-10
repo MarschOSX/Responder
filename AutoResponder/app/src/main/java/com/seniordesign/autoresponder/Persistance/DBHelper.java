@@ -32,10 +32,13 @@ public class DBHelper extends SQLiteOpenHelper{
             "(" + COLUMN_NAME[0] + " " + COLUMN_NAME[1] + ", " +
             COLUMN_VALUE[0] + " " + COLUMN_VALUE[1] + ");";
 
-    //private static final String ROW_TIME_DELAY = "INSERT INTO " + TABLE_SETTINGS +
-    //        " VALUES (" + Setting.TIME_DELAY + ", " + Setting.TIME_DELAY_DEF + ";";
-    //private static final String ROW_REPLY_ALL = "INSERT INTO " + TABLE_SETTINGS +
-    //        " VALUES (" + Setting.REPLY_ALL + ", " + Setting.REPLAY_ALL_DEF + ";";
+    public static final String TABLE_RESPONSELOG = "response_log";
+    public static final String[] COLUMN_TIMESTAMP = {"time_stamp" , "DATE"};
+    public static final String[] COLUMN_SENDERNUM = {"sender_phoneNumber", "VARCHAR(16)"};
+    public static final String[] COLUMN_MESSAGERCV = {"message_received", "VARCHAR(144)"};
+    public static final String[] COLUMN_MESSAGESNT = {"message_sent", "VARCHAR(144)"};
+    //public static final String CREATE_RESPONSELOG = "CREATE TABLE " + TABLE_RESPONSELOG +
+    //        "(" + COLUMN;
 
     //all tables must be added to this list
     public static final String[] TABLE_LIST = {TABLE_HISTORY, TABLE_SETTINGS};
