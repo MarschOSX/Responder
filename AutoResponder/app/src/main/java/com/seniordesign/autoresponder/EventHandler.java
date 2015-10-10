@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder;
 
 
+import android.content.Context;
 import android.telephony.SmsManager;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
@@ -10,7 +11,7 @@ import com.seniordesign.autoresponder.Persistance.DBProvider;
  */
 public class EventHandler{
 
-    public static void respondToText(String phoneNumber, String message, Long timeRecieved)
+    public static void respondToText(String phoneNumber, String message, Long timeRecieved, Context context)
     {
         //DBInstance db = DBProvider.get
         //TODO get toggle off/on from DB and CHECK to see if you run!
@@ -32,8 +33,9 @@ public class EventHandler{
                 lastRecieved = timeRecieved;
 
                 //TODO get generalResponse from Database and set as message
-
-                    //message = FROMDATABASE;
+                //push generalReply to DB
+                DBInstance db = DBProvider.getInstance(false, context);
+                message = db.getReplyAll();
 
                 //Send the GeneralResponse Message
                 SmsManager sms = SmsManager.getDefault();

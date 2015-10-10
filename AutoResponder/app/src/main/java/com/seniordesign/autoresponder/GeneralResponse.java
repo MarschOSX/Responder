@@ -1,5 +1,6 @@
 package com.seniordesign.autoresponder;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,7 +48,9 @@ public class GeneralResponse extends AppCompatActivity {
                         if(generalReply == ""){//Its blank, get default hint
                             generalReply = setTextEdit.getHint().toString();
                         }
-                        //TODO push generalReply to DB
+                        //push generalReply to DB
+                        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                        db.setReplyAll(generalReply);
 
                     }
                 });
