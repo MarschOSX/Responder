@@ -11,31 +11,30 @@ import com.seniordesign.autoresponder.Persistance.DBProvider;
  */
 public class EventHandler{
 
-    public static void respondToText(String phoneNumber, String message, Long timeRecieved, Context context)
+    public static void respondToText(String phoneNumber, String message, Long timeRecieved, Context context, boolean debug)
     {
         //DBInstance db = DBProvider.get
         //TODO get toggle off/on from DB and CHECK to see if you run!
         if(phoneNumber != null){
+            //access the database
+            DBInstance db = DBProvider.getInstance(false, context);
 
-            /**This Requires Database Access, which we are still working on
-             * To prove we can delay a text
-             **/
-            //WORK IN PROGRESS
             //TODO get lastRecieved from database
             Long lastRecieved = null;//FROMDATABASE
             //TODO get delaySet from database
+            Long delaySet = 0L;//60000*(Long.valueOf(db.getDelay()));//convert minutes to milliseconds
 
-            Long delaySet = 0L;//FROMDATABASE
 
             if(lastRecieved == null || lastRecieved + delaySet < timeRecieved){
                 //TODO set lastRecieved in database to timeRecieved
+                //lastRecieved = timeRecieved;
 
-                lastRecieved = timeRecieved;
-
-                //TODO get generalResponse from Database and set as message
-                //push generalReply to DB
-                DBInstance db = DBProvider.getInstance(false, context);
-                message = db.getReplyAll();
+                //get generalResponse from Database and set as message
+                if(debug == true) {
+                    message += "\nGeneralReply:\n"+db.getReplyAll();
+                }else{
+                    message = db.getReplyAll();
+                }
 
                 //Send the GeneralResponse Message
                 SmsManager sms = SmsManager.getDefault();
