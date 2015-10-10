@@ -1,5 +1,6 @@
 package com.seniordesign.autoresponder;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,9 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.EditText;
 import android.view.View;
+
+import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.DBProvider;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -44,7 +48,9 @@ public class GeneralResponse extends AppCompatActivity {
                         if(generalReply == ""){//Its blank, get default hint
                             generalReply = setTextEdit.getHint().toString();
                         }
-                        //TODO push generalReply to DB
+                        //push generalReply to DB
+                        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                        db.setReplyAll(generalReply);
 
                     }
                 });

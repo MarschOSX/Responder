@@ -47,7 +47,7 @@ public class EventListener extends BroadcastReceiver{
 
         //pass information to EventHandler.respondToText()
         if(phoneNumber != null){
-            EventHandler.respondToText(phoneNumber, message, timeRecieved);
+            EventHandler.respondToText(phoneNumber, message, timeRecieved, context);
         }
 
 

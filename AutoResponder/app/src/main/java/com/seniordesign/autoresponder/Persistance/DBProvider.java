@@ -9,7 +9,7 @@ public class DBProvider {
     private static DBInstance testDB;
     private static DBInstance permDB;
 
-    public DBInstance getInstance(boolean testMode, Context context){
+    public static DBInstance getInstance(boolean testMode, Context context){
         if (testMode){
             if (testDB == null){
                 testDB = new TestDBInstance();
