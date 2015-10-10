@@ -15,8 +15,6 @@ import android.util.Log;
 
 public class Main extends AppCompatActivity {
 
-    //Switch autoRespondOffOn;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,11 +54,12 @@ public class Main extends AppCompatActivity {
     // Called when the user selects a time delay radio button
     public void switchChecker(View view) {
         // Is the button now checked?
-        boolean checked = ((Switch) view).isChecked();
+        boolean autoRespondOffOn = ((Switch) view).isChecked();
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.autoRespond_switch:
-                    Log.v("AutoResponder Active? ", java.lang.Boolean.toString(checked));
+                    Log.v("AutoResponder Active? ", java.lang.Boolean.toString(autoRespondOffOn));
+                    //TODO push Toggle on/off to DB
                 break;
         }
     }

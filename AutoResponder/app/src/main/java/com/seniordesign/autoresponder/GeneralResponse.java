@@ -19,7 +19,7 @@ public class GeneralResponse extends AppCompatActivity {
     Button setTextButton;
     EditText setTextEdit;
     EditText setDelayNum;
-    int responseDelay;
+    int responseDelay = 20;
 
 
     @Override
@@ -32,26 +32,22 @@ public class GeneralResponse extends AppCompatActivity {
         setTextEdit   = (EditText)findViewById(R.id.generalResponse_text);
         setDelayNum   = (EditText)findViewById(R.id.customMin);
         setDelayNum.requestFocus();
-        //setDelayNum.setOnFocusChangeListener(this);
+
 
         //This sends the General Response editText field into a string
-        //Only prints out to Log.V currently
         setTextButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        Log.v("General Reply:", setTextEdit.getText().toString());
+                        String generalReply = setTextEdit.getText().toString();
+                        Log.v("General Reply:", generalReply);
+
+                        if(generalReply == ""){//Its blank, get default hint
+                            generalReply = setTextEdit.getHint().toString();
+                        }
+                        //TODO push generalReply to DB
 
                     }
                 });
-
-        /*setDelayButton.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View view) {
-                        responseDelay = Integer.parseInt(setDelayNum.getText().toString());
-                        Log.v("Custom Delay Num:", setDelayNum.getText().toString());
-
-                    }
-                });*/
     }
 
     @Override
@@ -106,5 +102,7 @@ public class GeneralResponse extends AppCompatActivity {
             break;
         }
         Log.v("Time Delay:", Integer.toString(responseDelay));
+        //TODO push responseDelay to DB
+        //Default is 20 and the RadioButton is set to this
     }
 }
