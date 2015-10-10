@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
@@ -11,6 +12,7 @@ import com.seniordesign.autoresponder.DataStructures.Setting;
  * Created by Garlan on 9/29/2015.
  */
 public class DBHelper extends SQLiteOpenHelper{
+    private static final String TAG = "DBHelper";
     public static final String DATABASE_NAME = "autoResponder.db";
     public static final int DATABASE_VERSION = 1; //**IMPORTANT** increment version if you make changes to table structure or add a new table
 
@@ -58,6 +60,7 @@ public class DBHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         //initializes tables
+        Log.d(TAG, "called onCreate");
         for(String create : CREATION_LIST){
             db.execSQL(create);
         }
@@ -69,7 +72,12 @@ public class DBHelper extends SQLiteOpenHelper{
                 ContentValues insertSetting = new ContentValues();
                 insertSetting.put(COLUMN_NAME[0], setting[0]);
                 insertSetting.put(COLUMN_VALUE[0], setting[1]);
-                db.insert(TABLE_SETTINGS, null, insertSetting);
+                if (db.insert(TABLE_SETTINGS, null, insertSetting) == -1){
+                    Log.d(TAG, setting[0] + " " + setting[1] + " could not be added");
+                }
+                else{
+                    Log.d(TAG, setting[0] + " " + setting[1] + " was added");
+                }
                 db.setTransactionSuccessful();
             }
             catch (Exception e){

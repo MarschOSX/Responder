@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
@@ -13,12 +14,14 @@ import com.seniordesign.autoresponder.DataStructures.Setting;
 
 //note for setting up transactions: goto https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
 public class PermDBInstance implements DBInstance {
+    private static final String TAG = "PermDBInstance";
     private DBHelper myLittleHelper;
     private SQLiteDatabase myDB;
 
 
     public PermDBInstance(Context context) {
         //this.mDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null);
+        Log.d(TAG, "constructing instance");
         this.myLittleHelper = new DBHelper(context);
         this.myDB = myLittleHelper.getWritableDatabase();
     }
@@ -31,7 +34,7 @@ public class PermDBInstance implements DBInstance {
 
         myDB.beginTransaction();
         try {
-            String filter = DBHelper.COLUMN_NAME[0] + "=" + Setting.REPLY_ALL;
+            String filter = DBHelper.COLUMN_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
             ContentValues args = new ContentValues();
             args.put(DBHelper.COLUMN_VALUE[0], reply);
             myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
@@ -50,21 +53,27 @@ public class PermDBInstance implements DBInstance {
         final String query =
                 "SELECT " + DBHelper.COLUMN_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
-                 " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + Setting.REPLY_ALL;
+                 " WHERE " + DBHelper.COLUMN_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
 
-        myDB.beginTransaction();
+        //myDB.beginTransaction();
         try {
             Cursor result = myDB.rawQuery(query, null);
+            String col = result.getColumnName(0);
+            Log.d(TAG, "Query: "+ query);
+            Log.d(TAG, "Column count is: " + result.getColumnCount());
+            Log.d(TAG, "Column name is: " + col);
+            Log.d(TAG, "Column index is: " + result.getColumnIndex(col));
+
             String response = result.getString(0);
-            myDB.setTransactionSuccessful();
+            //myDB.setTransactionSuccessful();
             return response;
         }
         catch (Exception e){
-            myDB.endTransaction();
+           // myDB.endTransaction();
             throw e;
         }
         finally {
-            myDB.endTransaction();
+           // myDB.endTransaction();
         }
     }
 
@@ -95,7 +104,7 @@ public class PermDBInstance implements DBInstance {
         final String query =
                 "SELECT " + DBHelper.COLUMN_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
-                 " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + Setting.TIME_DELAY;
+                 " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + "\"" + Setting.TIME_DELAY + "\"";
 
         myDB.beginTransaction();
         try {
