@@ -64,7 +64,7 @@ public class PermDBInstance implements DBInstance {
             Log.d(TAG, "Column name is: " + col);
             Log.d(TAG, "Column index is: " + result.getColumnIndex(col));
 
-            String response = result.getString(0);
+            String response = result.getString(result.getColumnIndex(col));
             //myDB.setTransactionSuccessful();
             return response;
         }
