@@ -14,7 +14,7 @@ public class Setting {
 
     //if you are adding a new setting, it and its default value must be added here
     public static final String[][] DEFAULT_SETTINGS =
-            {
+            {       //name        value
                     {REPLY_ALL, REPLY_ALL_DEF},
                     {TIME_DELAY, TIME_DELAY_DEF},
                     {RESPONSE_TOGGLE, RESPONSE_TOGGLE_DEF}

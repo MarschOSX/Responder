@@ -35,4 +35,24 @@ public class TestDBInstance implements DBInstance {
     public int getDelay(){
         return Integer.parseInt(settings.get(Setting.TIME_DELAY));
     }
+
+    public void setResponseToggle(boolean responseToggle){
+        String responseToggleText;
+        if(responseToggle){
+            responseToggleText = "true";
+        }
+        else{
+            responseToggleText = "false";
+        }
+        settings.put(Setting.RESPONSE_TOGGLE, responseToggleText);
+    }
+
+    public boolean getResponseToggle(){
+        if(settings.get(Setting.RESPONSE_TOGGLE) == "true"){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

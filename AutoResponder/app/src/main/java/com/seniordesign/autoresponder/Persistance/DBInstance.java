@@ -12,4 +12,8 @@ public interface DBInstance {
     void setDelay(int minutes);
 
     int getDelay();
+
+    void setResponseToggle(boolean toggle);
+
+    boolean getResponseToggle();
 }

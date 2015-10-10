@@ -112,4 +112,35 @@ public class PermDBInstance implements DBInstance {
             myDB.endTransaction();
         }
     }
+
+    public void setResponseToggle(boolean responseToggle){
+        myDB.beginTransaction();
+        try {
+
+            myDB.setTransactionSuccessful();
+        }
+        catch (Exception e){
+            myDB.endTransaction();
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
+    }
+
+    public boolean getResponseToggle(){
+        myDB.beginTransaction();
+        try {
+
+            myDB.setTransactionSuccessful();
+        }
+        catch (Exception e){
+            myDB.endTransaction();
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
+        return false;
+    }
 }
