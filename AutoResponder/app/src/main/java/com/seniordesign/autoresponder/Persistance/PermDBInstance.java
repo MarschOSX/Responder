@@ -63,12 +63,13 @@ public class PermDBInstance implements DBInstance {
             Log.d(TAG, "Column count is: " + result.getColumnCount());
             Log.d(TAG, "Column name is: " + col);
             Log.d(TAG, "Column index is: " + result.getColumnIndex(col));
-            String n = " not ";
-            if (result.isNull(0)){
-                n = " ";
+            String response;
+            if ((result != null) && (result.moveToFirst())){
+                response = result.getString(result.getColumnIndex(DBHelper.COLUMN_VALUE[0]));
             }
-            Log.d(TAG, "Column value is" + n + "null");
-            String response = result.getString(result.getColumnIndex(DBHelper.COLUMN_VALUE[0]));
+            else {
+                response = null;
+            }
             //myDB.setTransactionSuccessful();
             return response;
         }
@@ -111,11 +112,11 @@ public class PermDBInstance implements DBInstance {
                  " FROM " + DBHelper.TABLE_SETTINGS +
                  " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + "\"" + Setting.TIME_DELAY + "\"";
 
-        myDB.beginTransaction();
+        //myDB.beginTransaction();
         try {
             Cursor result = myDB.rawQuery(query, null);
             int delay = result.getInt(0);
-            myDB.setTransactionSuccessful();
+            //myDB.setTransactionSuccessful();
             return delay;
         }
         catch (Exception e){
@@ -123,7 +124,7 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
-            myDB.endTransaction();
+            //myDB.endTransaction();
         }
     }
 
@@ -143,17 +144,13 @@ public class PermDBInstance implements DBInstance {
     }
 
     public boolean getResponseToggle(){
-        myDB.beginTransaction();
         try {
 
             myDB.setTransactionSuccessful();
         }
         catch (Exception e){
-            myDB.endTransaction();
+            Log.d(TAG, "getResponseToggle() did not work");
             throw e;
-        }
-        finally {
-            myDB.endTransaction();
         }
         return false;
     }

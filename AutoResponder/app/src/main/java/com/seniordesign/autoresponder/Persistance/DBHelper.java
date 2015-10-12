@@ -14,7 +14,7 @@ import com.seniordesign.autoresponder.DataStructures.Setting;
 public class DBHelper extends SQLiteOpenHelper{
     private static final String TAG = "DBHelper";
     public static final String DATABASE_NAME = "autoResponder.db";
-    public static final int DATABASE_VERSION = 1; //**IMPORTANT** increment version if you make changes to table structure or add a new table
+    public static final int DATABASE_VERSION = 5; //**IMPORTANT** increment version if you make changes to table structure or add a new table
 
     //TABLE INFO HERE:
     //Column info is stored as a 2 element array with 0 the title and 1 the datatype

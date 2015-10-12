@@ -49,8 +49,5 @@ public class EventListener extends BroadcastReceiver{
         if(phoneNumber != null){
             EventHandler.respondToText(phoneNumber, message, timeRecieved, context, debug);
         }
-
-
     }
-
 }
