@@ -138,7 +138,6 @@ public class PermDBInstance implements DBInstance {
     }
 
     public void setResponseToggle(boolean responseToggle){
-        myDB.beginTransaction();
         String toggle;
 
         //convert boolean to string
@@ -149,6 +148,7 @@ public class PermDBInstance implements DBInstance {
             toggle = "false";
         }
 
+        myDB.beginTransaction();
         try {
             String filter = DBHelper.COLUMN_NAME[0] + "=" + Setting.RESPONSE_TOGGLE;
             ContentValues args = new ContentValues();
@@ -207,6 +207,21 @@ public class PermDBInstance implements DBInstance {
     ////////////////////////////////
     public void addToResponseLog(ResponseLog newLog){
         //TODO IMPLEMENT
+        myDB.beginTransaction();
+        try {
+            ContentValues args = new ContentValues();
+            args.put(DBHelper.COLUMN_TIMESTAMP[0], newLog.getTimeStamp().toString());
+            myDB.insert(DBHelper.TABLE_RESPONSELOG, args, filter, null);
+            myDB.setTransactionSuccessful();
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
+            myDB.endTransaction();
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
     }
 
     public ResponseLog getFirstEntry(){
