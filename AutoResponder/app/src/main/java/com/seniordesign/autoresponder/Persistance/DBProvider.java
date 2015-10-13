@@ -16,11 +16,9 @@ public class DBProvider{
             if (testDB == null){
                 testDB = new TestDBInstance();
             }
-            Log.d(TAG, "providing testing database");
             return testDB;
         }
         else{
-            Log.d(TAG, "providing permanent database");
             permDB = new PermDBInstance(context);
             return permDB;
         }

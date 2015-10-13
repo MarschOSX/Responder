@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
+import java.util.InputMismatchException;
+
 /**
  * Created by Garlan on 9/28/2015.
  */
@@ -21,7 +23,6 @@ public class PermDBInstance implements DBInstance {
 
     public PermDBInstance(Context context) {
         //this.mDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null);
-        Log.d(TAG, "constructing instance");
         this.myLittleHelper = new DBHelper(context);
         this.myDB = myLittleHelper.getWritableDatabase();
     }
@@ -42,6 +43,7 @@ public class PermDBInstance implements DBInstance {
         }
         catch (Exception e){
             myDB.endTransaction();
+            Log.d(TAG, "ERROR: setReplyAll() failed");
             throw e;
         }
         finally {
@@ -55,30 +57,22 @@ public class PermDBInstance implements DBInstance {
                  " FROM " + DBHelper.TABLE_SETTINGS +
                  " WHERE " + DBHelper.COLUMN_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
 
-        //myDB.beginTransaction();
         try {
             Cursor result = myDB.rawQuery(query, null);
-            String col = result.getColumnName(0);
-            Log.d(TAG, "Query: "+ query);
-            Log.d(TAG, "Column count is: " + result.getColumnCount());
-            Log.d(TAG, "Column name is: " + col);
-            Log.d(TAG, "Column index is: " + result.getColumnIndex(col));
             String response;
             if ((result != null) && (result.moveToFirst())){
                 response = result.getString(result.getColumnIndex(DBHelper.COLUMN_VALUE[0]));
+                result.close();
             }
             else {
-                response = null;
+                Log.d(TAG, "could not access cursor object from: " + query);
+                throw new NullPointerException();
             }
-            //myDB.setTransactionSuccessful();
             return response;
         }
         catch (Exception e){
-           // myDB.endTransaction();
+            Log.d(TAG, "ERROR: getReplyAll() failed");
             throw e;
-        }
-        finally {
-           // myDB.endTransaction();
         }
     }
 
@@ -97,44 +91,65 @@ public class PermDBInstance implements DBInstance {
             myDB.setTransactionSuccessful();
         }
         catch (Exception e){
+            Log.d(TAG, "ERROR: setDelay() failed");
             myDB.endTransaction();
             throw e;
         }
         finally {
-            //
             myDB.endTransaction();
         }
     }
 
+    //will return -1 if no result returned
     public int getDelay(){
         final String query =
                 "SELECT " + DBHelper.COLUMN_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
                  " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + "\"" + Setting.TIME_DELAY + "\"";
 
-        //myDB.beginTransaction();
         try {
             Cursor result = myDB.rawQuery(query, null);
-            int delay = result.getInt(0);
-            //myDB.setTransactionSuccessful();
+            int delay;
+            String value;
+            if ((result != null) && (result.moveToFirst())){
+                value = result.getString(result.getColumnIndex(DBHelper.COLUMN_VALUE[0]));
+                delay = Integer.parseInt(value);
+                result.close();
+            }
+            else {
+                Log.d(TAG, "could not access cursor object from: " + query);
+                throw new NullPointerException();
+            }
             return delay;
         }
         catch (Exception e){
+            Log.d(TAG, "ERROR: getDelay() failed");
             myDB.endTransaction();
             throw e;
-        }
-        finally {
-            //myDB.endTransaction();
         }
     }
 
     public void setResponseToggle(boolean responseToggle){
         myDB.beginTransaction();
-        try {
+        String toggle;
 
+        //convert boolean to string
+        if(responseToggle){
+            toggle = "true";
+        }
+        else{
+            toggle = "false";
+        }
+
+        try {
+            String filter = DBHelper.COLUMN_NAME[0] + "=" + Setting.RESPONSE_TOGGLE;
+            ContentValues args = new ContentValues();
+            args.put(DBHelper.COLUMN_VALUE[0], toggle);
+            myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
             myDB.setTransactionSuccessful();
         }
         catch (Exception e){
+            Log.d(TAG, "ERROR: setResponseToggle() failed");
             myDB.endTransaction();
             throw e;
         }
@@ -144,14 +159,38 @@ public class PermDBInstance implements DBInstance {
     }
 
     public boolean getResponseToggle(){
-        try {
+        final String query =
+                "SELECT " + DBHelper.COLUMN_VALUE[0] +
+                 " FROM " + DBHelper.TABLE_SETTINGS +
+                 " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + "\"" + Setting.RESPONSE_TOGGLE + "\"";
 
-            myDB.setTransactionSuccessful();
+        try {
+            Cursor result = myDB.rawQuery(query, null);
+            boolean toggle;
+            if ((result != null) && (result.moveToFirst())){
+                String response = result.getString(result.getColumnIndex(DBHelper.COLUMN_VALUE[0]));
+                //determine if value is true or false
+                if( response.compareTo("true") == 0){
+                    toggle = true;
+                }
+                else if ( response.compareTo("false") == 0){
+                    toggle = false;
+                }
+                else{
+                    Log.d(TAG, "found " + response + " when a value of true or false was expected from: " + query);
+                    throw new InputMismatchException();
+                }
+                result.close();
+            }
+            else {
+                Log.d(TAG, "could not get/access cursor object from: " + query);
+                throw new NullPointerException();
+            }
+            return toggle;
         }
         catch (Exception e){
-            Log.d(TAG, "getResponseToggle() did not work");
+            Log.d(TAG, "ERROR: getResponseToggle() failed");
             throw e;
         }
-        return false;
     }
 }

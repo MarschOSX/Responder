@@ -39,14 +39,17 @@ public class DBHelper extends SQLiteOpenHelper{
     public static final String[] COLUMN_SENDERNUM = {"sender_phoneNumber", "VARCHAR(16)"};
     public static final String[] COLUMN_MESSAGERCV = {"message_received", "VARCHAR(144)"};
     public static final String[] COLUMN_MESSAGESNT = {"message_sent", "VARCHAR(144)"};
-    //public static final String CREATE_RESPONSELOG = "CREATE TABLE " + TABLE_RESPONSELOG +
-    //        "(" + COLUMN;
+    private static final String CREATE_RESPONSELOG = "CREATE TABLE " + TABLE_RESPONSELOG +
+            "(" + COLUMN_TIMESTAMP[0] + " " + COLUMN_TIMESTAMP[1] + ", " +
+            COLUMN_SENDERNUM[0]+ " " + COLUMN_SENDERNUM[1] + ", " +
+            COLUMN_MESSAGERCV[0] + " " + COLUMN_MESSAGERCV[1] + ", " +
+            COLUMN_MESSAGESNT[0]+ " " + COLUMN_MESSAGESNT[1] + ");";
 
     //all tables must be added to this list
-    public static final String[] TABLE_LIST = {TABLE_HISTORY, TABLE_SETTINGS};
+    public static final String[] TABLE_LIST = {TABLE_HISTORY, TABLE_SETTINGS, TABLE_RESPONSELOG};
 
     //as well as all creation statements to this list
-    private static final String[] CREATION_LIST = {CREATE_HISTORY, CREATE_SETTINGS};
+    private static final String[] CREATION_LIST = {CREATE_HISTORY, CREATE_SETTINGS, CREATE_RESPONSELOG};
 
 
     //all settings need to be added to this list
