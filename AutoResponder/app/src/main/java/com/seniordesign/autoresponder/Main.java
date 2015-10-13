@@ -60,7 +60,9 @@ public class Main extends AppCompatActivity {
         switch(view.getId()) {
             case R.id.autoRespond_switch:
                     Log.v("AutoResponder Active? ", java.lang.Boolean.toString(autoRespondOffOn));
-                    //TODO push Toggle on/off to DB
+                    //push Toggle on/off to DB
+                    //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                    //TODO db.setResponseToggle(autoRespondOffOn);
                 break;
         }
     }

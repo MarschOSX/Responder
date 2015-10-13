@@ -9,15 +9,15 @@ import com.seniordesign.autoresponder.Persistance.DBProvider;
 /**
  * Created by MarschOSX on 10/8/2015.
  */
-public class EventHandler{
+public class EventHandler {
 
-    public static void respondToText(String phoneNumber, String message, Long timeRecieved, Context context, boolean debug)
-    {
-        //DBInstance db = DBProvider.get
+    public static int respondToText(String phoneNumber, String message, Long timeRecieved, Context context, boolean debug) {
+        DBInstance db = DBProvider.getInstance(false, context);
         //TODO get toggle off/on from DB and CHECK to see if you run!
-        if(phoneNumber != null){
+        // && db.getResponseToggle() == true
+        if (phoneNumber != null) {
             //access the database
-            DBInstance db = DBProvider.getInstance(false, context);
+
 
             //TODO get lastRecieved from database
             Long lastRecieved = null;//FROMDATABASE
@@ -25,14 +25,14 @@ public class EventHandler{
             Long delaySet = 0L;//60000*(Long.valueOf(db.getDelay()));//convert minutes to milliseconds
 
 
-            if(lastRecieved == null || lastRecieved + delaySet < timeRecieved){
+            if (lastRecieved == null || lastRecieved + delaySet < timeRecieved) {
                 //TODO set lastRecieved in database to timeRecieved
                 //lastRecieved = timeRecieved;
 
                 //get generalResponse from Database and set as message
-                if(debug == true) {
-                    message += "\nGeneralReply:\n"+db.getReplyAll();
-                }else{
+                if (debug == true) {
+                    message += "\nGeneralReply:\n" + db.getReplyAll();
+                } else {
                     message = db.getReplyAll();
                 }
 
@@ -42,8 +42,16 @@ public class EventHandler{
                 sms.sendTextMessage(phoneNumber, null, message, null, null);
                 android.util.Log.v("EventHandler,", "Message sent to: " + phoneNumber + " Message Body: " + message);
             }
+        } else {
+            return -1;
         }
 
-
+        return 0;
     }
+
+    public static int tester(String phoneNumber, String message, Long timeRecieved, Context context, boolean debug) {
+        DBInstance db = DBProvider.getInstance(false, context);
+        return -1;
+    }
+
 }

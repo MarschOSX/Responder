@@ -56,6 +56,7 @@ public class PermDBInstance implements DBInstance {
                 "SELECT " + DBHelper.COLUMN_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
                  " WHERE " + DBHelper.COLUMN_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
+        //SELECT value FROM  settings WHERE setting_name = "reply_all"
 
         try {
             Cursor result = myDB.rawQuery(query, null);

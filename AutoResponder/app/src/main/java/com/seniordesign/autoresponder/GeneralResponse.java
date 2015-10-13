@@ -111,7 +111,7 @@ public class GeneralResponse extends AppCompatActivity {
         //TODO push responseDelay to DB
         //Default is 20 and the RadioButton is set to this
         //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        //db.setDelay(responseDelay);
+       // db.setDelay(responseDelay);
     }
 
 }

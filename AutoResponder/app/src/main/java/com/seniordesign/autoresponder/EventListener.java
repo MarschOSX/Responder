@@ -10,7 +10,7 @@ import android.telephony.SmsMessage;
 
 public class EventListener extends BroadcastReceiver{
     //for more information about incoming SMS, set to true
-    boolean debug = true;
+    boolean debug = false;
 
     //Listener gets a message
     @Override
