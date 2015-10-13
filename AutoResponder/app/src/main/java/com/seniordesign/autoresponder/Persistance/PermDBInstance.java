@@ -6,8 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 /**
@@ -27,6 +30,10 @@ public class PermDBInstance implements DBInstance {
         this.myDB = myLittleHelper.getWritableDatabase();
     }
 
+
+    ///////////////////////////
+    //SETTING TABLE FUNCTIONS//
+    ///////////////////////////
     public void setReplyAll(String reply){
         /*final String query =
                 "UPDATE " + DBHelper.TABLE_SETTINGS +
@@ -43,7 +50,7 @@ public class PermDBInstance implements DBInstance {
         }
         catch (Exception e){
             myDB.endTransaction();
-            Log.d(TAG, "ERROR: setReplyAll() failed");
+            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
             throw e;
         }
         finally {
@@ -66,13 +73,13 @@ public class PermDBInstance implements DBInstance {
                 result.close();
             }
             else {
-                Log.d(TAG, "could not access cursor object from: " + query);
+                Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
                 throw new NullPointerException();
             }
             return response;
         }
         catch (Exception e){
-            Log.d(TAG, "ERROR: getReplyAll() failed");
+            Log.e(TAG, "ERROR: " + getMethodName() + ": getReplyAll() failed");
             throw e;
         }
     }
@@ -92,7 +99,7 @@ public class PermDBInstance implements DBInstance {
             myDB.setTransactionSuccessful();
         }
         catch (Exception e){
-            Log.d(TAG, "ERROR: setDelay() failed");
+            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
             myDB.endTransaction();
             throw e;
         }
@@ -118,13 +125,13 @@ public class PermDBInstance implements DBInstance {
                 result.close();
             }
             else {
-                Log.d(TAG, "could not access cursor object from: " + query);
+                Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
                 throw new NullPointerException();
             }
             return delay;
         }
         catch (Exception e){
-            Log.d(TAG, "ERROR: getDelay() failed");
+            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
             myDB.endTransaction();
             throw e;
         }
@@ -150,7 +157,7 @@ public class PermDBInstance implements DBInstance {
             myDB.setTransactionSuccessful();
         }
         catch (Exception e){
-            Log.d(TAG, "ERROR: setResponseToggle() failed");
+            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
             myDB.endTransaction();
             throw e;
         }
@@ -178,20 +185,63 @@ public class PermDBInstance implements DBInstance {
                     toggle = false;
                 }
                 else{
-                    Log.d(TAG, "found " + response + " when a value of true or false was expected from: " + query);
+                    Log.e(TAG, "ERROR: " + getMethodName() + ": found " + response + " when a value of true or false was expected from: " + query);
                     throw new InputMismatchException();
                 }
                 result.close();
             }
             else {
-                Log.d(TAG, "could not get/access cursor object from: " + query);
+                Log.e(TAG, "ERROR: " + getMethodName() + ": could not get/access cursor object from: " + query);
                 throw new NullPointerException();
             }
             return toggle;
         }
         catch (Exception e){
-            Log.d(TAG, "ERROR: getResponseToggle() failed");
+            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
             throw e;
         }
+    }
+
+    ////////////////////////////////
+    //RESPONSE LOG TABLE FUNCTIONS//
+    ////////////////////////////////
+    public void addToResponseLog(ResponseLog newLog){
+        //TODO IMPLEMENT
+    }
+
+    public ResponseLog getFirstEntry(){
+        //TODO IMPLEMENT
+
+        return null;
+    }
+
+
+    public ResponseLog getLastEntry(){
+        //TODO IMPLEMENT
+        return null;
+    }
+
+    public ResponseLog getEntry(int index){
+        //TODO IMPLEMENT
+        return null;
+    }
+
+    public ResponseLog getLastEntryByNum(String phoneNum){
+        //TODO IMPLEMENT
+        return null;
+    }
+
+    public ArrayList<ResponseLog> getEntryByDateRange(Date start, Date end){
+        //TODO IMPLEMENT
+        return null;
+    }
+
+    public ArrayList<ResponseLog> getEntryRange(int start, int end){
+        //TODO IMPLEMENT
+        return null;
+    }
+
+    private static String getMethodName() {
+        return Thread.currentThread().getStackTrace()[2].getMethodName();
     }
 }

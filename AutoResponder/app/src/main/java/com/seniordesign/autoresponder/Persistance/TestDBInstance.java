@@ -1,39 +1,50 @@
 package com.seniordesign.autoresponder.Persistance;
 
+import android.nfc.Tag;
+import android.util.Log;
+
+import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InputMismatchException;
+import java.util.Set;
 
 /**
  * Created by Garlan on 10/5/2015.
  */
 public class TestDBInstance implements DBInstance {
-
+    private static final String TAG = "TestDBIndstance";
     private HashMap<String,String> settings;
-    private ArrayList<String[]> ResponseLog;
+    private ArrayList<ResponseLog> responseLog;
 
     public TestDBInstance(){
-        settings = new HashMap<>();
+        this.settings = new HashMap<>();
+        this.responseLog = new ArrayList<>();
         for (String[] defaultSetting : Setting.DEFAULT_SETTINGS){
             settings.put(defaultSetting[0], defaultSetting[1]);
         }
     }
 
+    ///////////////////////////
+    //SETTING TABLE FUNCTIONS//
+    ///////////////////////////
     public void setReplyAll(String reply){
-        settings.put(Setting.REPLY_ALL, reply);
+        this.settings.put(Setting.REPLY_ALL, reply);
     }
 
     public String getReplyAll(){
-       return settings.get(Setting.REPLY_ALL);
+       return this.settings.get(Setting.REPLY_ALL);
     }
 
     public void setDelay(int minutes){
-        settings.put(Setting.TIME_DELAY, Integer.toString(minutes));
+        this.settings.put(Setting.TIME_DELAY, Integer.toString(minutes));
     }
 
     public int getDelay(){
-        return Integer.parseInt(settings.get(Setting.TIME_DELAY));
+        return Integer.parseInt(this.settings.get(Setting.TIME_DELAY));
     }
 
     public void setResponseToggle(boolean responseToggle){
@@ -44,15 +55,98 @@ public class TestDBInstance implements DBInstance {
         else{
             responseToggleText = "false";
         }
-        settings.put(Setting.RESPONSE_TOGGLE, responseToggleText);
+        this.settings.put(Setting.RESPONSE_TOGGLE, responseToggleText);
     }
 
     public boolean getResponseToggle(){
-        if(settings.get(Setting.RESPONSE_TOGGLE) == "true"){
+        String value = this.settings.get(Setting.RESPONSE_TOGGLE);
+        if(value.compareTo("true") == 0){
             return true;
         }
-        else{
+        else if(value.compareTo("false") == 0){
             return false;
         }
+        else{
+            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.RESPONSE_TOGGLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
+    }
+
+    ////////////////////////////////
+    //RESPONSE LOG TABLE FUNCTIONS//
+    ////////////////////////////////
+    public void addToResponseLog(ResponseLog newLog){
+        this.responseLog.add(newLog);
+    }
+
+    public ResponseLog getFirstEntry(){
+        return this.responseLog.get(0);
+    }
+
+    public ResponseLog getLastEntry(){
+        return this.responseLog.get(responseLog.size()-1);
+    }
+
+    public ResponseLog getEntry(int index){
+        if (index < responseLog.size() && index >= 0){
+            return this.responseLog.get(index);
+        }
+        else{
+            Log.e(TAG, "ERROR: getEntry(): attempted to access index out of bounds: " + index);
+            throw new ArrayIndexOutOfBoundsException();
+        }
+    }
+
+    public ResponseLog getLastEntryByNum(String phoneNum){
+        for (int i = this.responseLog.size() - 1; i >= 0; i--){
+            if (responseLog.get(i).getSenderNumber().compareTo(phoneNum) == 0){
+                return responseLog.get(i);
+            }
+        }
+        //if not nothing found, returns null
+        return null;
+    }
+
+    //TODO: MAKE SEARCH FOR BEGINNING AND END BINARY SEARCH FOR BETTER RUNTIME, currently O(x)
+    public ArrayList<ResponseLog> getEntryByDateRange(Date start, Date end){
+        ArrayList<ResponseLog> range = new ArrayList<>();
+
+        //ERROR CHECKING
+        if (start.after(end)){
+            Log.e(TAG, "ERROR: getEntryByDateRange(): start date comes after end date");
+            throw new InputMismatchException();
+        }
+
+        for(int i = 0; i < this.responseLog.size(); i++){
+            if (this.responseLog.get(i).getTimeStamp().after(start) && this.responseLog.get(i).getTimeStamp().before(end)){
+                range.add(this.responseLog.get(i));
+            }
+        }
+        return range;
+    }
+
+    public ArrayList<ResponseLog> getEntryRange(int start, int end){
+        ArrayList<ResponseLog> range = new ArrayList<>();
+
+        //ERROR CHECKING
+        if (start > end){
+            Log.e(TAG, "ERROR: getEntryRange(): start index came after end index");
+            throw new InputMismatchException();
+        }
+        //ERROR CHECKING
+        if (start < 0 || end < 0 || start >= this.responseLog.size() || end >= this.responseLog.size()){
+            Log.e(TAG, "ERROR: getEntryRange(): attempted to access index out of bounds: " + start + " " + end);
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        for(int i = start; i <= end; i++){
+            range.add(this.responseLog.get(i));
+        }
+
+        return range;
+    }
+
+    private static String getMethodName() {
+        return Thread.currentThread().getStackTrace()[2].getMethodName();
     }
 }

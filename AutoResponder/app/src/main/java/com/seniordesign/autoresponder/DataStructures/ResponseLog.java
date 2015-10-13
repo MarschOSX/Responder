@@ -1,6 +1,6 @@
 package com.seniordesign.autoresponder.DataStructures;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * Created by Garlan on 10/8/2015.

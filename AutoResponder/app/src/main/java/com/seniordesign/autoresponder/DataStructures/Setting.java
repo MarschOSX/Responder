@@ -33,9 +33,10 @@ public class Setting {
         return name;
     }
 
-    public void setName(String name) {
+    //disabled setName due to settings only being created by developer.  User should not be able to change setting name
+    /*public void setName(String name) {
         this.name = name;
-    }
+    }*/
 
     public String getValue() {
         return value;
