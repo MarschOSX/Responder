@@ -10,6 +10,7 @@ import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 
@@ -26,6 +27,7 @@ public class PermDBInstance implements DBInstance {
 
     public PermDBInstance(Context context) {
         //this.mDB = SQLiteDatabase.openOrCreateDatabase(DATABASE_NAME, null);
+        Log.d(TAG, "initializing database instance");
         this.myLittleHelper = new DBHelper(context);
         this.myDB = myLittleHelper.getWritableDatabase();
     }
@@ -39,14 +41,18 @@ public class PermDBInstance implements DBInstance {
                 "UPDATE " + DBHelper.TABLE_SETTINGS +
                 " SET " + DBHelper.COLUMN_VALUE[0] +" = " + reply +
                 " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + Setting.REPLY_ALL;*/
-
+        Log.d(TAG, "setting replyAll....");
         myDB.beginTransaction();
         try {
             String filter = DBHelper.COLUMN_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
             ContentValues args = new ContentValues();
             args.put(DBHelper.COLUMN_VALUE[0], reply);
-            myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
-            myDB.setTransactionSuccessful();
+
+            int updateNum =  myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
+            if (updateNum == 1) {
+                myDB.setTransactionSuccessful();
+            }
+            else Log.d(TAG, updateNum + " rows were found to update");
         }
         catch (Exception e){
             myDB.endTransaction();
@@ -54,6 +60,7 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
+            Log.d(TAG, "replyAll set successfully");
             myDB.endTransaction();
         }
     }
@@ -90,13 +97,17 @@ public class PermDBInstance implements DBInstance {
                 " SET " + DBHelper.COLUMN_VALUE[0] +" = " + minutes +
                 " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + Setting.TIME_DELAY;*/
 
+        Log.d(TAG, "setting delay....");
         myDB.beginTransaction();
         try {
             String filter = DBHelper.COLUMN_NAME[0] + "=" + Setting.TIME_DELAY;
             ContentValues args = new ContentValues();
             args.put(DBHelper.COLUMN_VALUE[0], minutes);
-            myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
-            myDB.setTransactionSuccessful();
+            int updateNum = myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
+            if (updateNum == 1) {
+                myDB.setTransactionSuccessful();
+            }
+            else Log.d(TAG, updateNum + " rows were found to update");
         }
         catch (Exception e){
             Log.e(TAG, "ERROR: " + getMethodName() + " failed");
@@ -104,6 +115,7 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
+            Log.d(TAG, "delay set successfully");
             myDB.endTransaction();
         }
     }
@@ -148,13 +160,20 @@ public class PermDBInstance implements DBInstance {
             toggle = "false";
         }
 
+        Log.d(TAG, "setting  responseToggle....");
         myDB.beginTransaction();
         try {
             String filter = DBHelper.COLUMN_NAME[0] + "=" + Setting.RESPONSE_TOGGLE;
             ContentValues args = new ContentValues();
             args.put(DBHelper.COLUMN_VALUE[0], toggle);
-            myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
-            myDB.setTransactionSuccessful();
+
+            int updateNum = myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
+            if (updateNum == 1) {
+                myDB.setTransactionSuccessful();
+            }
+            else{
+                Log.d(TAG, updateNum + " rows were found to update");
+            }
         }
         catch (Exception e){
             Log.e(TAG, "ERROR: " + getMethodName() + " failed");
@@ -162,6 +181,7 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
+            Log.d(TAG, "responseToggle set successfully");
             myDB.endTransaction();
         }
     }
@@ -206,13 +226,20 @@ public class PermDBInstance implements DBInstance {
     //RESPONSE LOG TABLE FUNCTIONS//
     ////////////////////////////////
     public void addToResponseLog(ResponseLog newLog){
-        //TODO IMPLEMENT
+        Log.d(TAG, "adding entry to ResponseLog....");
         myDB.beginTransaction();
         try {
+            //load columns in args
             ContentValues args = new ContentValues();
             args.put(DBHelper.COLUMN_TIMESTAMP[0], newLog.getTimeStamp().toString());
-            myDB.insert(DBHelper.TABLE_RESPONSELOG, args, filter, null);
-            myDB.setTransactionSuccessful();
+            args.put(DBHelper.COLUMN_SENDERNUM[0], newLog.getSenderNumber());
+            args.put(DBHelper.COLUMN_MESSAGERCV[0], newLog.getMessageReceived());
+            args.put(DBHelper.COLUMN_MESSAGESNT[0], newLog.getMessageSent());
+
+            long insert = myDB.insertOrThrow(DBHelper.TABLE_RESPONSELOG, null, args);
+            if (insert != -1) {
+                myDB.setTransactionSuccessful();
+            }
         }
         catch (Exception e){
             Log.e(TAG, "ERROR: " + getMethodName() + " failed");
@@ -220,12 +247,19 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
+            Log.d(TAG, "entry added to ResponseLog");
             myDB.endTransaction();
         }
     }
 
     public ResponseLog getFirstEntry(){
         //TODO IMPLEMENT
+        final String query =
+                "SELECT * " +
+                 " FROM " + DBHelper.TABLE_RESPONSELOG +
+                 " WHERE " + DBHelper.COLUMN_TIMESTAMP[0] + "=MIN("+ DBHelper.COLUMN_TIMESTAMP[0] + ")";
+
+
 
         return null;
     }
@@ -233,26 +267,49 @@ public class PermDBInstance implements DBInstance {
 
     public ResponseLog getLastEntry(){
         //TODO IMPLEMENT
+        final String query =
+                "SELECT * " +
+                 " FROM " + DBHelper.TABLE_RESPONSELOG +
+                 " WHERE " + DBHelper.COLUMN_TIMESTAMP[0] + "=MAX("+ DBHelper.COLUMN_TIMESTAMP[0] + ")";
+
         return null;
     }
 
     public ResponseLog getEntry(int index){
         //TODO IMPLEMENT
+        final String query =
+                "SELECT * " +
+                " FROM " + DBHelper.TABLE_RESPONSELOG +
+                " WHERE ROWID=\"" + index + "\"";
         return null;
     }
 
     public ResponseLog getLastEntryByNum(String phoneNum){
         //TODO IMPLEMENT
+        final String query =
+                "SELECT * " +
+                " FROM " + DBHelper.TABLE_RESPONSELOG +
+                " WHERE "+ DBHelper.COLUMN_TIMESTAMP[0] + " = MAX(SELECT " + DBHelper.COLUMN_TIMESTAMP[0] +
+                        " FROM " + DBHelper.TABLE_RESPONSELOG +
+                        " WHERE " + DBHelper.COLUMN_SENDERNUM[0] + "=\"" + phoneNum + "\")";
         return null;
     }
 
     public ArrayList<ResponseLog> getEntryByDateRange(Date start, Date end){
         //TODO IMPLEMENT
+        final String query =
+                "SELECT * " +
+                " FROM " + DBHelper.TABLE_RESPONSELOG +
+                " WHERE " + DBHelper.COLUMN_TIMESTAMP[0] + " BETWEEN \"" + start + "\" AND \"" + end + "\"";
         return null;
     }
 
     public ArrayList<ResponseLog> getEntryRange(int start, int end){
         //TODO IMPLEMENT
+        final String query =
+                "SELECT * " +
+                " FROM " + DBHelper.TABLE_RESPONSELOG +
+                " WHERE ROWID BETWEEN \"" + start + "\" AND \"" + end + "\"";
         return null;
     }
 

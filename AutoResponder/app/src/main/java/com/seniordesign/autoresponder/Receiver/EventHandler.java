@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder;
+package com.seniordesign.autoresponder.Receiver;
 
 
 import android.content.Context;

@@ -1,17 +1,15 @@
-package com.seniordesign.autoresponder;
+package com.seniordesign.autoresponder.Interface;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.util.Log;
 
-import com.seniordesign.autoresponder.Persistance.DBInstance;
-import com.seniordesign.autoresponder.Persistance.DBProvider;
+import com.seniordesign.autoresponder.R;
 
 
 public class Main extends AppCompatActivity {

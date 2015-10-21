@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".Main"
+            android:name=".Interface.Main"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,11 +22,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GeneralResponse"
+            android:name=".Interface.GeneralResponse"
             android:label="@string/title_activity_general_response" >
         </activity>
 
-        <receiver android:name=".EventListener">
+        <receiver android:name=".Receiver.EventListener">
             <intent-filter android:priority="1000">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

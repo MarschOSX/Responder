@@ -14,11 +14,14 @@ public class DBProvider{
     public static DBInstance getInstance(boolean testMode, Context context){
         if (testMode){
             if (testDB == null){
+                Log.d(TAG, "creating new mock database");
                 testDB = new TestDBInstance();
             }
+            Log.d(TAG, "returning mock database");
             return testDB;
         }
         else{
+            Log.d(TAG, "accessing database");
             permDB = new PermDBInstance(context);
             return permDB;
         }

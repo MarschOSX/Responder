@@ -6,6 +6,7 @@ import android.test.ApplicationTestCase;
 
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
+import com.seniordesign.autoresponder.Receiver.EventHandler;
 
 import org.mockito.Mock;
 import org.mockito.Mockito;

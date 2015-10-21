@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder;
+package com.seniordesign.autoresponder.Interface;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
+import com.seniordesign.autoresponder.R;
 
 import java.lang.reflect.InvocationTargetException;
 
