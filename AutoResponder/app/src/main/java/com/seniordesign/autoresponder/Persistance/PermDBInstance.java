@@ -253,20 +253,19 @@ public class PermDBInstance implements DBInstance {
     }
 
     public ResponseLog getFirstEntry(){
-        //TODO IMPLEMENT
+        //TODO IMPLEMENT FOR 50%
+
         final String query =
                 "SELECT * " +
                  " FROM " + DBHelper.TABLE_RESPONSELOG +
                  " WHERE " + DBHelper.COLUMN_TIMESTAMP[0] + "=MIN("+ DBHelper.COLUMN_TIMESTAMP[0] + ")";
-
-
 
         return null;
     }
 
 
     public ResponseLog getLastEntry(){
-        //TODO IMPLEMENT
+        //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
                  " FROM " + DBHelper.TABLE_RESPONSELOG +
@@ -276,7 +275,7 @@ public class PermDBInstance implements DBInstance {
     }
 
     public ResponseLog getEntry(int index){
-        //TODO IMPLEMENT
+        //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_RESPONSELOG +
@@ -285,18 +284,41 @@ public class PermDBInstance implements DBInstance {
     }
 
     public ResponseLog getLastEntryByNum(String phoneNum){
-        //TODO IMPLEMENT
         final String query =
                 "SELECT * " +
-                " FROM " + DBHelper.TABLE_RESPONSELOG +
-                " WHERE "+ DBHelper.COLUMN_TIMESTAMP[0] + " = MAX(SELECT " + DBHelper.COLUMN_TIMESTAMP[0] +
+                        " FROM " + DBHelper.TABLE_RESPONSELOG +
+                        " WHERE "+ DBHelper.COLUMN_TIMESTAMP[0] + " = MAX(SELECT " + DBHelper.COLUMN_TIMESTAMP[0] +
                         " FROM " + DBHelper.TABLE_RESPONSELOG +
                         " WHERE " + DBHelper.COLUMN_SENDERNUM[0] + "=\"" + phoneNum + "\")";
-        return null;
+        Date date;
+        String senderNum;
+        String msgRcv;
+        String msgSnt;
+
+        Cursor result = myDB.rawQuery(query, null);
+        if ((result != null) && (result.moveToFirst())){
+            //check and see how many rows were returned
+            int numRows = result.getCount();
+            if (numRows > 1) Log.d(TAG, getMethodName() + ": found more than " + numRows + " rows");
+
+            //load query results
+            date = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
+            senderNum = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
+            msgRcv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
+            msgSnt = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+
+            result.close();
+
+            return new ResponseLog(msgSnt, msgRcv, senderNum, date);
+        }
+        else {
+            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            return null;
+        }
     }
 
     public ArrayList<ResponseLog> getEntryByDateRange(Date start, Date end){
-        //TODO IMPLEMENT
+        //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_RESPONSELOG +
@@ -305,7 +327,7 @@ public class PermDBInstance implements DBInstance {
     }
 
     public ArrayList<ResponseLog> getEntryRange(int start, int end){
-        //TODO IMPLEMENT
+        //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_RESPONSELOG +
