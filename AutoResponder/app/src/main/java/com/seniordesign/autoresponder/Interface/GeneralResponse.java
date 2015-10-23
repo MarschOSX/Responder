@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class GeneralResponse extends AppCompatActivity {
 
-
+    private DBInstance db;
     Button setTextButton;
     EditText setTextEdit;
     EditText setDelayNum;
@@ -31,7 +31,7 @@ public class GeneralResponse extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_response);
-
+        this.db = DBProvider.getInstance(false, getApplicationContext());
 
         setTextButton = (Button)findViewById(R.id.setTextButton);
         setTextEdit   = (EditText)findViewById(R.id.generalResponse_text);
@@ -50,7 +50,6 @@ public class GeneralResponse extends AppCompatActivity {
                             generalReply = setTextEdit.getHint().toString();
                         }
                         //push generalReply to DB
-                        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                         db.setReplyAll(generalReply);
 
                     }
@@ -112,7 +111,7 @@ public class GeneralResponse extends AppCompatActivity {
         //TODO push responseDelay to DB
         //Default is 20 and the RadioButton is set to this
         //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-       // db.setDelay(responseDelay);
+        db.setDelay(responseDelay);
     }
 
 }

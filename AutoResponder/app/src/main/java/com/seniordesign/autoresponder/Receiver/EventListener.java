@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 
+import com.seniordesign.autoresponder.Persistance.DBProvider;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class EventListener extends BroadcastReceiver{
     //for more information about incoming SMS, set to true
     boolean debug = false;
@@ -44,8 +49,18 @@ public class EventListener extends BroadcastReceiver{
         }
 
         //pass information to EventHandler.respondToText()
-        if(phoneNumber != null){
-            EventHandler.respondToText(phoneNumber, message, timeRecieved, context, debug);
+        if(phoneNumber != null) {
+            Pattern pattern = Pattern.compile("\\+\\d{11}");
+            Matcher matcher = pattern.matcher(phoneNumber);
+            if (!matcher.matches()) {
+                android.util.Log.v("EventHandler,", "Invalid Phone Number");
+                throw new IllegalArgumentException("Invalid Phone Number in EventListener");
+            }
+            EventHandler ev= new EventHandler(DBProvider.getInstance(false, context));
+            ev.respondToText(phoneNumber, message, timeRecieved, debug);
+        }else{
+            android.util.Log.v("EventHandler,", "Invalid Phone Number");
+            throw new IllegalArgumentException("Invalid Phone Number in EventListener");
         }
     }
 }
