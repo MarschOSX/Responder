@@ -52,6 +52,7 @@ public class PermDBInstance implements DBInstance {
             int updateNum =  myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
             if (updateNum == 1) {
                 myDB.setTransactionSuccessful();
+                Log.d(TAG, "replyAll set successfully");
             }
             else Log.d(TAG, updateNum + " rows were found to update");
         }
@@ -61,7 +62,6 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
-            Log.d(TAG, "replyAll set successfully");
             myDB.endTransaction();
         }
     }
@@ -97,7 +97,7 @@ public class PermDBInstance implements DBInstance {
         myDB.beginTransaction();
         try {
             //set filter to determine row to select
-            String filter = DBHelper.COLUMN_NAME[0] + "=" + Setting.TIME_DELAY;
+            String filter = DBHelper.COLUMN_NAME[0] + "=\"" + Setting.TIME_DELAY + "\"";
 
             //load values to be stored in respective columns
             ContentValues args = new ContentValues();
@@ -107,6 +107,7 @@ public class PermDBInstance implements DBInstance {
             int updateNum = myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
             if (updateNum == 1) {
                 myDB.setTransactionSuccessful();
+                Log.d(TAG, "delay set successfully");
             }
             else Log.d(TAG, updateNum + " rows were found to update");
         }
@@ -116,7 +117,6 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
-            Log.d(TAG, "delay set successfully");
             myDB.endTransaction();
         }
     }
@@ -160,13 +160,14 @@ public class PermDBInstance implements DBInstance {
         Log.d(TAG, "setting  responseToggle....");
         myDB.beginTransaction();
         try {
-            String filter = DBHelper.COLUMN_NAME[0] + "=" + Setting.RESPONSE_TOGGLE;
+            String filter = DBHelper.COLUMN_NAME[0] + "=\"" + Setting.RESPONSE_TOGGLE + "\"";
             ContentValues args = new ContentValues();
             args.put(DBHelper.COLUMN_VALUE[0], toggle);
 
             int updateNum = myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
             if (updateNum == 1) {
                 myDB.setTransactionSuccessful();
+                Log.d(TAG, "responseToggle set successfully");
             }
             else{
                 Log.d(TAG, updateNum + " rows were found to update");
@@ -178,7 +179,6 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
-            Log.d(TAG, "responseToggle set successfully");
             myDB.endTransaction();
         }
     }
@@ -234,6 +234,7 @@ public class PermDBInstance implements DBInstance {
             long insert = myDB.insertOrThrow(DBHelper.TABLE_RESPONSELOG, null, args);
             if (insert != -1) {
                 myDB.setTransactionSuccessful();
+                Log.d(TAG, "entry added to ResponseLog");
             }
         }
         catch (Exception e){
@@ -242,7 +243,6 @@ public class PermDBInstance implements DBInstance {
             throw e;
         }
         finally {
-            Log.d(TAG, "entry added to ResponseLog");
             myDB.endTransaction();
         }
     }
@@ -332,6 +332,6 @@ public class PermDBInstance implements DBInstance {
     }
 
     private static String getMethodName() {
-        return Thread.currentThread().getStackTrace()[2].getMethodName();
+        return Thread.currentThread().getStackTrace()[3].getMethodName();
     }
 }
