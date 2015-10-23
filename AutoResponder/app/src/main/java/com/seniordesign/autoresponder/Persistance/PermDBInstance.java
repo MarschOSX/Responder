@@ -294,7 +294,8 @@ public class PermDBInstance implements DBInstance {
         if ((result != null) && (result.moveToFirst())){
             //check and see how many rows were returned
             int numRows = result.getCount();
-            if (numRows > 1) Log.d(TAG, getMethodName() + ": found more than " + numRows + " rows");
+            if (numRows == 0) return new ResponseLog("", "", phoneNum, new Date(0)); //returns a false record from the beginning of time if no record found
+            else if (numRows > 1) Log.d(TAG, getMethodName() + ": found more than " + numRows + " rows");
 
             //load query results
             date = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
