@@ -10,15 +10,12 @@ import android.widget.Switch;
 import android.util.Log;
 
 import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 
 
 public class Main extends AppCompatActivity {
 
-    private DBInstance db;
-    public Main(DBInstance db){
-        this.db = db;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +62,7 @@ public class Main extends AppCompatActivity {
             case R.id.autoRespond_switch:
                     Log.v("AutoResponder Active? ", java.lang.Boolean.toString(autoRespondOffOn));
                     //push Toggle on/off to DB
-                    //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                     db.setResponseToggle(autoRespondOffOn);
                 break;
         }
