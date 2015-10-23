@@ -279,37 +279,53 @@ public class PermDBInstance implements DBInstance {
     }
 
     public ResponseLog getLastEntryByNum(String phoneNum){
-        final String query =
+        final String query_p2 =
                 "SELECT * " +
                         " FROM " + DBHelper.TABLE_RESPONSELOG +
-                        " WHERE "+ DBHelper.COLUMN_TIMESTAMP[0] + " = MAX(SELECT " + DBHelper.COLUMN_TIMESTAMP[0] +
-                        " FROM " + DBHelper.TABLE_RESPONSELOG +
-                        " WHERE " + DBHelper.COLUMN_SENDERNUM[0] + "=\"" + phoneNum + "\")";
-        Date date;
-        String senderNum;
-        String msgRcv;
-        String msgSnt;
+                        " WHERE "+ DBHelper.COLUMN_TIMESTAMP[0] + " =";
 
-        Cursor result = myDB.rawQuery(query, null);
-        if ((result != null) && (result.moveToFirst())){
-            //check and see how many rows were returned
-            int numRows = result.getCount();
-            if (numRows == 0) return new ResponseLog("", "", phoneNum, new Date(0)); //returns a false record from the beginning of time if no record found
-            else if (numRows > 1) Log.d(TAG, getMethodName() + ": found more than " + numRows + " rows");
+        final String query = "SELECT *" +
+            " FROM " + DBHelper.TABLE_RESPONSELOG +
+            " WHERE " + DBHelper.COLUMN_SENDERNUM[0] + "=\"" + phoneNum + "\" ORDER BY " + DBHelper.COLUMN_TIMESTAMP[0];
 
-            //load query results
-            date = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
-            senderNum = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
-            msgRcv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
-            msgSnt = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+        Date date = new Date(0);
+        String senderNum = phoneNum;
+        String msgRcv = "";
+        String msgSnt = "";
 
-            result.close();
+        try {
+            Cursor result = myDB.rawQuery(query, null);
+            if (result != null) {
+                //check and see how many rows were returned
+                int numRows = result.getCount();
+                if (numRows == 0) {
+                    Log.d(TAG, "ResponseLogRetrieved: "+ date + ", " + senderNum + ", " + msgSnt + ", " + msgRcv);
+                    return new ResponseLog(msgSnt, msgRcv, senderNum, date); //returns a false record from the beginning of time if no record found
+                }
+                else{
+                    result.moveToFirst();
+                }
+                //else if (numRows > 1)
+                //    Log.d(TAG, getMethodName() + ": found more than " + numRows + " rows");
 
-            return new ResponseLog(msgSnt, msgRcv, senderNum, date);
+                //load query results
+                date = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
+                senderNum = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
+                msgRcv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
+                msgSnt = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+                Log.d(TAG, "ResponseLogRetrieved: "+ date + ", " + senderNum + ", " + msgSnt + "," + msgRcv);
+
+                result.close();
+
+                return new ResponseLog(msgSnt, msgRcv, senderNum, date);
+            } else {
+                Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+                return null;
+            }
         }
-        else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
-            return null;
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName() + " could not retrieve data");
+            throw e;
         }
     }
 

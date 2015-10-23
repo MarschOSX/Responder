@@ -50,12 +50,6 @@ public class EventListener extends BroadcastReceiver{
 
         //pass information to EventHandler.respondToText()
         if(phoneNumber != null) {
-            Pattern pattern = Pattern.compile("\\+\\d{11}");
-            Matcher matcher = pattern.matcher(phoneNumber);
-            if (!matcher.matches()) {
-                android.util.Log.v("EventHandler,", "Invalid Phone Number");
-                throw new IllegalArgumentException("Invalid Phone Number in EventListener");
-            }
             EventHandler ev= new EventHandler(DBProvider.getInstance(false, context));
             ev.respondToText(phoneNumber, message, timeRecieved, debug);
         }else{
