@@ -28,8 +28,9 @@ public class EventHandler {
         if(db.getResponseToggle()) {
 
             //Check phoneNumber validity
-            if (phoneNumber != null) {
-                Pattern pattern = Pattern.compile("\\+\\d{11}");
+            /*if (phoneNumber != null && phoneNumber.length() == 12) {
+                /*String regex = "\\d";
+                Pattern pattern = Pattern.compile(regex);
                 Matcher matcher = pattern.matcher(phoneNumber);
                 if (!matcher.matches()) {
                     android.util.Log.v("EventHandler,", "Invalid Phone Number");
@@ -37,7 +38,7 @@ public class EventHandler {
                 }
             } else {
                 return -1;
-            }
+            }*/
 
             //get lastRecieved from database
             ResponseLog updateLog = db.getLastEntryByNum(phoneNumber);
