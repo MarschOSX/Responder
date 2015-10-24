@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.ArrayMap;
 
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +30,11 @@ public class EventListener extends BroadcastReceiver{
         Bundle bundle = intent.getExtras();
 
         Object[] messages = (Object[]) bundle.get("pdus");
+
+        //@SuppressWarnings("unchecked")
+        //ArrayMap<String, Object>[] messages = new ArrayMap[20000];
+        //Object messages = new Object[]();
+
         if (messages != null) {
             SmsMessage[] sms = new SmsMessage[messages.length];
             for (int n = 0; n < messages.length; n++) {
