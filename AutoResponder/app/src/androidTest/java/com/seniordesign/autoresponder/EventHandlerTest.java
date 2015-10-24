@@ -1,38 +1,16 @@
 package com.seniordesign.autoresponder;
-
-import android.app.Application;
-import android.content.Context;
-import android.telephony.SmsManager;
-import android.test.ApplicationTestCase;
 import android.test.InstrumentationTestCase;
-
-import com.seniordesign.autoresponder.DataStructures.Log;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
-import com.seniordesign.autoresponder.Persistance.DBProvider;
-import com.seniordesign.autoresponder.Persistance.PermDBInstance;
-import com.seniordesign.autoresponder.Persistance.TestDBInstance;
 import com.seniordesign.autoresponder.Receiver.EventHandler;
-
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
-
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
 import java.sql.Date;
 import java.util.ArrayList;
 
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest(DBProvider.class)
+/**
+ * By MarschOSX on 10/24/2015
+ */
+
 public class EventHandlerTest extends InstrumentationTestCase {
     @Mock
     private DBInstance dbi;

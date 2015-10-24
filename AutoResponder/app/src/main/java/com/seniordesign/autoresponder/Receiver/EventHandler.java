@@ -76,7 +76,6 @@ public class EventHandler {
         }
         android.util.Log.v("EventHandler,", "Response Toggle is OFF");
         return -1;
-        //here comment out
     }
 }
 
