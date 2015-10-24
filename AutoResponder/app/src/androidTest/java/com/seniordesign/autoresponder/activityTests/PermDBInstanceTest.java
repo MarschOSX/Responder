@@ -18,8 +18,8 @@ public class PermDBInstanceTest extends ApplicationTestCase<Application> {
 
     private Context context;
 
-    public void testStandard() throws Exception {
-        PermDBInstance pdbi = new PermDBInstance(context);
-        pdbi.setReplyAll("Hello");
-    }
+  //  public void testStandard() throws Exception {
+       // PermDBInstance pdbi = new PermDBInstance(context);
+       // pdbi.setReplyAll("Hello");
+   // }
 }

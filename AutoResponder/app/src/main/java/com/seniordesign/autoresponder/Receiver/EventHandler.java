@@ -19,41 +19,29 @@ public class EventHandler {
 
     private DBInstance db;
 
-    public EventHandler(DBInstance db){
+    public EventHandler(DBInstance db) {
         this.db = db;
     }
 
     public int respondToText(String phoneNumber, String message, Long timeRecieved, boolean debug) {
         //get toggle off/on from DB and CHECK to see if you run!
-        if(db.getResponseToggle()) {
+        //db.getResponseToggle();
+        //Check phoneNumber validity
+        if (phoneNumber == null || !phoneNumber.matches("[+][0-9]{11}")){
+            android.util.Log.v("EventHandler,", "Invalid PhoneNumber Recieved");
+            return -1;
+        }
 
-            //Check phoneNumber validity
-            /*if (phoneNumber != null && phoneNumber.length() == 12) {
-                /*String regex = "\\d";
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(phoneNumber);
-                if (!matcher.matches()) {
-                    android.util.Log.v("EventHandler,", "Invalid Phone Number");
-                    return -1;
-                }
-            } else {
-                return -1;
-            }*/
-
+        if (db.getResponseToggle()) {
             //get lastRecieved from database
             ResponseLog updateLog = db.getLastEntryByNum(phoneNumber);
-            if(updateLog == null){
+            if (updateLog == null) {
+                android.util.Log.v("EventHandler,", "Invalid, UpdateLog is NULL");
                 return -1;
             }
-
             Long lastRecieved = updateLog.getTimeStamp().getTime();
-
             //get delaySet from database
-            Long delaySet = 60000*(Long.valueOf(db.getDelay()));//convert minutes to milliseconds
-            if (delaySet == null) {
-                android.util.Log.v("EventHandler,", "Invalid delaySet from DB");
-                return -1;
-            }
+            Long delaySet = 60000 * Long.valueOf(db.getDelay());//convert minutes to milliseconds
             if (timeRecieved != null && timeRecieved >= 0L) {
                 if (lastRecieved == 0 || lastRecieved + delaySet < timeRecieved) {
                     lastRecieved = timeRecieved;
@@ -61,7 +49,7 @@ public class EventHandler {
                     updateLog.setMessageReceived(message);
                     updateLog.setSenderNumber(phoneNumber);
                     //get generalResponse from Database and set as message
-                    if (debug == false) {
+                    if (!debug) {
                         message = db.getReplyAll();
                     } else {
                         message += "\nGeneralReplyDEBUG:\n" + db.getReplyAll();
@@ -75,13 +63,21 @@ public class EventHandler {
                     SmsManager sms = SmsManager.getDefault();
 
                     sms.sendTextMessage(phoneNumber, null, message, null, null);
-                    android.util.Log.v("EventHandler,", "Message sent to: " + phoneNumber + " Message Body: " + message);
+                    android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + message);
+                    return 0;
+                } else {
+                    android.util.Log.v("EventHandler,", "Cannot send a response yet!");
+                    return -1;
                 }
             } else {
                 android.util.Log.v("EventHandler,", "Invalid Time Recieved");
                 return -1;
             }
         }
-        return 0;
+        android.util.Log.v("EventHandler,", "Response Toggle is OFF");
+        return -1;
+        //here comment out
     }
 }
+
+
