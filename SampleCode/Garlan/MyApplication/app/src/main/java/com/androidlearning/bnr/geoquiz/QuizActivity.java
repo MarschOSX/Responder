@@ -19,7 +19,7 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
-    //
+
 
     private Question[] mQuestionBank = new Question[] {
             new Question(R.string.question_oceans, true),

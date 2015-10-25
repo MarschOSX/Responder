@@ -80,13 +80,12 @@ public class PermDBInstanceTest extends AndroidTestCase {
         database = DBProvider.getInstance(false, getContext());
 
         //Create ResponseLog to test
+        String phoneNum = "+18568327320";
         long millis = System.currentTimeMillis() % 1000;
-        ResponseLog responseLog = new ResponseLog("JUnitA","JUnitB","+18568327320", new Date(millis));
+        ResponseLog responseLog = new ResponseLog("JUnitA","JUnitB",phoneNum, new Date(millis));
 
         database.addToResponseLog(responseLog);
-        assertEquals(database.getFirstEntry(), responseLog);
-
-        database.getLastEntryByNum("+18568327320");
+        assertEquals(database.getLastEntryByNum(phoneNum), responseLog);
     }
 
 

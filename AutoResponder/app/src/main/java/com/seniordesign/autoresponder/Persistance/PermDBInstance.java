@@ -57,7 +57,6 @@ public class PermDBInstance implements DBInstance {
             else Log.d(TAG, updateNum + " rows were found to update");
         }
         catch (Exception e){
-            myDB.endTransaction();
             Log.e(TAG, "ERROR: " + getMethodName() + " failed");
             throw e;
         }
@@ -113,7 +112,6 @@ public class PermDBInstance implements DBInstance {
         }
         catch (Exception e){
             Log.e(TAG, "ERROR: " + getMethodName() + " failed");
-            myDB.endTransaction();
             throw e;
         }
         finally {
@@ -175,7 +173,6 @@ public class PermDBInstance implements DBInstance {
         }
         catch (Exception e){
             Log.e(TAG, "ERROR: " + getMethodName() + " failed");
-            myDB.endTransaction();
             throw e;
         }
         finally {
