@@ -278,6 +278,7 @@ public class PermDBInstance implements DBInstance {
         return null;
     }
 
+    //TODO MAKE MORE EFFICIENT
     public ResponseLog getLastEntryByNum(String phoneNum){
         final String query_p2 =
                 "SELECT * " +
@@ -288,10 +289,10 @@ public class PermDBInstance implements DBInstance {
             " FROM " + DBHelper.TABLE_RESPONSELOG +
             " WHERE " + DBHelper.COLUMN_SENDERNUM[0] + "=\"" + phoneNum + "\" ORDER BY " + DBHelper.COLUMN_TIMESTAMP[0];
 
-        Date date = new Date(0);
         String senderNum = phoneNum;
         String msgRcv = "";
         String msgSnt = "";
+        Date date = new Date(0);
 
         try {
             Cursor result = myDB.rawQuery(query, null);
@@ -313,6 +314,21 @@ public class PermDBInstance implements DBInstance {
                 senderNum = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
                 msgRcv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
                 msgSnt = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+
+                Date checkDate;
+
+                for (int i = 1; i < numRows; i++){
+                    result.moveToNext();
+                    checkDate = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
+                    if (checkDate.after(date)){
+                        date = checkDate;
+                        senderNum = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
+                        msgRcv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
+                        msgSnt = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+                    }
+                }
+
+
                 Log.d(TAG, "ResponseLogRetrieved: "+ date + ", " + senderNum + ", " + msgSnt + "," + msgRcv);
 
                 result.close();

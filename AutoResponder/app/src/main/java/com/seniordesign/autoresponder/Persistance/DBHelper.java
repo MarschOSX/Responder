@@ -96,7 +96,7 @@ public class DBHelper extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         for(String table : TABLE_LIST){
-            db.execSQL("DROP IF TABLE EXISTS " + table);
+            db.execSQL("IF OBJECT_ID(\'" + table + "\', \'U\')IS NOT NULL DROP TABLE " + table);
         }
     }
 }
