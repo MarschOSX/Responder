@@ -58,15 +58,13 @@
                     android:layout_height="wrap_content"
                     android:text="General Reply"
                     android:id="@+id/generalReply_button"
-                    android:layout_column="6"
                     android:onClick="gotoGeneralResponse"/>
 
         <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Contacts"
-                    android:id="@+id/contacts_button"
-                    android:layout_column="6" />
+                    android:id="@+id/contacts_button" />
 
         <Button
                     android:layout_width="match_parent"
@@ -80,8 +78,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="Version 0.9"
-                    android:id="@+id/textView"
-                    android:layout_column="6" />
+                    android:id="@+id/textView" />
 
     </LinearLayout>
 
