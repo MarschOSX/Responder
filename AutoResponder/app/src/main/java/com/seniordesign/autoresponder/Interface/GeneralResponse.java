@@ -31,7 +31,7 @@ public class GeneralResponse extends AppCompatActivity {
     }*/
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_response);
         this.db = DBProvider.getInstance(false, getApplicationContext());
@@ -115,6 +115,9 @@ public class GeneralResponse extends AppCompatActivity {
         //Default is 20 and the RadioButton is set to this
         //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
         db.setDelay(responseDelay);
+    }
+    public int checkResponseDelay(){
+        return  responseDelay;
     }
 
 }

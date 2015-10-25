@@ -239,7 +239,6 @@ public class PermDBInstance implements DBInstance {
         }
         catch (Exception e){
             Log.e(TAG, "ERROR: " + getMethodName() + " failed");
-            myDB.endTransaction();
             throw e;
         }
         finally {
