@@ -67,7 +67,7 @@ public class EventHandler {
                     android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + message);
                     return 0;
                 } else {
-                    android.util.Log.v("EventHandler,", "Cannot send a response yet!");
+                    android.util.Log.v("EventHand ler,", "Cannot send a response yet!");
                     return -1;
                 }
             } else {
