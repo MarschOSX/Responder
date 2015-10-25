@@ -27,6 +27,7 @@ public class EventHandler {
         //get toggle off/on from DB and CHECK to see if you run!
         //db.getResponseToggle();
         //Check phoneNumber validity
+        android.util.Log.v("EventHandler,", "EventHandler is active!");
         if (phoneNumber == null || !phoneNumber.matches("[+][0-9]{11}")){
             android.util.Log.v("EventHandler,", "Invalid PhoneNumber Recieved");
             return -1;

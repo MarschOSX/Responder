@@ -26,6 +26,9 @@ public class GeneralResponse extends AppCompatActivity {
     EditText setDelayNum;
     int responseDelay = 20;
 
+    /*public GeneralResponse(DBInstance db) {
+        this.db = db;
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,7 @@ public class GeneralResponse extends AppCompatActivity {
                         String generalReply = setTextEdit.getText().toString();
                         Log.v("General Reply:", generalReply);
 
-                        if(generalReply == ""){//Its blank, get default hint
+                        if(generalReply == null || generalReply.matches("")){//Its blank, get default hint
                             generalReply = setTextEdit.getHint().toString();
                         }
                         //push generalReply to DB
