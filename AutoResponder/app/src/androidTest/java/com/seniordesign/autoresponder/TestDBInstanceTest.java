@@ -1,26 +1,28 @@
 package com.seniordesign.autoresponder;
 
 import android.test.AndroidTestCase;
+
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
+
 import java.sql.Date;
 
 /**
  * By MarschOSX on 10/24/2015
  */
 
-public class PermDBInstanceTest extends AndroidTestCase {
+public class TestDBInstanceTest extends AndroidTestCase {
     //Perm database
     private DBInstance database;
 
     public void testDBisNotNull()throws Exception {
-        database = DBProvider.getInstance(false, getContext());
+        database = DBProvider.getInstance(true, getContext());
         assertNotNull(database);
     }
 
     public void testDbSetsAndGetsIssues()throws Exception {
-        database = DBProvider.getInstance(false, getContext());
+        database = DBProvider.getInstance(true, getContext());
         String toSend = "HelloJUnit";
         database.setReplyAll(toSend);
         String fromDB = database.getReplyAll();
