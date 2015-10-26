@@ -21,6 +21,16 @@ public class Main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setToggleSwitch();
+    }
+
+    //checks DB for the current toggle on/off setting
+    private void setToggleSwitch(){
+        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+        boolean isActive = db.getResponseToggle();
+        Switch toggleButton = (Switch)findViewById(R.id.autoRespond_switch);
+        toggleButton.setChecked(isActive);
+        //Add other switches here when implemented....
     }
 
     @Override

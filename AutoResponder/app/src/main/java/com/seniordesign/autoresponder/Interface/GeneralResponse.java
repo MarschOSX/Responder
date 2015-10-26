@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.EditText;
 import android.view.View;
+import android.widget.TextView;
 
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
@@ -34,6 +35,8 @@ public class GeneralResponse extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_response);
+        setEditText();
+        setTimeRadioButton();
         this.db = DBProvider.getInstance(false, getApplicationContext());
 
         setTextButton = (Button)findViewById(R.id.setTextButton);
@@ -57,6 +60,35 @@ public class GeneralResponse extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void setEditText(){
+        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+        String replyAll = db.getReplyAll();
+        TextView generalResponse = (TextView) findViewById(R.id.generalResponse_text);
+        generalResponse.setHint(replyAll);
+    }
+
+    private void setTimeRadioButton(){
+        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+        RadioButton timeDelayRB;
+        Integer timeDelay = db.getDelay();
+        if(timeDelay == 5){
+            timeDelayRB = (RadioButton) findViewById(R.id.fiveMin_radioButton);
+            timeDelayRB.setChecked(true);
+        }else if(timeDelay == 20){
+            timeDelayRB = (RadioButton) findViewById(R.id.twentyMin_radioButton);
+            timeDelayRB.setChecked(true);
+        }else if(timeDelay == 60){
+            timeDelayRB = (RadioButton) findViewById(R.id.oneHour_radioButton);
+            timeDelayRB.setChecked(true);
+        }else{
+            timeDelayRB = (RadioButton) findViewById(R.id.custom_option);
+            timeDelayRB.setChecked(true);
+            EditText customMinText = (EditText) findViewById(R.id.customMin);
+            customMinText.setHint(timeDelay.toString());
+        }
+
     }
 
     @Override

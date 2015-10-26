@@ -60,7 +60,7 @@
             android:text="@string/twentyMinutes_option"
             android:id="@+id/twentyMin_radioButton"
             android:layout_gravity="center_horizontal"
-            android:checked="true"
+            android:checked="false"
             android:onClick="radioButtonDelaySet"/>
 
         <RadioButton

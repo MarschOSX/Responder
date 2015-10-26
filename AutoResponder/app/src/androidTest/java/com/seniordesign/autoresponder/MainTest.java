@@ -25,6 +25,7 @@ public class MainTest extends ActivityInstrumentationTestCase2<Main> {
         Main activity = getActivity();
         final Switch onOffToggle = (Switch) activity.findViewById(R.id.autoRespond_switch);
         assertNotNull(onOffToggle);
+        onOffToggle.setChecked(true);
         activity.switchChecker(onOffToggle);
         assertTrue(onOffToggle.isChecked());
         onOffToggle.setChecked(false);
@@ -37,7 +38,9 @@ public class MainTest extends ActivityInstrumentationTestCase2<Main> {
         Main activity = getActivity();
         final View genRespButton = activity.findViewById(R.id.generalReply_button);
         //activity.gotoGeneralResponse(genRespButton);
-        //this causes to go to General Response activity, where it does nothing
+        /**
+        this causes to go to General Response activity, where it does nothing and waits
+         */
 
     }
 
