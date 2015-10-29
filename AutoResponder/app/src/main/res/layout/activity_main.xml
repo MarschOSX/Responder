@@ -71,6 +71,7 @@
                     android:layout_height="wrap_content"
                     android:text="Settings"
                     android:id="@+id/settings_button"
+                    android:onClick="gotoSettings"
                     android:layout_column="6" />
 
         <TextView
