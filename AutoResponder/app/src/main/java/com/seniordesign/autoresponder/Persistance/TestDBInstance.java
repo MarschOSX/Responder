@@ -3,6 +3,7 @@ package com.seniordesign.autoresponder.Persistance;
 import android.nfc.Tag;
 import android.util.Log;
 
+import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
@@ -80,25 +81,25 @@ public class TestDBInstance implements DBInstance {
         this.responseLog.add(newLog);
     }
 
-    public ResponseLog getFirstEntry(){
+    public ResponseLog getFirstResponse(){
         return this.responseLog.get(0);
     }
 
-    public ResponseLog getLastEntry(){
+    public ResponseLog getLastResponse(){
         return this.responseLog.get(responseLog.size()-1);
     }
 
-    public ResponseLog getEntry(int index){
+    public ResponseLog getResponse(int index){
         if (index < responseLog.size() && index >= 0){
             return this.responseLog.get(index);
         }
         else{
-            Log.e(TAG, "ERROR: getEntry(): attempted to access index out of bounds: " + index);
+            Log.e(TAG, "ERROR: getResponse(): attempted to access index out of bounds: " + index);
             throw new ArrayIndexOutOfBoundsException();
         }
     }
 
-    public ResponseLog getLastEntryByNum(String phoneNum){
+    public ResponseLog getLastResponseByNum(String phoneNum){
         for (int i = this.responseLog.size() - 1; i >= 0; i--){
             if (responseLog.get(i).getSenderNumber().compareTo(phoneNum) == 0){
                 return responseLog.get(i);
@@ -109,12 +110,12 @@ public class TestDBInstance implements DBInstance {
     }
 
     //TODO: MAKE SEARCH FOR BEGINNING AND END BINARY SEARCH FOR BETTER RUNTIME, currently O(x)
-    public ArrayList<ResponseLog> getEntryByDateRange(Date start, Date end){
+    public ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end){
         ArrayList<ResponseLog> range = new ArrayList<>();
 
         //ERROR CHECKING
         if (start.after(end)){
-            Log.e(TAG, "ERROR: getEntryByDateRange(): start date comes after end date");
+            Log.e(TAG, "ERROR: getResponseByDateRange(): start date comes after end date");
             throw new InputMismatchException();
         }
 
@@ -126,17 +127,17 @@ public class TestDBInstance implements DBInstance {
         return range;
     }
 
-    public ArrayList<ResponseLog> getEntryRange(int start, int end){
+    public ArrayList<ResponseLog> getResponseRange(int start, int end){
         ArrayList<ResponseLog> range = new ArrayList<>();
 
         //ERROR CHECKING
         if (start > end){
-            Log.e(TAG, "ERROR: getEntryRange(): start index came after end index");
+            Log.e(TAG, "ERROR: getResponseRange(): start index came after end index");
             throw new InputMismatchException();
         }
         //ERROR CHECKING
         if (start < 0 || end < 0 || start >= this.responseLog.size() || end >= this.responseLog.size()){
-            Log.e(TAG, "ERROR: getEntryRange(): attempted to access index out of bounds: " + start + " " + end);
+            Log.e(TAG, "ERROR: getResponseRange(): attempted to access index out of bounds: " + start + " " + end);
             throw new ArrayIndexOutOfBoundsException();
         }
 
@@ -149,5 +150,29 @@ public class TestDBInstance implements DBInstance {
 
     private static String getMethodName() {
         return Thread.currentThread().getStackTrace()[2].getMethodName();
+    }
+
+    /////////////////////////////////
+    //DEVELOPER LOG TABLE FUNCTIONS//
+    /////////////////////////////////
+
+    //TODO IMPLEMENT
+    public void addDevLog(Date timeStamp, String entry){
+
+    }
+
+    //TODO IMPLEMENT
+    public DeveloperLog getDevLog(int index){
+        return null;
+    }
+
+    //TODO IMPLEMENT
+    public ArrayList<DeveloperLog> getDevLogRange(int first, int last){
+        return null;
+    }
+
+    //TODO IMPLEMENT
+    public ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end){
+        return null;
     }
 }

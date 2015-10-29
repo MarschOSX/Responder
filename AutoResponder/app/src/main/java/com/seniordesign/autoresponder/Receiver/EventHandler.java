@@ -1,16 +1,12 @@
 package com.seniordesign.autoresponder.Receiver;
 
 
-import android.content.Context;
 import android.telephony.SmsManager;
 
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
-import com.seniordesign.autoresponder.Persistance.DBProvider;
 
 import java.sql.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by MarschOSX on 10/8/2015.
@@ -35,7 +31,7 @@ public class EventHandler {
 
         if (db.getResponseToggle()) {
             //get lastRecieved from database
-            ResponseLog updateLog = db.getLastEntryByNum(phoneNumber);
+            ResponseLog updateLog = db.getLastResponseByNum(phoneNumber);
             if (updateLog == null) {
                 android.util.Log.v("EventHandler,", "Invalid, UpdateLog is NULL");
                 return -1;

@@ -65,7 +65,7 @@ public class PermDBInstanceTest extends AndroidTestCase {
         ResponseLog responseLog = new ResponseLog("JUnitA","JUnitB",phoneNum, new Date(millis));
 
         database.addToResponseLog(responseLog);
-        ResponseLog responseLogFromDb = database.getLastEntryByNum(phoneNum);
+        ResponseLog responseLogFromDb = database.getLastResponseByNum(phoneNum);
         assertNotNull(responseLogFromDb);
 
         assertTrue(responseLog.getMessageReceived().matches(responseLogFromDb.getMessageReceived()));

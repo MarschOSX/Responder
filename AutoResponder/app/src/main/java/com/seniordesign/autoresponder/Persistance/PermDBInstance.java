@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
@@ -243,7 +244,7 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
-    public ResponseLog getFirstEntry(){
+    public ResponseLog getFirstResponse(){
         //TODO IMPLEMENT FOR 50%
 
         final String query =
@@ -255,7 +256,7 @@ public class PermDBInstance implements DBInstance {
     }
 
 
-    public ResponseLog getLastEntry(){
+    public ResponseLog getLastResponse(){
         //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
@@ -265,7 +266,7 @@ public class PermDBInstance implements DBInstance {
         return null;
     }
 
-    public ResponseLog getEntry(int index){
+    public ResponseLog getResponse(int index){
         //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
@@ -275,7 +276,7 @@ public class PermDBInstance implements DBInstance {
     }
 
     //TODO MAKE MORE EFFICIENT
-    public ResponseLog getLastEntryByNum(String phoneNum){
+    public ResponseLog getLastResponseByNum(String phoneNum){
         final String query_p2 =
                 "SELECT * " +
                         " FROM " + DBHelper.TABLE_RESPONSELOG +
@@ -341,7 +342,7 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
-    public ArrayList<ResponseLog> getEntryByDateRange(Date start, Date end){
+    public ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end){
         //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
@@ -350,7 +351,7 @@ public class PermDBInstance implements DBInstance {
         return null;
     }
 
-    public ArrayList<ResponseLog> getEntryRange(int start, int end){
+    public ArrayList<ResponseLog> getResponseRange(int start, int end){
         //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
@@ -361,5 +362,29 @@ public class PermDBInstance implements DBInstance {
 
     private static String getMethodName() {
         return Thread.currentThread().getStackTrace()[3].getMethodName();
+    }
+
+    /////////////////////////////////
+    //DEVELOPER LOG TABLE FUNCTIONS//
+    /////////////////////////////////
+
+    //TODO IMPLEMENT
+    public void addDevLog(Date timeStamp, String entry){
+
+    }
+
+    //TODO IMPLEMENT
+    public DeveloperLog getDevLog(int index){
+        return null;
+    }
+
+    //TODO IMPLEMENT
+    public ArrayList<DeveloperLog> getDevLogRange(int first, int last){
+        return null;
+    }
+
+    //TODO IMPLEMENT
+    public ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end){
+        return null;
     }
 }

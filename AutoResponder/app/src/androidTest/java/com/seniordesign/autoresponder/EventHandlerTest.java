@@ -53,22 +53,22 @@ public class EventHandlerTest extends InstrumentationTestCase {
             }
 
             @Override
-            public ResponseLog getFirstEntry() {
+            public ResponseLog getFirstResponse() {
                 return null;
             }
 
             @Override
-            public ResponseLog getLastEntry() {
+            public ResponseLog getLastResponse() {
                 return null;
             }
 
             @Override
-            public ResponseLog getEntry(int index) {
+            public ResponseLog getResponse(int index) {
                 return null;
             }
 
             @Override
-            public ResponseLog getLastEntryByNum(String phoneNum) {
+            public ResponseLog getLastResponseByNum(String phoneNum) {
                 Date testDate = new Date(0);
                 ResponseLog updateLog = new ResponseLog("JUNIT MESSAGE SENT",
                         "JUNIT MESSAGE RECIEVED", "+18568327320", testDate);
@@ -76,12 +76,12 @@ public class EventHandlerTest extends InstrumentationTestCase {
             }
 
             @Override
-            public ArrayList<ResponseLog> getEntryByDateRange(Date start, Date end) {
+            public ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end) {
                 return null;
             }
 
             @Override
-            public ArrayList<ResponseLog> getEntryRange(int start, int end) {
+            public ArrayList<ResponseLog> getResponseRange(int start, int end) {
                 return null;
             }
         };

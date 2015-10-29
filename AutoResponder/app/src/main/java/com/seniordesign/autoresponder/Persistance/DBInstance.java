@@ -1,5 +1,6 @@
 package com.seniordesign.autoresponder.Persistance;
 
+import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 
 import java.sql.Date;
@@ -30,15 +31,34 @@ public interface DBInstance {
     ////////////////////////////////
     void addToResponseLog(ResponseLog newLog);
 
-    ResponseLog getFirstEntry();
+    ResponseLog getFirstResponse();
 
-    ResponseLog getLastEntry();
+    ResponseLog getLastResponse();
 
-    ResponseLog getEntry(int index);
+    ResponseLog getResponse(int index);
 
-    ResponseLog getLastEntryByNum(String phoneNum);
+    ResponseLog getLastResponseByNum(String phoneNum);
 
-    ArrayList<ResponseLog> getEntryByDateRange(Date start, Date end);
+    ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end);
 
-    ArrayList<ResponseLog> getEntryRange(int start, int end);
+    ArrayList<ResponseLog> getResponseRange(int start, int end);
+
+    ///////////////////////////
+    //CONTACT TABLE FUNCTIONS//
+    ///////////////////////////
+
+    /////////////////////////
+    //GROUP TABLE FUNCTIONS//
+    /////////////////////////
+
+    /////////////////////////////////
+    //DEVELOPER LOG TABLE FUNCTIONS//
+    /////////////////////////////////
+    void addDevLog(Date timeStamp, String entry);
+
+    DeveloperLog getDevLog(int index);
+
+    ArrayList<DeveloperLog> getDevLogRange(int first, int last);
+
+    ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end);
 }
