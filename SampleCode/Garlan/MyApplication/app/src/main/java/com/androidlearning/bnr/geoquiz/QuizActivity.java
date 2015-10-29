@@ -1,5 +1,6 @@
 package com.androidlearning.bnr.geoquiz;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
+    private static final int REQUEST_CODE_CHEAT = 0;
+    private boolean mIsCheater;
 
 
     private Question[] mQuestionBank = new Question[] {
@@ -67,6 +70,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -100,7 +104,8 @@ public class QuizActivity extends AppCompatActivity {
                 //Intent i = new Intent(QuizActivity.this, CheatActivity.class);
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent i = CheatActivity.newIntent(QuizActivity.this, answerIsTrue);
-                startActivity(i);
+                //startActivity(i);
+                startActivityForResult(i, REQUEST_CODE_CHEAT); //used instead of startActivity() to hear back from child activity
             }
         });
 
@@ -165,6 +170,20 @@ public class QuizActivity extends AppCompatActivity {
     public void onDestroy(){
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (requestCode != Activity.RESULT_OK){
+            return;
+        }
+
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null){
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShow(data);
+        }
     }
 
     private void updateQuestion(){
