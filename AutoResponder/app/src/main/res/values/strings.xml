@@ -10,5 +10,6 @@
     <string name="fiveMinutes_option">5 Minutes</string>
     <string name="generalResponse_title">General Response:</string>
     <string name="timingDelay_title">Timing Delay:</string>
-    <string name="title_activity_contacts_list">Contacts_list</string>
+    <string name="title_activity_contacts_list">Contacts List</string>
+    <string name="title_activity_single_contact">Single Contact</string>
 </resources>

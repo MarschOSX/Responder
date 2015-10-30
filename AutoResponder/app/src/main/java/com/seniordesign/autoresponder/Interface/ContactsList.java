@@ -1,18 +1,45 @@
 package com.seniordesign.autoresponder.Interface;
 
+import android.app.ListActivity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.seniordesign.autoresponder.R;
 
-public class Contacts_list extends AppCompatActivity {
+public class ContactsList extends ListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contacts_list);
+        //setContentView(R.layout.activity_contacts_list);
+
+
+        // storing string resources into Array
+
+        String[] testList = getResources().getStringArray(R.array.test_list);
+
+        // Binding resources Array to ListAdapter
+        this.setListAdapter(new ArrayAdapter<>(this, R.layout.activity_contacts_list, R.id.contactList, testList));
+
+        ListView contactList = getListView();
+        contactList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                        startActivity(intent);
+
+                    }
+                });
+
+
     }
 
     @Override
@@ -36,4 +63,6 @@ public class Contacts_list extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

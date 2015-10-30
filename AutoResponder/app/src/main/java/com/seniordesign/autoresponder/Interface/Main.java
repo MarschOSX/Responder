@@ -71,7 +71,7 @@ public class Main extends AppCompatActivity {
 
     public void gotoContactsList(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, Contacts_list.class);
+        Intent intent = new Intent(this, ContactsList.class);
         startActivity(intent);
     }
 
