@@ -64,7 +64,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Contacts"
-                    android:id="@+id/contacts_button" />
+                    android:id="@+id/contacts_button"
+                    android:onClick="gotoContactsList"/>
 
         <Button
                     android:layout_width="match_parent"

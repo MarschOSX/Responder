@@ -69,6 +69,12 @@ public class Main extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void gotoContactsList(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, Contacts_list.class);
+        startActivity(intent);
+    }
+
     // Called when the user selects a time delay radio button
     public void switchChecker(View view) {
         // Is the button now checked?
