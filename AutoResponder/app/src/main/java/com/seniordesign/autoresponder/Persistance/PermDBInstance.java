@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
@@ -361,6 +363,100 @@ public class PermDBInstance implements DBInstance {
 
     private static String getMethodName() {
         return Thread.currentThread().getStackTrace()[3].getMethodName();
+    }
+
+    ///////////////////////////
+    //CONTACT TABLE FUNCTIONS//
+    ///////////////////////////
+
+    //TODO IMPLEMENT
+    public int addContact(Contact newContact){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int removeContact(String phoneNum){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setContactName(String phoneNum, String newName){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setContactNumber(String oldPhoneNum, String newPhoneNum){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setContactLocationPermission(String phoneNum, boolean permission){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setContactActivityPermission(String phoneNum, boolean permission){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setContactGroup(String phoneNum, String groupName){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public Contact getContactInfo(String phoneNum){
+        return  null;
+    }
+
+    //TODO IMPLEMENT
+    //returns sorted A - Z by name
+    public ArrayList<Contact> getContactList(){
+        return  null;
+    }
+
+    //TODO IMPLEMENT
+    public ArrayList<Contact> getGroup(String groupName){
+        return  null;
+    }
+
+    /////////////////////////
+    //GROUP TABLE FUNCTIONS//
+    /////////////////////////
+
+    //TODO IMPLEMENT
+    public int addGroup(Group newGroup){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int removeGroup(String groupName){
+        return  -1;
+    }
+
+    public int changeGroupName(String oldName, String newName){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setGroupLocationPermission(String groupName, boolean permission){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setGroupActivityPermission(String groupName, boolean permission){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public Group getGroupInfo(String groupName){
+        return  null;
+    }
+
+    //TODO IMPLEMENT
+    //returns sorted A-Z by group name
+    public ArrayList<Group> getGroupList(){
+        return  null;
     }
 
     /////////////////////////////////

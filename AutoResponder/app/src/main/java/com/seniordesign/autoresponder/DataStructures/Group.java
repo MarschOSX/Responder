@@ -6,14 +6,15 @@ package com.seniordesign.autoresponder.DataStructures;
 public class Group {
     private String group_name;
     private String response;
-    private boolean location_permission;
-    private boolean activity_permission;
+    private boolean locationPermission;
+    private boolean activityPermission;
+    public static final String DEFAULT_GROUP = "default";
 
-    public Group(String group_name, String response, boolean location_permission, boolean activity_permission) {
+    public Group(String group_name, String response, boolean locationPermission, boolean activityPermission) {
         this.group_name = group_name;
         this.response = response;
-        this.location_permission = location_permission;
-        this.activity_permission = activity_permission;
+        this.locationPermission = locationPermission;
+        this.activityPermission = activityPermission;
     }
 
     public String getResponse() {
@@ -24,20 +25,20 @@ public class Group {
         this.response = response;
     }
 
-    public boolean isLocation_permission() {
-        return location_permission;
+    public boolean isLocationPermission() {
+        return locationPermission;
     }
 
-    public void setLocation_permission(boolean location_permission) {
-        this.location_permission = location_permission;
+    public void setLocationPermission(boolean locationPermission) {
+        this.locationPermission = locationPermission;
     }
 
-    public boolean isActivity_permission() {
-        return activity_permission;
+    public boolean isActivityPermission() {
+        return activityPermission;
     }
 
-    public void setActivity_permission(boolean activity_permission) {
-        this.activity_permission = activity_permission;
+    public void setActivityPermission(boolean activityPermission) {
+        this.activityPermission = activityPermission;
     }
 
     public String getGroupName() {

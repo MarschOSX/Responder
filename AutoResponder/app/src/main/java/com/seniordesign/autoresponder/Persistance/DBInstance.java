@@ -1,5 +1,6 @@
 package com.seniordesign.autoresponder.Persistance;
 
+import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
@@ -48,29 +49,50 @@ public interface DBInstance {
     //CONTACT TABLE FUNCTIONS//
     ///////////////////////////
 
-    //void updateContactName(String phoneNum);
+    int addContact(Contact newContact);
 
-    //void updateContactNumber(String name);
+    int removeContact(String phoneNum);
+
+    int setContactName(String phoneNum, String newName);
+
+    int setContactNumber(String oldPhoneNum, String newPhoneNum);
+
+    int setContactLocationPermission(String phoneNum, boolean permission);
+
+    int setContactActivityPermission(String phoneNum, boolean permission);
+
+    int setContactGroup(String phoneNum, String groupName);
+
+    Contact getContactInfo(String phoneNum);
+
+    //returns sorted A - Z by name
+    ArrayList<Contact> getContactList();
+
+    ArrayList<Contact> getGroup(String groupName);
 
     /////////////////////////
     //GROUP TABLE FUNCTIONS//
     /////////////////////////
 
-    //void addGroup(Group newGroup);
+    int addGroup(Group newGroup);
 
-    //void removeGroup(String groupName);
+    int removeGroup(String groupName);
 
-    //Group getGroupInfo(String groupName);
+    int changeGroupName(String oldName, String newName);
 
-    //void changeGroupName(String oldName, String newName);
+    int setGroupLocationPermission(String groupName, boolean permission);
 
-    //void setGroupLocationPermission(String groupName, boolean permission);
+    int setGroupActivityPermission(String groupName, boolean permission);
 
-    //void setGroupActivityPermission(String groupName, boolean permission);
+    Group getGroupInfo(String groupName);
+
+    //returns sorted A-Z by group name
+    ArrayList<Group> getGroupList();
 
     /////////////////////////////////
     //DEVELOPER LOG TABLE FUNCTIONS//
     /////////////////////////////////
+
     void addDevLog(Date timeStamp, String entry);
 
     DeveloperLog getDevLog(int index);
