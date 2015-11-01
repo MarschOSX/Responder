@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:text="+Add New Contact"
         android:id="@+id/button"
+        android:onClick="doLaunchContactPicker"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

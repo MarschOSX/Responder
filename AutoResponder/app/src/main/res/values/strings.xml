@@ -12,4 +12,5 @@
     <string name="timingDelay_title">Timing Delay:</string>
     <string name="title_activity_contacts_list">Contacts List</string>
     <string name="title_activity_single_contact">Single Contact</string>
+    <string name="title_activity_add_contact">Add Contact From Address Book</string>
 </resources>
