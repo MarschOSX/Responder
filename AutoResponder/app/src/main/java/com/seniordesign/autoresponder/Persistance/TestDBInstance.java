@@ -22,6 +22,7 @@ public class TestDBInstance implements DBInstance {
     private ArrayList<ResponseLog> responseLog;
     private ArrayList<Contact> contactTable;
     private ArrayList<Group> groupTable;
+    private ArrayList<DeveloperLog> devLogTable;
 
     public TestDBInstance(){
         Log.d(TAG, "initializing mock database");
@@ -36,7 +37,9 @@ public class TestDBInstance implements DBInstance {
 
         //create mock group table with default group
         this.groupTable = new ArrayList<>();
-        groupTable.add(new Group(Group.DEFAULT_GROUP, Setting.REPLY_ALL_DEF, false, false));
+        this.groupTable.add(new Group(Group.DEFAULT_GROUP, Setting.REPLY_ALL_DEF, false, false));
+
+        this.devLogTable = new ArrayList<>();
     }
 
     ///////////////////////////
@@ -425,7 +428,6 @@ public class TestDBInstance implements DBInstance {
     }
 
     /*returns sorted A - Z by name
-  * @param ()
   * @return contact if found, null if not found or there was an error*/
     public ArrayList<Group> getGroupList(){
         return  this.groupTable;
@@ -435,23 +437,61 @@ public class TestDBInstance implements DBInstance {
     //DEVELOPER LOG TABLE FUNCTIONS//
     /////////////////////////////////
 
-    //TODO IMPLEMENT
+    /*adds new entry to the developer log
+  * @param Date timeStamp, String entry*/
     public void addDevLog(Date timeStamp, String entry){
-
+        this.devLogTable.add(new DeveloperLog(timeStamp, entry));
     }
 
-    //TODO IMPLEMENT
+    /*returns log at that index
+   * @param int index
+   * @return log if found, null if not found or there was an error*/
     public DeveloperLog getDevLog(int index){
-        return null;
+        if (index < this.devLogTable.size()) return this.devLogTable.get(index);
+        else return null;
     }
 
-    //TODO IMPLEMENT
+    /*returns all logs between first and last index
+  * @param int first, int last
+  * @return log range if found, null if not found or there was an error*/
     public ArrayList<DeveloperLog> getDevLogRange(int first, int last){
-        return null;
+        ArrayList<DeveloperLog> range = new ArrayList<>();
+
+        //ERROR CHECKING
+        if (first > last){
+            Log.e(TAG, "ERROR: getResponseRange(): start index came after end index");
+            return null;
+        }
+        //ERROR CHECKING
+        if (first < 0 || last < 0 || first >= this.devLogTable.size() || last >= this.devLogTable.size()){
+            Log.e(TAG, "ERROR: getResponseRange(): attempted to access index out of bounds: " + first + " " + last);
+            return null;
+        }
+
+        for(int i = first; i <= last; i++){
+            range.add(this.devLogTable.get(i));
+        }
+
+        return range;
     }
 
-    //TODO IMPLEMENT
+    /*returns all logs between first and last date
+  * @param Date start, Date end
+  * @return log range if found, null if not found or there was an error*/
     public ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end){
-        return null;
+        ArrayList<DeveloperLog> range = new ArrayList<>();
+
+        //ERROR CHECKING
+        if (start.after(end)){
+            Log.e(TAG, "ERROR: getResponseByDateRange(): start date comes after end date");
+            return null;
+        }
+
+        for(int i = 0; i < this.devLogTable.size(); i++){
+            if (this.devLogTable.get(i).getTimeStamp().after(start) && this.devLogTable.get(i).getTimeStamp().before(end)){
+                range.add(this.devLogTable.get(i));
+            }
+        }
+        return range;
     }
 }
