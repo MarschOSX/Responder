@@ -1,9 +1,10 @@
 package com.seniordesign.autoresponder.Persistance;
 
-import android.nfc.Tag;
 import android.util.Log;
 
+import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
@@ -11,7 +12,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
-import java.util.Set;
 
 /**
  * Created by Garlan on 10/5/2015.
@@ -20,6 +20,8 @@ public class TestDBInstance implements DBInstance {
     private static final String TAG = "TestDBInstance";
     private HashMap<String,String> settings;
     private ArrayList<ResponseLog> responseLog;
+    private ArrayList<Contact> contactTable;
+    private ArrayList<Group> groupTable;
 
     public TestDBInstance(){
         Log.d(TAG, "initializing mock database");
@@ -28,6 +30,13 @@ public class TestDBInstance implements DBInstance {
         for (String[] defaultSetting : Setting.DEFAULT_SETTINGS){
             settings.put(defaultSetting[0], defaultSetting[1]);
         }
+
+        //create moc contact table
+        this.contactTable = new ArrayList<>();
+
+        //create mock group table with default group
+        this.groupTable = new ArrayList<>();
+        groupTable.add(new Group(Group.DEFAULT_GROUP, Setting.REPLY_ALL_DEF, false, false));
     }
 
     ///////////////////////////
@@ -148,8 +157,208 @@ public class TestDBInstance implements DBInstance {
         return range;
     }
 
-    private static String getMethodName() {
-        return Thread.currentThread().getStackTrace()[2].getMethodName();
+    ///////////////////////////
+    //CONTACT TABLE FUNCTIONS//
+    ///////////////////////////
+
+    /*adds a new contact
+    * @param Contact newContact
+    * @return # 0 for success, negative number for error code*/
+    public int addContact(Contact newContact){
+        if (this.contactTable.size() > 0){
+            for(int i = 0; i < this.contactTable.size(); i++){
+                if (this.contactTable.get(i).getName().compareTo(newContact.getName()) < 0 ){
+                    this.contactTable.add(i, newContact);
+                    return 0;
+                }
+            }
+
+            //in case last name was the same
+            this.contactTable.add(newContact);
+        }
+        else {
+            this.contactTable.add(newContact);
+        }
+        return 0;
+    }
+
+    /*removes all contacts with that phone number
+    * @param String phoneNumber
+    * @return # of contacts removed as int >= 0, or error code as int < 0*/
+    public int removeContact(String phoneNum){
+        int count = 0;
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
+                this.contactTable.remove(i);
+                count++;
+            }
+        }
+
+        //no contacts found to remove
+        return count;
+    }
+
+     /*changes a contacts name
+    * @param String phoneNumber, String newName
+    * @return 0 for success, or error code as int < 0*/
+    public int setContactName(String phoneNum, String newName){
+
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
+                this.contactTable.get(i).setName(newName);
+                return 0;
+            }
+        }
+
+        //no contact found to modify
+        return -1;
+    }
+
+     /*changes a contacts phoneNumber
+    * @param String oldPhoneNumber, String newPhoneNum
+    * @return 0 for success, or error code as int < 0*/
+    public int setContactNumber(String oldPhoneNum, String newPhoneNum){
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getPhoneNumber().compareTo(oldPhoneNum) == 0){
+                this.contactTable.get(i).setPhoneNumber(newPhoneNum);
+                return 0;
+            }
+        }
+
+        //no contact found to modify
+        return -1;
+    }
+
+    /*changes a contacts locationPermission
+   * @param String phoneNum, boolean permission
+   * @return 0 for success, or error code as int < 0*/
+    public int setContactLocationPermission(String phoneNum, boolean permission){
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
+                this.contactTable.get(i).setLocationPermission(permission);
+                return 0;
+            }
+        }
+
+        //no contact found to modify
+        return -1;
+    }
+
+
+     /*changes a contacts activityPermission
+   * @param String phoneNum, boolean permission
+   * @return 0 for success, or error code as int < 0*/
+    public int setContactActivityPermission(String phoneNum, boolean permission){
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
+                this.contactTable.get(i).setActivityPermission(permission);
+                return 0;
+            }
+        }
+
+        //no contact found to modify
+        return -1;
+    }
+
+
+     /*changes a contact's group name
+   * @param String phoneNum, String groupName
+   * @return 0 for success, or error code as int < 0*/
+    public int setContactGroup(String phoneNum, String groupName){
+        //check to make sure group name exists
+        boolean groupExists = false;
+        for (int i = 0; i < this.groupTable.size(); i++){
+            if (this.groupTable.get(i).getGroupName().compareTo(groupName) == 0){
+                groupExists = true;
+                break;
+            }
+        }
+
+        if(groupExists){
+            for (int i = 0; i < this.contactTable.size(); i++){
+                if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
+                    this.contactTable.get(i).setGroupName(groupName);
+                    return 0;
+                }
+            }
+
+            return -1; //no contact found to modify
+        }
+        else return -2; //group does not exist
+    }
+
+    /*use to get contact info for a phonenumber
+   * @param String phoneNum
+   * @return contact if found, null if not found or there was an error*/
+    public Contact getContactInfo(String phoneNum){
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
+                return this.contactTable.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    /*returns sorted A - Z by name
+   * @param String phoneNum
+   * @return contact if found, null if not found or there was an error*/
+    public ArrayList<Contact> getContactList(){
+        return  contactTable;
+    }
+
+    /*returns list of contact 1 group sorted A - Z by name
+   * @param String phoneNum
+   * @return contact if found, null if not found or there was an error*/
+    public ArrayList<Contact> getGroup(String groupName){
+        ArrayList<Contact> group = new ArrayList<>();
+
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getGroupName().compareTo(groupName) == 0){
+                group.add(this.contactTable.get(i));
+            }
+        }
+
+        return group;
+    }
+
+    /////////////////////////
+    //GROUP TABLE FUNCTIONS//
+    /////////////////////////
+
+    //TODO IMPLEMENT
+    public int addGroup(Group newGroup){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int removeGroup(String groupName){
+        return  -1;
+    }
+
+    public int changeGroupName(String oldName, String newName){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setGroupLocationPermission(String groupName, boolean permission){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public int setGroupActivityPermission(String groupName, boolean permission){
+        return  -1;
+    }
+
+    //TODO IMPLEMENT
+    public Group getGroupInfo(String groupName){
+        return  null;
+    }
+
+    //TODO IMPLEMENT
+    //returns sorted A-Z by group name
+    public ArrayList<Group> getGroupList(){
+        return  null;
     }
 
     /////////////////////////////////
