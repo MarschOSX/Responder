@@ -2,35 +2,37 @@ package com.seniordesign.autoresponder.Interface;
 
 import android.app.ListActivity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.R;
 
-public class ContactsList extends ListActivity {
+public class ContactsList extends AppCompatActivity {
+
+    private DBInstance db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_contacts_list);
-
-
+        setContentView(R.layout.activity_contacts_list);
         // storing string resources into Array
+        /*TODO generate contacts name list from DB instead of this test_list
+        * probably need a for loopto get the name from each contact object, and
+        * pass this into the String[] array below--->
+        */
+        String[] contactsNames = getResources().getStringArray(R.array.test_list);
 
-        String[] testList = getResources().getStringArray(R.array.test_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactsNames);
+        ListView contactList = (ListView)findViewById(R.id.contactList);
+        contactList.setAdapter(adapter);
 
-        // Binding resources Array to ListAdapter
-        this.setListAdapter(new ArrayAdapter<>(this, R.layout.activity_contacts_list, R.id.contactList, testList));
-
-        ListView contactList = getListView();
         contactList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Intent intent = new Intent(getApplicationContext(), SingleContact.class);
