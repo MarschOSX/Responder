@@ -85,8 +85,6 @@ public class ContactsList extends AppCompatActivity {
 
     public void doLaunchContactPicker(View view) {
         // Do something in response to button
-        //Intent intent = new Intent(this, AddContact.class);
-       // startActivity(intent);
 
         Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
                 Contacts.CONTENT_URI);
