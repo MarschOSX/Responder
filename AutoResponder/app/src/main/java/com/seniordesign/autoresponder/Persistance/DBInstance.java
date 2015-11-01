@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder.Persistance;
 
 import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 
 import java.sql.Date;
@@ -47,9 +48,25 @@ public interface DBInstance {
     //CONTACT TABLE FUNCTIONS//
     ///////////////////////////
 
+    //void updateContactName(String phoneNum);
+
+    //void updateContactNumber(String name);
+
     /////////////////////////
     //GROUP TABLE FUNCTIONS//
     /////////////////////////
+
+    //void addGroup(Group newGroup);
+
+    //void removeGroup(String groupName);
+
+    //Group getGroupInfo(String groupName);
+
+    //void changeGroupName(String oldName, String newName);
+
+    //void setGroupLocationPermission(String groupName, boolean permission);
+
+    //void setGroupActivityPermission(String groupName, boolean permission);
 
     /////////////////////////////////
     //DEVELOPER LOG TABLE FUNCTIONS//
