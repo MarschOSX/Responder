@@ -301,7 +301,7 @@ public class TestDBInstance implements DBInstance {
     }
 
     /*returns sorted A - Z by name
-   * @param String phoneNum
+   * @param ()
    * @return contact if found, null if not found or there was an error*/
     public ArrayList<Contact> getContactList(){
         return  contactTable;
@@ -326,39 +326,109 @@ public class TestDBInstance implements DBInstance {
     //GROUP TABLE FUNCTIONS//
     /////////////////////////
 
-    //TODO IMPLEMENT
+    /*adds a new group
+    * @param Group newGroup
+    * @return # 0 for success, negative number for error code*/
     public int addGroup(Group newGroup){
-        return  -1;
+        if (this.groupTable.size() > 0){
+            for(int i = 0; i < this.groupTable.size(); i++){
+                if (this.groupTable.get(i).getGroupName().compareTo(newGroup.getGroupName()) == 0 ){
+                    return -1; //group already exists
+                }
+                else if (this.groupTable.get(i).getGroupName().compareTo(newGroup.getGroupName()) < 0 ){
+                    this.groupTable.add(i, newGroup);
+                    return 0;
+                }
+            }
+
+            //in case last name was the same
+            this.groupTable.add(newGroup);
+        }
+        else {
+            this.groupTable.add(newGroup);
+        }
+        return 0;
     }
 
-    //TODO IMPLEMENT
+    /*removes all groups with that name
+   * @param String phoneNumber
+   * @return # of contacts removed as int >= 0, or error code as int < 0*/
     public int removeGroup(String groupName){
-        return  -1;
+        int count = 0;
+        for (int i = 0; i < this.groupTable.size(); i++){
+            if (this.groupTable.get(i).getGroupName().compareTo(groupName) == 0){
+                this.groupTable.remove(i);
+                count++;
+            }
+        }
+
+        //no groups found to remove
+        return count;
     }
 
+    /*changes a group's name
+    * @param String oldName, String newName
+    * @return 0 for success, or error code as int < 0*/
     public int changeGroupName(String oldName, String newName){
-        return  -1;
+        for (int i = 0; i < this.groupTable.size(); i++){
+            if (this.groupTable.get(i).getGroupName().compareTo(oldName) == 0){
+                this.groupTable.get(i).setGroupName(newName);
+                return 0;
+            }
+        }
+
+        //no group found to modify
+        return -1;
     }
 
-    //TODO IMPLEMENT
+    /*changes a group's location permission
+    * @param String String groupName, boolean permission
+    * @return 0 for success, or error code as int < 0*/
     public int setGroupLocationPermission(String groupName, boolean permission){
-        return  -1;
+        for (int i = 0; i < this.groupTable.size(); i++){
+            if (this.groupTable.get(i).getGroupName().compareTo(groupName) == 0){
+                this.groupTable.get(i).setLocationPermission(permission);
+                return 0;
+            }
+        }
+
+        //no group found to modify
+        return -1;
     }
 
-    //TODO IMPLEMENT
+    /*changes a group's activity permission
+    * @param String String groupName, boolean permission
+    * @return 0 for success, or error code as int < 0*/
     public int setGroupActivityPermission(String groupName, boolean permission){
-        return  -1;
+        for (int i = 0; i < this.groupTable.size(); i++){
+            if (this.groupTable.get(i).getGroupName().compareTo(groupName) == 0){
+                this.groupTable.get(i).setActivityPermission(permission);
+                return 0;
+            }
+        }
+
+        //no group found to modify
+        return -1;
     }
 
-    //TODO IMPLEMENT
+    /*use to get group info from a group name
+   * @param String groupName
+   * @return group if found, null if not found or there was an error*/
     public Group getGroupInfo(String groupName){
-        return  null;
+        for (int i = 0; i < this.groupTable.size(); i++){
+            if (this.groupTable.get(i).getGroupName().compareTo(groupName) == 0){
+                return this.groupTable.get(i);
+            }
+        }
+
+        return null;
     }
 
-    //TODO IMPLEMENT
-    //returns sorted A-Z by group name
+    /*returns sorted A - Z by name
+  * @param ()
+  * @return contact if found, null if not found or there was an error*/
     public ArrayList<Group> getGroupList(){
-        return  null;
+        return  this.groupTable;
     }
 
     /////////////////////////////////
