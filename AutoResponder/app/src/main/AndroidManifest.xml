@@ -43,6 +43,10 @@
             android:name=".Interface.SingleContact"
             android:label="@string/title_activity_single_contact" >
         </activity>
+        <activity
+            android:name=".Interface.AddContact"
+            android:label="@string/title_activity_add_contact" >
+        </activity>
     </application>
 
 </manifest>
