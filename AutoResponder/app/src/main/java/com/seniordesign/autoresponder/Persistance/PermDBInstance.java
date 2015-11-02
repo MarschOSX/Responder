@@ -345,7 +345,7 @@ public class PermDBInstance implements DBInstance {
 
     public ResponseLog getLastResponseByNum(String phoneNum){
         final String query =
-                "SELECT MAX(" + DBHelper.COLUMN_TIMESTAMP[0] + "), * " +
+                "SELECT MAX(" + DBHelper.COLUMN_TIMESTAMP[0] + "), " + DBHelper.COLUMN_SENDERNUM[0] + ", " + DBHelper.COLUMN_MESSAGERCV[0] + ", " + DBHelper.COLUMN_MESSAGESNT[0] +
                         " FROM " + DBHelper.TABLE_RESPONSELOG +
                         " WHERE "+ DBHelper.COLUMN_TIMESTAMP[0] + " = \"" + phoneNum + "\"";
 
@@ -374,10 +374,10 @@ public class PermDBInstance implements DBInstance {
                 //    Log.d(TAG, getMethodName() + ": found more than " + numRows + " rows");
 
                 //load query results
-                date = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
-                senderNum = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
-                msgRcv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
-                msgSnt = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+                date = new Date(result.getLong(0));
+                senderNum = result.getString(1);
+                msgRcv = result.getString(2);
+                msgSnt = result.getString(3);
 
                 //Date checkDate;
 
@@ -410,12 +410,42 @@ public class PermDBInstance implements DBInstance {
     }
 
     public ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end){
-        //TODO IMPLEMENT FOR 50%
+        //TODO TEST THIS FUNCTION
         final String query =
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_RESPONSELOG +
                 " WHERE " + DBHelper.COLUMN_TIMESTAMP[0] + " BETWEEN \"" + start.getTime() + "\" AND \"" + end.getTime() + "\"";
-        return null;
+
+        Cursor result = myDB.rawQuery(query, null);
+
+        ArrayList<ResponseLog> range = new ArrayList<>();
+        Date timeStamp;
+        String senderNumber;
+        String messageRecv;
+        String messageSent;
+
+        if ((result != null) && (result.moveToFirst())){
+
+            for (int i = 1; i < result.getCount(); i++){
+                timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
+                senderNumber = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
+                messageRecv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
+                messageSent = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+
+                range.add(new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp));
+
+                result.moveToNext();
+            }
+            //retrieve and return setting value
+
+            result.close();
+
+            return range;
+        }
+        else {
+            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            return null;
+        }
     }
 
     public ArrayList<ResponseLog> getResponseRange(int start, int end){
@@ -423,12 +453,38 @@ public class PermDBInstance implements DBInstance {
         final String query =
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_RESPONSELOG +
-                " WHERE ROWID BETWEEN \"" + start + "\" AND \"" + end + "\"";
-        return null;
-    }
+                " WHERE ROWID BETWEEN \"" + start + "\" AND \"" + end + "\" ORDER BY("+ DBHelper.COLUMN_TIMESTAMP[0] +") ASC";
 
-    private static String getMethodName() {
-        return Thread.currentThread().getStackTrace()[3].getMethodName();
+        Cursor result = myDB.rawQuery(query, null);
+
+        ArrayList<ResponseLog> range = new ArrayList<>();
+        Date timeStamp;
+        String senderNumber;
+        String messageRecv;
+        String messageSent;
+
+        if ((result != null) && (result.moveToFirst())){
+
+            for (int i = 1; i < result.getCount(); i++){
+                timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
+                senderNumber = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
+                messageRecv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
+                messageSent = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+
+                range.add(new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp));
+
+                result.moveToNext();
+            }
+            //retrieve and return setting value
+
+            result.close();
+
+            return range;
+        }
+        else {
+            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            return null;
+        }
     }
 
     ///////////////////////////
@@ -547,5 +603,9 @@ public class PermDBInstance implements DBInstance {
     //TODO IMPLEMENT
     public ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end){
         return null;
+    }
+
+    private static String getMethodName() {
+        return Thread.currentThread().getStackTrace()[3].getMethodName();
     }
 }
