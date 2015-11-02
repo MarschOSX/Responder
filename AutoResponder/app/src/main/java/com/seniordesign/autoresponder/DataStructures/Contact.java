@@ -28,4 +28,15 @@ public class Contact extends Group{
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString(){
+        return this.name + ", "
+                + this.phoneNumber + ", "
+                + this.getGroupName() + ", "
+                + this.getResponse() + ", "
+                + this.getResponse() + ", "
+                + this.isLocationPermission() + ", "
+                + this.isActivityPermission();
+    }
 }

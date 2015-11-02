@@ -50,4 +50,9 @@ public class ResponseLog {
     public void setTimeStamp(Date timeStamp) {
         this.timeStamp = timeStamp;
     }
+
+    @Override
+    public String toString(){
+        return this.timeStamp.toString() + ", " + this.senderNumber + ", " + this.messageReceived + ", " + this.messageSent;
+    }
 }

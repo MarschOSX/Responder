@@ -39,16 +39,17 @@ public class PermDBInstance implements DBInstance {
     ///////////////////////////
     //SETTING TABLE FUNCTIONS//
     ///////////////////////////
+
     public void setReplyAll(String reply){
         Log.d(TAG, "setting replyAll....");
         myDB.beginTransaction();
         try {
             //set criteria for selecting row
-            String filter = DBHelper.COLUMN_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
+            String filter = DBHelper.SETTING_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
 
             //set new value for column to be updated
             ContentValues args = new ContentValues();
-            args.put(DBHelper.COLUMN_VALUE[0], reply);
+            args.put(DBHelper.SETTING_VALUE[0], reply);
 
             //update column and check to make sure only 1 row was updated
             int updateNum =  myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
@@ -69,16 +70,16 @@ public class PermDBInstance implements DBInstance {
 
     public String getReplyAll(){
         final String query =
-                "SELECT " + DBHelper.COLUMN_VALUE[0] +
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
-                 " WHERE " + DBHelper.COLUMN_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
+                 " WHERE " + DBHelper.SETTING_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
 
         //query db and ensure object was returned
         Cursor result = myDB.rawQuery(query, null);
         String response;
         if ((result != null) && (result.moveToFirst())){ // move pointer to first row
             //load setting value into string
-            response = result.getString(result.getColumnIndex(DBHelper.COLUMN_VALUE[0]));
+            response = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
 
             //close the cursor
             result.close();
@@ -98,11 +99,11 @@ public class PermDBInstance implements DBInstance {
         myDB.beginTransaction();
         try {
             //set filter to determine row to select
-            String filter = DBHelper.COLUMN_NAME[0] + "=\"" + Setting.TIME_DELAY + "\"";
+            String filter = DBHelper.SETTING_NAME[0] + "=\"" + Setting.TIME_DELAY + "\"";
 
             //load values to be stored in respective columns
             ContentValues args = new ContentValues();
-            args.put(DBHelper.COLUMN_VALUE[0], minutes);
+            args.put(DBHelper.SETTING_VALUE[0], minutes);
 
             //update row and ensure only 1 row was updated
             int updateNum = myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
@@ -124,9 +125,9 @@ public class PermDBInstance implements DBInstance {
     //will return -1 if no result returned
     public int getDelay(){
         final String query =
-                "SELECT " + DBHelper.COLUMN_VALUE[0] +
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
-                 " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + "\"" + Setting.TIME_DELAY + "\"";
+                 " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.TIME_DELAY + "\"";
 
         //query db and ensure cursor object returned is valid
         Cursor result = myDB.rawQuery(query, null);
@@ -135,7 +136,7 @@ public class PermDBInstance implements DBInstance {
         if ((result != null) && (result.moveToFirst())){
 
             //retrieve and return setting value
-            value = result.getString(result.getColumnIndex(DBHelper.COLUMN_VALUE[0]));
+            value = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
             delay = Integer.parseInt(value);
             result.close();
             return delay;
@@ -160,9 +161,9 @@ public class PermDBInstance implements DBInstance {
         Log.d(TAG, "setting  responseToggle....");
         myDB.beginTransaction();
         try {
-            String filter = DBHelper.COLUMN_NAME[0] + "=\"" + Setting.RESPONSE_TOGGLE + "\"";
+            String filter = DBHelper.SETTING_NAME[0] + "=\"" + Setting.RESPONSE_TOGGLE + "\"";
             ContentValues args = new ContentValues();
-            args.put(DBHelper.COLUMN_VALUE[0], toggle);
+            args.put(DBHelper.SETTING_VALUE[0], toggle);
 
             int updateNum = myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
             if (updateNum == 1) {
@@ -184,9 +185,9 @@ public class PermDBInstance implements DBInstance {
 
     public boolean getResponseToggle(){
         final String query =
-                "SELECT " + DBHelper.COLUMN_VALUE[0] +
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
-                 " WHERE " + DBHelper.COLUMN_NAME[0] + " = " + "\"" + Setting.RESPONSE_TOGGLE + "\"";
+                 " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.RESPONSE_TOGGLE + "\"";
 
         //query database and ensure cursor returned is valid
         Cursor result = myDB.rawQuery(query, null);
@@ -194,7 +195,7 @@ public class PermDBInstance implements DBInstance {
         if ((result != null) && (result.moveToFirst())){
 
             //retrieve setting value
-            String response = result.getString(result.getColumnIndex(DBHelper.COLUMN_VALUE[0]));
+            String response = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
 
             //determine if value is true or false and returns as translates into a boolean
             if( response.compareTo("true") == 0){
@@ -218,22 +219,23 @@ public class PermDBInstance implements DBInstance {
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
     ////////////////////////////////
+
     public void addToResponseLog(ResponseLog newLog){
         Log.d(TAG, "adding entry to ResponseLog....");
         myDB.beginTransaction();
         try {
             //load columns in args
             ContentValues args = new ContentValues();
-            args.put(DBHelper.COLUMN_TIMESTAMP[0], newLog.getTimeStamp().getTime());
-            args.put(DBHelper.COLUMN_SENDERNUM[0], newLog.getSenderNumber());
-            args.put(DBHelper.COLUMN_MESSAGERCV[0], newLog.getMessageReceived());
-            args.put(DBHelper.COLUMN_MESSAGESNT[0], newLog.getMessageSent());
+            args.put(DBHelper.RESPONSELOG_TIMESTAMP[0], newLog.getTimeStamp().getTime());
+            args.put(DBHelper.RESPONSELOG_SENDERNUM[0], newLog.getSenderNumber());
+            args.put(DBHelper.RESPONSELOG_MESSAGERCV[0], newLog.getMessageReceived());
+            args.put(DBHelper.RESPONSELOG_MESSAGESNT[0], newLog.getMessageSent());
 
             //add the row to the table and checks if insert was succesfull
             long insert = myDB.insertOrThrow(DBHelper.TABLE_RESPONSELOG, null, args);
             if (insert != -1) {
                 myDB.setTransactionSuccessful();
-                Log.d(TAG, "entry added to ResponseLog");
+                Log.d(TAG, "entry added to ResponseLog " + newLog.toString());
             }
         }
         catch (Exception e){
@@ -245,11 +247,10 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
+    //TODO TEST THIS FUNCTION
     public ResponseLog getFirstResponse(){
-        //TODO TEST THIS FUNCTION
-
         final String query =
-                "SELECT MIN(" + DBHelper.COLUMN_TIMESTAMP[0] + "), * " +
+                "SELECT MIN(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + "), * " +
                  " FROM " + DBHelper.TABLE_RESPONSELOG;
 
         Cursor result = myDB.rawQuery(query, null);
@@ -263,10 +264,10 @@ public class PermDBInstance implements DBInstance {
         if ((result != null) && (result.moveToFirst())){
 
             //retrieve and return setting value
-            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
-            senderNumber = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
-            messageRecv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
-            messageSent = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
+            senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
+            messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
+            messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
             result.close();
 
             return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
@@ -278,11 +279,10 @@ public class PermDBInstance implements DBInstance {
     }
 
 
+    //TODO TEST THIS FUNCTION
     public ResponseLog getLastResponse(){
-        //TODO TEST THIS FUNCTION
-
         final String query =
-                "SELECT MAX(" + DBHelper.COLUMN_TIMESTAMP[0] + "), * " +
+                "SELECT MAX(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + "), * " +
                         " FROM " + DBHelper.TABLE_RESPONSELOG;
 
         Cursor result = myDB.rawQuery(query, null);
@@ -296,10 +296,10 @@ public class PermDBInstance implements DBInstance {
         if ((result != null) && (result.moveToFirst())){
 
             //retrieve and return setting value
-            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
-            senderNumber = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
-            messageRecv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
-            messageSent = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
+            senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
+            messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
+            messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
             result.close();
 
             return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
@@ -310,9 +310,8 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
+    //TODO TEST THIS FUNCTION
     public ResponseLog getResponse(int index){
-        //TODO TEST THIS FUNCTION
-
         final String query =
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_RESPONSELOG +
@@ -329,10 +328,10 @@ public class PermDBInstance implements DBInstance {
         if ((result != null) && (result.moveToFirst())){
 
             //retrieve and return setting value
-            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
-            senderNumber = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
-            messageRecv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
-            messageSent = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
+            senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
+            messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
+            messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
             result.close();
 
             return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
@@ -345,17 +344,17 @@ public class PermDBInstance implements DBInstance {
 
     public ResponseLog getLastResponseByNum(String phoneNum){
         final String query =
-                "SELECT MAX(" + DBHelper.COLUMN_TIMESTAMP[0] + "), " + DBHelper.COLUMN_SENDERNUM[0] + ", " + DBHelper.COLUMN_MESSAGERCV[0] + ", " + DBHelper.COLUMN_MESSAGESNT[0] +
+                "SELECT MAX(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + "), " + DBHelper.RESPONSELOG_SENDERNUM[0] + ", " + DBHelper.RESPONSELOG_MESSAGERCV[0] + ", " + DBHelper.RESPONSELOG_MESSAGESNT[0] +
                         " FROM " + DBHelper.TABLE_RESPONSELOG +
-                        " WHERE "+ DBHelper.COLUMN_TIMESTAMP[0] + " = \"" + phoneNum + "\"";
+                        " WHERE "+ DBHelper.RESPONSELOG_SENDERNUM[0] + " = \"" + phoneNum + "\"";
 
         final String query_2 = "SELECT *" +
             " FROM " + DBHelper.TABLE_RESPONSELOG +
-            " WHERE " + DBHelper.COLUMN_SENDERNUM[0] + "=\"" + phoneNum + "\" ORDER BY " + DBHelper.COLUMN_TIMESTAMP[0];
+            " WHERE " + DBHelper.RESPONSELOG_SENDERNUM[0] + "=\"" + phoneNum + "\" ORDER BY " + DBHelper.RESPONSELOG_TIMESTAMP[0];
 
         String senderNum = phoneNum;
-        String msgRcv = "";
-        String msgSnt = "";
+        String msgRcv = "hi";
+        String msgSnt = "hi";
         Date date = new Date(0);
 
         try {
@@ -370,8 +369,6 @@ public class PermDBInstance implements DBInstance {
                 else{
                     result.moveToFirst();
                 }
-                //else if (numRows > 1)
-                //    Log.d(TAG, getMethodName() + ": found more than " + numRows + " rows");
 
                 //load query results
                 date = new Date(result.getLong(0));
@@ -383,17 +380,17 @@ public class PermDBInstance implements DBInstance {
 
                 /*for (int i = 1; i < numRows; i++){
                     result.moveToNext();
-                    checkDate = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
+                    checkDate = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
                     if (checkDate.after(date)){
                         date = checkDate;
-                        senderNum = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
-                        msgRcv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
-                        msgSnt = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+                        senderNum = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
+                        msgRcv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
+                        msgSnt = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
                     }
                 }*/
 
 
-                Log.d(TAG, "ResponseLogRetrieved: "+ date + ", " + senderNum + ", " + msgSnt + "," + msgRcv);
+                Log.d(TAG, "ResponseLogRetrieved:("+ numRows +") "+ date + ", " + senderNum + ", " + msgSnt + "," + msgRcv);
 
                 result.close();
 
@@ -409,12 +406,12 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
+    //TODO TEST THIS FUNCTION
     public ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end){
-        //TODO TEST THIS FUNCTION
         final String query =
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_RESPONSELOG +
-                " WHERE " + DBHelper.COLUMN_TIMESTAMP[0] + " BETWEEN \"" + start.getTime() + "\" AND \"" + end.getTime() + "\"";
+                " WHERE " + DBHelper.RESPONSELOG_TIMESTAMP[0] + " BETWEEN \"" + start.getTime() + "\" AND \"" + end.getTime() + "\"";
 
         Cursor result = myDB.rawQuery(query, null);
 
@@ -427,10 +424,10 @@ public class PermDBInstance implements DBInstance {
         if ((result != null) && (result.moveToFirst())){
 
             for (int i = 1; i < result.getCount(); i++){
-                timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
-                senderNumber = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
-                messageRecv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
-                messageSent = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+                timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
+                senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
+                messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
+                messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
 
                 range.add(new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp));
 
@@ -448,12 +445,12 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
+    //TODO TEST THIS FUNCTION
     public ArrayList<ResponseLog> getResponseRange(int start, int end){
-        //TODO IMPLEMENT FOR 50%
         final String query =
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_RESPONSELOG +
-                " WHERE ROWID BETWEEN \"" + start + "\" AND \"" + end + "\" ORDER BY("+ DBHelper.COLUMN_TIMESTAMP[0] +") ASC";
+                " WHERE ROWID BETWEEN \"" + start + "\" AND \"" + end + "\" ORDER BY("+ DBHelper.RESPONSELOG_TIMESTAMP[0] +") ASC";
 
         Cursor result = myDB.rawQuery(query, null);
 
@@ -466,10 +463,10 @@ public class PermDBInstance implements DBInstance {
         if ((result != null) && (result.moveToFirst())){
 
             for (int i = 1; i < result.getCount(); i++){
-                timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.COLUMN_TIMESTAMP[0])));
-                senderNumber = result.getString(result.getColumnIndex(DBHelper.COLUMN_SENDERNUM[0]));
-                messageRecv = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGERCV[0]));
-                messageSent = result.getString(result.getColumnIndex(DBHelper.COLUMN_MESSAGESNT[0]));
+                timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
+                senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
+                messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
+                messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
 
                 range.add(new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp));
 
@@ -491,9 +488,37 @@ public class PermDBInstance implements DBInstance {
     //CONTACT TABLE FUNCTIONS//
     ///////////////////////////
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
     public int addContact(Contact newContact){
-        return  -1;
+        Log.d(TAG, "adding contact....");
+        myDB.beginTransaction();
+        try {
+
+            //load columns in args
+            ContentValues args = new ContentValues();
+            args.put(DBHelper.CONTACT_NAME[0], newContact.getName());
+            args.put(DBHelper.CONTACT_PHONENUM[0], newContact.getPhoneNumber());
+            args.put(DBHelper.CONTACT_GROUP[0], newContact.getGroupName());
+            args.put(DBHelper.CONTACT_RESPONSE[0], newContact.getResponse());
+            args.put(DBHelper.CONTACT_ACTIVITYPERM[0], newContact.isActivityPermission());
+            args.put(DBHelper.CONTACT_LOCATIONPERM[0], newContact.isLocationPermission());
+
+            //add the row to the table and checks if insert was succesfull
+            long insert = myDB.insertOrThrow(DBHelper.TABLE_RESPONSELOG, null, args);
+            if (insert != -1) {
+                myDB.setTransactionSuccessful();
+                Log.d(TAG, getMethodName() + ":"  + newContact.toString());
+            }
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
+
+        return 0;
     }
 
     //TODO IMPLEMENT
