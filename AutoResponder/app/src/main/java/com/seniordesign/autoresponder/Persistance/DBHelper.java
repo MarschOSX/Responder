@@ -57,11 +57,11 @@ public class DBHelper extends SQLiteOpenHelper{
     public static final String[] CONTACT_ACTIVITYPERM = {"activity_permission", "BOOLEAN"};
     private static final String CREATE_CONTACT = "CREATE TABLE " + TABLE_CONTACT +
             "(" + CONTACT_NAME[0] + " " + CONTACT_NAME[1]
-            + "," + CONTACT_PHONENUM[0] + " " + CONTACT_PHONENUM[1]
-            + "," + CONTACT_GROUP[0] + " " + CONTACT_GROUP[1]
-            + "," + CONTACT_RESPONSE[0] + " " + CONTACT_RESPONSE[1]
-            + "," + CONTACT_LOCATIONPERM[0] + " " + CONTACT_LOCATIONPERM[1]
-            + "," + CONTACT_ACTIVITYPERM[0] + " " + CONTACT_ACTIVITYPERM[1] + ")";
+            + ", " + CONTACT_PHONENUM[0] + " " + CONTACT_PHONENUM[1]
+            + ", " + CONTACT_GROUP[0] + " " + CONTACT_GROUP[1]
+            + ", " + CONTACT_RESPONSE[0] + " " + CONTACT_RESPONSE[1]
+            + ", " + CONTACT_LOCATIONPERM[0] + " " + CONTACT_LOCATIONPERM[1]
+            + ", " + CONTACT_ACTIVITYPERM[0] + " " + CONTACT_ACTIVITYPERM[1] + ")";
 
     public static final String TABLE_GROUP = "contact_table";
     public static final String[] GROUP_NAME = {"group_name", "TEXT"};
@@ -70,9 +70,9 @@ public class DBHelper extends SQLiteOpenHelper{
     public static final String[] GROUP_ACTIVITYPERM = {"activity_permission", "BOOLEAN"};
     private static final String CREATE_GROUP = "CREATE TABLE " + TABLE_GROUP +
             "(" + GROUP_NAME[0] + " " + GROUP_NAME[1]
-            + "," + GROUP_RESPONSE[0] + " " + GROUP_RESPONSE[1]
-            + "," + GROUP_LOCATIONPERM[0] + " " + GROUP_LOCATIONPERM[1]
-            + "," + GROUP_ACTIVITYPERM[0] + " " + GROUP_ACTIVITYPERM[1] + ")";
+            + ", " + GROUP_RESPONSE[0] + " " + GROUP_RESPONSE[1]
+            + ", " + GROUP_LOCATIONPERM[0] + " " + GROUP_LOCATIONPERM[1]
+            + ", " + GROUP_ACTIVITYPERM[0] + " " + GROUP_ACTIVITYPERM[1] + ")";
 
     //all tables must be added to this list
     public static final String[] TABLE_LIST = {TABLE_SETTINGS, TABLE_RESPONSELOG, TABLE_CONTACT, TABLE_GROUP, TABLE_DEVLOG};
