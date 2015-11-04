@@ -22,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper{
 
 
     public static final String TABLE_SETTINGS = "settings";
-    public static final String[] SETTING_NAME = {"setting_name", "VARCHAR(30)"};
+    public static final String[] SETTING_NAME = {"setting_name", "VARCHAR(30) UNIQUE"};
     public static final String[] SETTING_VALUE = {"value", "VARCHAR(30)"};
     private static final String CREATE_SETTINGS = "CREATE TABLE " + TABLE_SETTINGS +
             "(" + SETTING_NAME[0] + " " + SETTING_NAME[1] + ", " +
@@ -49,9 +49,9 @@ public class DBHelper extends SQLiteOpenHelper{
             RESPONSELOG_MESSAGESNT[0]+ " " + RESPONSELOG_MESSAGESNT[1] + ");";
 
     public static final String TABLE_CONTACT = "contact_table";
-    public static final String[] CONTACT_NAME = {"name", "TEXT"};
-    public static final String[] CONTACT_PHONENUM = {"phonenumber", "TEXT"};
-    public static final String[] CONTACT_GROUP = {"group", "TEXT"};
+    public static final String[] CONTACT_NAME = {"name", "TEXT NOT NULL"};
+    public static final String[] CONTACT_PHONENUM = {"phonenumber", "TEXT NOT NULL UNIQUE"};
+    public static final String[] CONTACT_GROUP = {"group_name", "TEXT NOT NULL"};
     public static final String[] CONTACT_RESPONSE = {"response", "VARCHAR(144)"};
     public static final String[] CONTACT_LOCATIONPERM = {"location_permission", "BOOLEAN"};
     public static final String[] CONTACT_ACTIVITYPERM = {"activity_permission", "BOOLEAN"};
@@ -63,9 +63,9 @@ public class DBHelper extends SQLiteOpenHelper{
             + ", " + CONTACT_LOCATIONPERM[0] + " " + CONTACT_LOCATIONPERM[1]
             + ", " + CONTACT_ACTIVITYPERM[0] + " " + CONTACT_ACTIVITYPERM[1] + ")";
 
-    public static final String TABLE_GROUP = "contact_table";
-    public static final String[] GROUP_NAME = {"group_name", "TEXT"};
-    public static final String[] GROUP_RESPONSE = {"response", "VARCHAR(144)"};
+    public static final String TABLE_GROUP = "group_table";
+    public static final String[] GROUP_NAME = {"name", "TEXT NOT NULL UNIQUE"};
+    public static final String[] GROUP_RESPONSE = {"response", "VARCHAR(144) NOT NULL"};
     public static final String[] GROUP_LOCATIONPERM = {"location_permission", "BOOLEAN"};
     public static final String[] GROUP_ACTIVITYPERM = {"activity_permission", "BOOLEAN"};
     private static final String CREATE_GROUP = "CREATE TABLE " + TABLE_GROUP +

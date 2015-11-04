@@ -42,7 +42,7 @@ public class PermDBInstance implements DBInstance {
 
     public void setReplyAll(String reply){
         Log.d(TAG, "setting replyAll....");
-        myDB.beginTransaction();
+        /*myDB.beginTransaction();
         try {
             //set criteria for selecting row
             String filter = DBHelper.SETTING_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
@@ -60,12 +60,13 @@ public class PermDBInstance implements DBInstance {
             else Log.d(TAG, updateNum + " rows were found to update");
         }
         catch (Exception e){
-            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " failed");
             throw e;
         }
         finally {
             myDB.endTransaction();
-        }
+        }*/
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.REPLY_ALL, DBHelper.SETTING_VALUE[0], reply);
     }
 
     public String getReplyAll(){
@@ -88,7 +89,7 @@ public class PermDBInstance implements DBInstance {
             return response;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
             return null;
         }
     }
@@ -96,7 +97,7 @@ public class PermDBInstance implements DBInstance {
     public void setDelay(int minutes){
 
         Log.d(TAG, "setting delay....");
-        myDB.beginTransaction();
+        /*myDB.beginTransaction();
         try {
             //set filter to determine row to select
             String filter = DBHelper.SETTING_NAME[0] + "=\"" + Setting.TIME_DELAY + "\"";
@@ -114,12 +115,13 @@ public class PermDBInstance implements DBInstance {
             else Log.d(TAG, updateNum + " rows were found to update");
         }
         catch (Exception e){
-            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " failed");
             throw e;
         }
         finally {
             myDB.endTransaction();
-        }
+        }*/
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.TIME_DELAY, DBHelper.SETTING_VALUE[0], minutes);
     }
 
     //will return -1 if no result returned
@@ -142,7 +144,7 @@ public class PermDBInstance implements DBInstance {
             return delay;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
             return -1;
         }
     }
@@ -175,7 +177,7 @@ public class PermDBInstance implements DBInstance {
             }
         }
         catch (Exception e){
-            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " failed");
             throw e;
         }
         finally {
@@ -205,12 +207,12 @@ public class PermDBInstance implements DBInstance {
                 toggle = false;
             }
             else{
-                Log.e(TAG, "ERROR: " + getMethodName() + ": found " + response + " when a value of true or false was expected from: " + query);
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": found " + response + " when a value of true or false was expected from: " + query);
                 throw new InputMismatchException();
             }
             result.close();
         } else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not get/access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not get/access cursor object from: " + query);
             throw new NullPointerException();
         }
         return toggle;
@@ -239,7 +241,7 @@ public class PermDBInstance implements DBInstance {
             }
         }
         catch (Exception e){
-            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " failed");
             throw e;
         }
         finally {
@@ -273,7 +275,7 @@ public class PermDBInstance implements DBInstance {
             return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
             return null;
         }
     }
@@ -305,7 +307,7 @@ public class PermDBInstance implements DBInstance {
             return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
             return null;
         }
     }
@@ -337,7 +339,7 @@ public class PermDBInstance implements DBInstance {
             return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
             return null;
         }
     }
@@ -396,12 +398,12 @@ public class PermDBInstance implements DBInstance {
 
                 return new ResponseLog(msgSnt, msgRcv, senderNum, date);
             } else {
-                Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
                 return null;
             }
         }
         catch (Exception e){
-            Log.e(TAG, "ERROR: " + getMethodName() + " could not retrieve data");
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " could not retrieve data");
             throw e;
         }
     }
@@ -440,7 +442,7 @@ public class PermDBInstance implements DBInstance {
             return range;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
             return null;
         }
     }
@@ -479,7 +481,7 @@ public class PermDBInstance implements DBInstance {
             return range;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName() + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
             return null;
         }
     }
@@ -507,11 +509,11 @@ public class PermDBInstance implements DBInstance {
             long insert = myDB.insertOrThrow(DBHelper.TABLE_RESPONSELOG, null, args);
             if (insert != -1) {
                 myDB.setTransactionSuccessful();
-                Log.d(TAG, getMethodName() + ":"  + newContact.toString());
+                Log.d(TAG, getMethodName(0) + ":"  + newContact.toString());
             }
         }
         catch (Exception e){
-            Log.e(TAG, "ERROR: " + getMethodName() + " failed");
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " failed");
             throw e;
         }
         finally {
@@ -526,45 +528,247 @@ public class PermDBInstance implements DBInstance {
         return  -1;
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
     public int setContactName(String phoneNum, String newName){
-        return  -1;
+        Log.d(TAG, "setting name of " + phoneNum + " to " + newName + ".....");
+        myDB.beginTransaction();
+        try {
+            //set criteria for selecting row
+            String filter = DBHelper.CONTACT_PHONENUM[0] + "=" + "\"" + phoneNum + "\"";
+
+            //set new value for column to be updated
+            ContentValues args = new ContentValues();
+            args.put(DBHelper.CONTACT_NAME[0], newName);
+
+            //update column and check to make sure only 1 row was updated
+            return  myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " failed");
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
     public int setContactNumber(String oldPhoneNum, String newPhoneNum){
-        return  -1;
+        Log.d(TAG, "changing phone number " + oldPhoneNum + " to " + newPhoneNum + ".....");
+        myDB.beginTransaction();
+        try {
+            //set criteria for selecting row
+            String filter = DBHelper.CONTACT_PHONENUM[0] + "=" + "\"" + oldPhoneNum + "\"";
+
+            //set new value for column to be updated
+            ContentValues args = new ContentValues();
+            args.put(DBHelper.CONTACT_PHONENUM[0], newPhoneNum);
+
+            //update column and check to make sure only 1 row was updated
+            return  myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " failed");
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
     public int setContactLocationPermission(String phoneNum, boolean permission){
-        return  -1;
+        Log.d(TAG, "setting location permission of " + phoneNum + " to " + permission + ".....");
+        myDB.beginTransaction();
+        try {
+            //set criteria for selecting row
+            String filter = DBHelper.CONTACT_PHONENUM[0] + "=" + "\"" + phoneNum + "\"";
+
+            //set new value for column to be updated
+            ContentValues args = new ContentValues();
+            args.put(DBHelper.CONTACT_LOCATIONPERM[0], permission);
+
+            //update column and check to make sure only 1 row was updated
+            return  myDB.update(DBHelper.TABLE_SETTINGS, args, filter, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " failed");
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
     public int setContactActivityPermission(String phoneNum, boolean permission){
-        return  -1;
+        Log.d(TAG, "setting activity permission of " + phoneNum + " to " + permission + ".....");
+        return update(DBHelper.TABLE_CONTACT, DBHelper.CONTACT_PHONENUM[0], phoneNum ,DBHelper.CONTACT_ACTIVITYPERM[0], permission);
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
     public int setContactGroup(String phoneNum, String groupName){
-        return  -1;
+        Log.d(TAG, "setting group of " + phoneNum + " to " + groupName + ".....");
+        return update(DBHelper.TABLE_CONTACT, DBHelper.CONTACT_PHONENUM[0], phoneNum ,DBHelper.CONTACT_GROUP[0], groupName);
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
+    public int setContactResponse(String phoneNum, String response){
+        Log.d(TAG, "setting response of " + phoneNum + " to " + response + ".....");
+        return update(DBHelper.TABLE_CONTACT, DBHelper.CONTACT_PHONENUM[0], phoneNum ,DBHelper.CONTACT_RESPONSE[0], response);
+    }
+
+    //TODO TEST THIS FUNCTION
     public Contact getContactInfo(String phoneNum){
-        return  null;
+        final String query =
+                "SELECT * " +
+                " FROM " + DBHelper.TABLE_CONTACT +
+                " WHERE " + DBHelper.CONTACT_PHONENUM[0] + "=" + "\"" + phoneNum + "\"";
+
+        Cursor result = myDB.rawQuery(query, null);
+
+        Contact c = null;
+        String name;
+        String phoneNumber;
+        String groupName;
+        String response;
+
+        String activityString;
+        String locationString;
+        boolean locationPermission;
+        boolean activityPermission;
+
+        if ((result != null) && (result.moveToFirst())){
+
+            name = result.getString(result.getColumnIndex(DBHelper.CONTACT_NAME[0]));
+            phoneNumber = result.getString(result.getColumnIndex(DBHelper.CONTACT_PHONENUM[0]));
+            groupName = result.getString(result.getColumnIndex(DBHelper.CONTACT_GROUP[0]));
+            response = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+            activityString = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+            locationString = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+
+            if (locationString.compareTo("true") == 0) locationPermission = true;
+            else locationPermission = false;
+
+            if (activityString.compareTo("true") == 0)activityPermission = true;
+            else activityPermission = false;
+
+            c = new Contact(name, phoneNumber, groupName, response, locationPermission, activityPermission);
+
+            result.close();
+
+            return c;
+        }
+        else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+            return null;
+        }
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
     //returns sorted A - Z by name
     public ArrayList<Contact> getContactList(){
-        return  null;
+        final String query =
+                "SELECT * " +
+                " FROM " + DBHelper.TABLE_CONTACT +
+                " ORDER BY (" + DBHelper.CONTACT_NAME[0] + ") ASC";
+
+        Cursor result = myDB.rawQuery(query, null);
+
+        ArrayList<Contact> range = new ArrayList<>();
+        String name;
+        String phoneNumber;
+        String groupName;
+        String response;
+
+        String activityString;
+        String locationString;
+        boolean locationPermission;
+        boolean activityPermission;
+
+
+        if ((result != null) && (result.moveToFirst())){
+
+            for (int i = 1; i < result.getCount(); i++){
+                name = result.getString(result.getColumnIndex(DBHelper.CONTACT_NAME[0]));
+                phoneNumber = result.getString(result.getColumnIndex(DBHelper.CONTACT_PHONENUM[0]));
+                groupName = result.getString(result.getColumnIndex(DBHelper.CONTACT_GROUP[0]));
+                response = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+                activityString = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+                locationString = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+
+                if (locationString.compareTo("true") == 0) locationPermission = true;
+                else locationPermission = false;
+
+                if (activityString.compareTo("true") == 0)activityPermission = true;
+                else activityPermission = false;
+
+                range.add(new Contact(name, phoneNumber, groupName, response, locationPermission, activityPermission));
+
+                result.moveToNext();
+            }
+
+            result.close();
+
+            return range;
+        }
+        else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+            return null;
+        }
     }
 
-    //TODO IMPLEMENT
-    public ArrayList<Contact> getGroup(String groupName){
-        return  null;
+    //TODO TEST THIS FUNCTION
+    public ArrayList<Contact> getGroup(String group){
+        final String query =
+                "SELECT * " +
+                " FROM " + DBHelper.TABLE_CONTACT +
+                " WHERE " + DBHelper.CONTACT_GROUP[0] + " = \"" + group + "\"" +
+                " ORDER BY (" + DBHelper.CONTACT_NAME[0] + ") ASC";
+
+        Cursor result = myDB.rawQuery(query, null);
+
+        ArrayList<Contact> range = new ArrayList<>();
+        String name;
+        String phoneNumber;
+        String groupName;
+        String response;
+
+        String activityString;
+        String locationString;
+        boolean locationPermission;
+        boolean activityPermission;
+
+
+        if ((result != null) && (result.moveToFirst())){
+
+            for (int i = 1; i < result.getCount(); i++){
+                name = result.getString(result.getColumnIndex(DBHelper.CONTACT_NAME[0]));
+                phoneNumber = result.getString(result.getColumnIndex(DBHelper.CONTACT_PHONENUM[0]));
+                groupName = result.getString(result.getColumnIndex(DBHelper.CONTACT_GROUP[0]));
+                response = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+                activityString = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+                locationString = result.getString(result.getColumnIndex(DBHelper.CONTACT_RESPONSE[0]));
+
+                if (locationString.compareTo("true") == 0) locationPermission = true;
+                else locationPermission = false;
+
+                if (activityString.compareTo("true") == 0)activityPermission = true;
+                else activityPermission = false;
+
+                range.add(new Contact(name, phoneNumber, groupName, response, locationPermission, activityPermission));
+
+                result.moveToNext();
+            }
+
+            result.close();
+
+            return range;
+        }
+        else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+            return null;
+        }
     }
 
     /////////////////////////
@@ -581,18 +785,28 @@ public class PermDBInstance implements DBInstance {
         return  -1;
     }
 
+    //TODO TEST
     public int changeGroupName(String oldName, String newName){
-        return  -1;
+        Log.d(TAG, "changing name of " + oldName + " to " + newName + ".....");
+        return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], oldName ,DBHelper.GROUP_NAME[0], newName);
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST
     public int setGroupLocationPermission(String groupName, boolean permission){
-        return  -1;
+        Log.d(TAG, "changing activity of permission of " + groupName + " to " + permission + ".....");
+        return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_LOCATIONPERM[0], permission);
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST
     public int setGroupActivityPermission(String groupName, boolean permission){
-        return  -1;
+        Log.d(TAG, "changing activity permission of " + groupName + " to " + permission + ".....");
+        return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_ACTIVITYPERM[0], permission);
+    }
+
+    //TODO TEST THIS FUNCTION
+    public int setGroupResponse(String groupName, String response){
+        Log.d(TAG, "setting group response of " + groupName + " to " + response + ".....");
+        return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_RESPONSE[0], response);
     }
 
     //TODO IMPLEMENT
@@ -630,7 +844,78 @@ public class PermDBInstance implements DBInstance {
         return null;
     }
 
-    private static String getMethodName() {
-        return Thread.currentThread().getStackTrace()[3].getMethodName();
+
+    //convenience functions
+    private static String getMethodName(int level) {
+        return Thread.currentThread().getStackTrace()[3 + level].getMethodName();
+    }
+
+    private int update(String table, String matchColumn, String matchValue, String updateColumn, String updateValue){
+        myDB.beginTransaction();
+        try {
+            //set criteria for selecting row
+            String filter = matchColumn + "=" + "\"" + matchValue + "\"";
+
+            //set new value for column to be updated
+            ContentValues args = new ContentValues();
+            args.put(updateColumn, updateValue);
+
+            //update column and check to make sure only 1 row was updated
+            return  myDB.update(table, args, filter, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(1) + " failed");
+            throw e;
+        }
+        finally {
+            Log.d(TAG, getMethodName(1) + ": update succeeded");
+            myDB.endTransaction();
+        }
+    }
+
+    private int update(String table, String matchColumn, String matchValue, String updateColumn, boolean updateValue){
+        myDB.beginTransaction();
+        try {
+            //set criteria for selecting row
+            String filter = matchColumn + "=" + "\"" + matchValue + "\"";
+
+            //set new value for column to be updated
+            ContentValues args = new ContentValues();
+            args.put(updateColumn, updateValue);
+
+            //update column and check to make sure only 1 row was updated
+            return  myDB.update(table, args, filter, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(1) + " failed");
+            throw e;
+        }
+        finally {
+            Log.d(TAG, getMethodName(1) + ": update succeeded");
+            myDB.endTransaction();
+        }
+    }
+
+    private int update(String table, String matchColumn, String matchValue, String updateColumn, int updateValue){
+        myDB.beginTransaction();
+        try {
+            //set criteria for selecting row
+            String filter = matchColumn + "=" + "\"" + matchValue + "\"";
+
+            //set new value for column to be updated
+            ContentValues args = new ContentValues();
+            args.put(updateColumn, updateValue);
+
+            //update column and check to make sure only 1 row was updated
+            return  myDB.update(table, args, filter, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(1) + " failed");
+            throw e;
+        }
+        finally {
+            Log.d(TAG, getMethodName(1) + ": update succeeded");
+            myDB.endTransaction();
+        }
     }
 }

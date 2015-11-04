@@ -57,6 +57,8 @@ public interface DBInstance {
 
     int setContactNumber(String oldPhoneNum, String newPhoneNum);
 
+    int setContactResponse(String phoneNum, String response);
+
     int setContactLocationPermission(String phoneNum, boolean permission);
 
     int setContactActivityPermission(String phoneNum, boolean permission);
@@ -79,6 +81,8 @@ public interface DBInstance {
     int removeGroup(String groupName);
 
     int changeGroupName(String oldName, String newName);
+
+    int setGroupResponse(String groupName, String response);
 
     int setGroupLocationPermission(String groupName, boolean permission);
 

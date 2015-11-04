@@ -266,7 +266,7 @@ public class TestDBInstance implements DBInstance {
 
      /*changes a contact's group name
    * @param String phoneNum, String groupName
-   * @return 0 for success, or error code as int < 0*/
+   * @return # of rows updated, or error code as int < 0*/
     public int setContactGroup(String phoneNum, String groupName){
         //check to make sure group name exists
         boolean groupExists = false;
@@ -278,16 +278,32 @@ public class TestDBInstance implements DBInstance {
         }
 
         if(groupExists){
+            int count = 0;
             for (int i = 0; i < this.contactTable.size(); i++){
                 if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
                     this.contactTable.get(i).setGroupName(groupName);
-                    return 0;
+                    count++;
                 }
             }
 
-            return -1; //no contact found to modify
+            return count;
         }
-        else return -2; //group does not exist
+        else return -1; //group does not exist
+    }
+
+    /*changes a contact's response
+    * @param String phoneNum, String response
+    * @return # of rows updated, or error code as int < 0*/
+    public int setContactResponse(String phoneNum, String response){
+        int count = 0;
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
+                this.contactTable.get(i).setResponse(response);
+                count++;
+            }
+        }
+
+        return count;
     }
 
     /*use to get contact info for a phonenumber
@@ -412,6 +428,21 @@ public class TestDBInstance implements DBInstance {
 
         //no group found to modify
         return -1;
+    }
+
+    /*removes all groups with that name
+   * @param String phoneNumber
+   * @return # of contacts removed as int >= 0, or error code as int < 0*/
+    public int setGroupResponse(String groupName, String response){
+        int count = 0;
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getGroupName().compareTo(groupName) == 0){
+                this.contactTable.get(i).setResponse(response);
+                count++;
+            }
+        }
+
+        return count;
     }
 
     /*use to get group info from a group name
