@@ -523,9 +523,10 @@ public class PermDBInstance implements DBInstance {
         return 0;
     }
 
-    //TODO IMPLEMENT
+    //TODO TEST THIS FUNCTION
     public int removeContact(String phoneNum){
-        return  -1;
+        Log.d(TAG, "removing " + phoneNum + " from contacts....");
+        return remove(DBHelper.TABLE_CONTACT, DBHelper.CONTACT_PHONENUM[0] + "=" + phoneNum);
     }
 
     //TODO TEST THIS FUNCTION
@@ -785,19 +786,19 @@ public class PermDBInstance implements DBInstance {
         return  -1;
     }
 
-    //TODO TEST
+    //TODO TEST THIS FUNCTION
     public int changeGroupName(String oldName, String newName){
         Log.d(TAG, "changing name of " + oldName + " to " + newName + ".....");
         return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], oldName ,DBHelper.GROUP_NAME[0], newName);
     }
 
-    //TODO TEST
+    //TODO TEST THIS FUNCTION
     public int setGroupLocationPermission(String groupName, boolean permission){
         Log.d(TAG, "changing activity of permission of " + groupName + " to " + permission + ".....");
         return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_LOCATIONPERM[0], permission);
     }
 
-    //TODO TEST
+    //TODO TEST THIS FUNCTION
     public int setGroupActivityPermission(String groupName, boolean permission){
         Log.d(TAG, "changing activity permission of " + groupName + " to " + permission + ".....");
         return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_ACTIVITYPERM[0], permission);
@@ -915,6 +916,22 @@ public class PermDBInstance implements DBInstance {
         }
         finally {
             Log.d(TAG, getMethodName(1) + ": update succeeded");
+            myDB.endTransaction();
+        }
+    }
+
+    private int remove(String table, String whereClause){
+        myDB.beginTransaction();
+        try {
+            //update column and check to make sure only 1 row was updated
+            return  myDB.delete(table, whereClause, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(1) + " failed");
+            throw e;
+        }
+        finally {
+            Log.d(TAG, getMethodName(1) + ": removal succeeded");
             myDB.endTransaction();
         }
     }
