@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;

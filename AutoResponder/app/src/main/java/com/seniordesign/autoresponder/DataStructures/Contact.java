@@ -35,7 +35,6 @@ public class Contact extends Group{
                 + this.phoneNumber + ", "
                 + this.getGroupName() + ", "
                 + this.getResponse() + ", "
-                + this.getResponse() + ", "
                 + this.isLocationPermission() + ", "
                 + this.isActivityPermission();
     }
