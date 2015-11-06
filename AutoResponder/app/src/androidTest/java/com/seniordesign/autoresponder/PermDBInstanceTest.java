@@ -1,12 +1,15 @@
 package com.seniordesign.autoresponder;
 
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import java.sql.Date;
+import java.util.ArrayList;
 
 /**
  * By MarschOSX on 10/24/2015
@@ -125,6 +128,54 @@ public class PermDBInstanceTest extends AndroidTestCase {
         assertTrue(count == 1);
         contactFromDb = database.getContactInfo(newPhoneNum);
         assertTrue(contactFromDb == null);
+
+        //in case test failed
+        database.removeContact("+17172223333");
+        database.removeContact("+17172223334");
+        database.removeContact("+17172223335");
+        database.removeContact("+17172223336");
+        database.removeContact("+17172223337");
+        database.removeContact("+17172223338");
+        database.removeContact("+17172223339");
+        database.removeContact("+17172223310");
+
+        ArrayList<Contact> contactTable = new ArrayList<>();
+
+        //load into arrayList in A to Z order
+        contactTable.add(new Contact("testSubjectA", "+17172223333", Group.DEFAULT_GROUP, "response", false, false));
+        contactTable.add(new Contact("testSubjectB", "+17172223334", Group.DEFAULT_GROUP, "response", false, false));
+        contactTable.add(new Contact("testSubjectC", "+17172223335", Group.DEFAULT_GROUP, "response", false, false));
+        contactTable.add(new Contact("testSubjectD", "+17172223336", Group.DEFAULT_GROUP, "response", false, false));
+        contactTable.add(new Contact("testSubjectE", "+17172223337", Group.DEFAULT_GROUP, "response", false, false));
+        contactTable.add(new Contact("testSubjectF", "+17172223338", Group.DEFAULT_GROUP, "response", false, false));
+        contactTable.add(new Contact("testSubjectG", "+17172223339", Group.DEFAULT_GROUP, "response", false, false));
+        contactTable.add(new Contact("testSubjectH", "+17172223310", Group.DEFAULT_GROUP, "response", false, false));
+
+        //add to db out of order
+        database.addContact(contactTable.get(7));
+        database.addContact(contactTable.get(2));
+        database.addContact(contactTable.get(0));
+        database.addContact(contactTable.get(1));
+        database.addContact(contactTable.get(6));
+        database.addContact(contactTable.get(3));
+        database.addContact(contactTable.get(5));
+        database.addContact(contactTable.get(4));
+
+        ArrayList<Contact> contactTableFromDB = database.getContactList();
+
+        for (int i = 0; i < contactTable.size(); i++){
+            Log.d("FINDME", contactTableFromDB.get(i).toString());
+            assertTrue(contactTableFromDB.get(i).getName().compareTo(contactTable.get(i).getName()) == 0);
+        }
+
+        database.removeContact("+17172223333");
+        database.removeContact("+17172223334");
+        database.removeContact("+17172223335");
+        database.removeContact("+17172223336");
+        database.removeContact("+17172223337");
+        database.removeContact("+17172223338");
+        database.removeContact("+17172223339");
+        database.removeContact("+17172223310");
     }
 
     public boolean checker(Object A, Object B){

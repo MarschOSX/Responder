@@ -66,8 +66,8 @@ public class DBHelper extends SQLiteOpenHelper{
     public static final String TABLE_GROUP = "group_table";
     public static final String[] GROUP_NAME = {"name", "TEXT NOT NULL UNIQUE"};
     public static final String[] GROUP_RESPONSE = {"response", "VARCHAR(144) NOT NULL"};
-    public static final String[] GROUP_LOCATIONPERM = {"location_permission", "BOOLEAN"};
-    public static final String[] GROUP_ACTIVITYPERM = {"activity_permission", "BOOLEAN"};
+    public static final String[] GROUP_LOCATIONPERM = {"location_permission", "BOOLEAN NOT NULL"};
+    public static final String[] GROUP_ACTIVITYPERM = {"activity_permission", "BOOLEAN NOT NULL"};
     private static final String CREATE_GROUP = "CREATE TABLE " + TABLE_GROUP +
             "(" + GROUP_NAME[0] + " " + GROUP_NAME[1]
             + ", " + GROUP_RESPONSE[0] + " " + GROUP_RESPONSE[1]

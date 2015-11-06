@@ -348,7 +348,7 @@ public class PermDBInstance implements DBInstance {
 
         if ((result != null) && (result.moveToFirst())){
 
-            for (int i = 1; i < result.getCount(); i++){
+            for (int i = 0; i < result.getCount(); i++){
                 timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
                 senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
                 messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
@@ -387,7 +387,7 @@ public class PermDBInstance implements DBInstance {
 
         if ((result != null) && (result.moveToFirst())){
 
-            for (int i = 1; i < result.getCount(); i++){
+            for (int i = 0; i < result.getCount(); i++){
                 timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
                 senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
                 messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
@@ -543,7 +543,7 @@ public class PermDBInstance implements DBInstance {
 
         if ((result != null) && (result.moveToFirst())){
 
-            for (int i = 1; i < result.getCount(); i++){
+            for (int i = 0; i < result.getCount(); i++){
                 name = result.getString(result.getColumnIndex(DBHelper.CONTACT_NAME[0]));
                 phoneNumber = result.getString(result.getColumnIndex(DBHelper.CONTACT_PHONENUM[0]));
                 groupName = result.getString(result.getColumnIndex(DBHelper.CONTACT_GROUP[0]));
@@ -555,8 +555,9 @@ public class PermDBInstance implements DBInstance {
                 if (result.getString(result.getColumnIndex(DBHelper.CONTACT_ACTIVITYPERM[0])).compareTo("true") == 0) activityPermission = true;
                 else activityPermission = false;
 
-                range.add(new Contact(name, phoneNumber, groupName, response, locationPermission, activityPermission));
-
+                Contact c = new Contact(name, phoneNumber, groupName, response, locationPermission, activityPermission);
+                Log.d(TAG, getMethodName(0) +": "+ c.toString());
+                range.add(c);
                 result.moveToNext();
             }
 
@@ -576,7 +577,7 @@ public class PermDBInstance implements DBInstance {
                 "SELECT * " +
                 " FROM " + DBHelper.TABLE_CONTACT +
                 " WHERE " + DBHelper.CONTACT_GROUP[0] + " = \"" + group + "\"" +
-                " ORDER BY (" + DBHelper.CONTACT_NAME[0] + ") ASC";
+                " ORDER BY (" + DBHelper.CONTACT_NAME[0] + ") DESC";
 
         Cursor result = myDB.rawQuery(query, null);
 
@@ -591,10 +592,9 @@ public class PermDBInstance implements DBInstance {
         boolean locationPermission;
         boolean activityPermission;
 
-
         if ((result != null) && (result.moveToFirst())){
 
-            for (int i = 1; i < result.getCount(); i++){
+            for (int i = 0; i < result.getCount(); i++){
                 name = result.getString(result.getColumnIndex(DBHelper.CONTACT_NAME[0]));
                 phoneNumber = result.getString(result.getColumnIndex(DBHelper.CONTACT_PHONENUM[0]));
                 groupName = result.getString(result.getColumnIndex(DBHelper.CONTACT_GROUP[0]));
@@ -608,7 +608,9 @@ public class PermDBInstance implements DBInstance {
                 if (activityString.compareTo("true") == 0)activityPermission = true;
                 else activityPermission = false;
 
-                range.add(new Contact(name, phoneNumber, groupName, response, locationPermission, activityPermission));
+                Contact c = new Contact(name, phoneNumber, groupName, response, locationPermission, activityPermission);
+                Log.d(TAG, getMethodName(0) +": "+ c.toString());
+                range.add(c);
 
                 result.moveToNext();
             }
@@ -747,7 +749,7 @@ public class PermDBInstance implements DBInstance {
 
         if ((result != null) && (result.moveToFirst())){
 
-            for (int i = 1; i < result.getCount(); i++){
+            for (int i = 0; i < result.getCount(); i++){
                 name = result.getString(result.getColumnIndex(DBHelper.GROUP_NAME[0]));
                 response = result.getString(result.getColumnIndex(DBHelper.GROUP_RESPONSE[0]));
 
@@ -757,7 +759,9 @@ public class PermDBInstance implements DBInstance {
                 if (result.getString(result.getColumnIndex(DBHelper.GROUP_ACTIVITYPERM[0])).compareTo("true") == 0) activityPermission = true;
                 else activityPermission = false;
 
-                range.add(new Group(name, response, locationPermission, activityPermission));
+                Group g = new Group(name, response, locationPermission, activityPermission);
+                Log.d(TAG, getMethodName(0) + ": " + g.toString());
+                range.add(g);
 
                 result.moveToNext();
             }
