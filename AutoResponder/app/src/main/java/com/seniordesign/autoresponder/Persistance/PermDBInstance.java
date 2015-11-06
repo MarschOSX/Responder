@@ -301,20 +301,6 @@ public class PermDBInstance implements DBInstance {
                 msgRcv = result.getString(2);
                 msgSnt = result.getString(3);
 
-                //Date checkDate;
-
-                /*for (int i = 1; i < numRows; i++){
-                    result.moveToNext();
-                    checkDate = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
-                    if (checkDate.after(date)){
-                        date = checkDate;
-                        senderNum = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
-                        msgRcv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
-                        msgSnt = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
-                    }
-                }*/
-
-
                 Log.d(TAG, "ResponseLogRetrieved:("+ numRows +") "+ date + ", " + senderNum + ", " + msgSnt + ", " + msgRcv);
 
                 result.close();
@@ -522,7 +508,6 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
-    //TODO TEST THIS FUNCTION
     //returns sorted A - Z by name
     public ArrayList<Contact> getContactList(){
         final String query =

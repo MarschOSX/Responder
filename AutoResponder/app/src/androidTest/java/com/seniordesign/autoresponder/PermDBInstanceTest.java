@@ -116,6 +116,11 @@ public class PermDBInstanceTest extends AndroidTestCase {
         contactFromDb = database.getContactInfo(newPhoneNum);
         assertTrue(contactFromDb.getGroupName().compareTo(group) == 0);
 
+        response = "busy";
+        database.setContactResponse(newPhoneNum, response);
+        contactFromDb = database.getContactInfo(newPhoneNum);
+        assertTrue(contactFromDb.getResponse().compareTo(response) == 0);
+
         database.setContactActivityPermission(newPhoneNum, false);
         contactFromDb = database.getContactInfo(newPhoneNum);
         assertTrue(!contactFromDb.isActivityPermission());
@@ -140,6 +145,7 @@ public class PermDBInstanceTest extends AndroidTestCase {
         database.removeContact("+17172223310");
 
         ArrayList<Contact> contactTable = new ArrayList<>();
+        int[] sequence = {7, 2, 0, 1, 6, 3, 5, 4};
 
         //load into arrayList in A to Z order
         contactTable.add(new Contact("testSubjectA", "+17172223333", Group.DEFAULT_GROUP, "response", false, false));
@@ -152,17 +158,13 @@ public class PermDBInstanceTest extends AndroidTestCase {
         contactTable.add(new Contact("testSubjectH", "+17172223310", Group.DEFAULT_GROUP, "response", false, false));
 
         //add to db out of order
-        database.addContact(contactTable.get(7));
-        database.addContact(contactTable.get(2));
-        database.addContact(contactTable.get(0));
-        database.addContact(contactTable.get(1));
-        database.addContact(contactTable.get(6));
-        database.addContact(contactTable.get(3));
-        database.addContact(contactTable.get(5));
-        database.addContact(contactTable.get(4));
+        for(int i : sequence) {
+            database.addContact(contactTable.get(i));
+        }
 
         ArrayList<Contact> contactTableFromDB = database.getContactList();
 
+        //verifies that it gives to you out of order
         for (int i = 0; i < contactTable.size(); i++){
             Log.d("FINDME", contactTableFromDB.get(i).toString());
             assertTrue(contactTableFromDB.get(i).getName().compareTo(contactTable.get(i).getName()) == 0);
