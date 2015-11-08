@@ -11,8 +11,111 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Single Contact!"
-        android:id="@+id/textView3"
+        android:text="Contact Name"
+        android:id="@+id/contactName"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="34dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/contactResponse_text"
+        android:maxLength="144"
+        android:hint="I am busy right now"
+        android:layout_below="@+id/contactName"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/contactName"
+        android:layout_marginTop="25dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Text"
+        android:id="@+id/setContactTextButton"
+        android:layout_below="@+id/contactResponse_text"
+        android:layout_alignStart="@+id/contactTimingDelay_radioGroup" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/contactTimingDelay_radioGroup"
+        android:layout_below="@+id/contactTimingDelay_textView"
+        android:layout_centerHorizontal="true">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fiveMinutes_option"
+            android:id="@+id/contactFiveMin_radioButton"
+            android:layout_gravity="center_horizontal"
+            android:checked="false"
+            android:onClick="radioButtonDelaySet"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/twentyMinutes_option"
+            android:id="@+id/contactTwentyMin_radioButton"
+            android:layout_gravity="center_horizontal"
+            android:checked="false"
+            android:onClick="radioButtonDelaySet"
+            android:layout_below="@+id/contactFiveMin_radioButton"
+            android:layout_centerHorizontal="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/oneHour_option"
+            android:id="@+id/contactOneHour_radioButton"
+            android:layout_gravity="center_horizontal"
+            android:checked="false"
+            android:onClick="radioButtonDelaySet"
+            android:layout_below="@+id/contactTwentyMin_radioButton"
+            android:layout_centerHorizontal="true" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/custom_option"
+            android:id="@+id/contactCustom_option"
+            android:checked="false"
+            android:onClick="radioButtonDelaySet"
+            android:layout_below="@+id/contactOneHour_radioButton"
+            android:layout_alignStart="@+id/contactOneHour_radioButton" />
+    </RadioGroup>
+
+
+    <EditText
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/contactCustomMinText"
+        android:numeric="integer"
+        android:maxLength="3"
+        android:longClickable="false"
+        android:autoText="false"
+        android:password="false"
+        android:hint="15"
+        android:layout_alignBottom="@+id/contactTimingDelay_radioGroup"
+        android:layout_toEndOf="@+id/contactTimingDelay_radioGroup" />
+
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Timing Delay:"
+        android:id="@+id/contactTimingDelay_textView"
+        android:layout_below="@+id/setContactTextButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp" />
+
+
 </RelativeLayout>

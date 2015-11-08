@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.widget.Toast;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
@@ -82,10 +84,6 @@ public class ContactsList extends AppCompatActivity {
 
     public void updateContactListView() {
         // storing string resources into Array
-        /*TODO generate contacts name list from DB instead of this test_list
-        * probably need a for loopto get the name from each contact object, and
-        * pass this into the String[] array below--->
-        */
         int numberOfContacts = 0;
         ArrayList<Contact> rawContacts = db.getContactList();
         if(rawContacts != null){
@@ -93,20 +91,33 @@ public class ContactsList extends AppCompatActivity {
         }
 
         String[] contactsNames = new String[numberOfContacts];
+        final HashMap<String, String> contactInfo = new HashMap<>();
+
 
         for(int i = 0; i < numberOfContacts; i++){
-            contactsNames[i] = rawContacts.get(i).getName();
+            contactsNames[i] = rawContacts.get(i).getName();//this is for the ListView
+            contactInfo.put(rawContacts.get(i).getName(), rawContacts.get(i).getPhoneNumber());//This is for SingleContact activity
         }
-
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactsNames);
-        ListView contactList = (ListView)findViewById(R.id.contactList);
+        final ListView contactList = (ListView)findViewById(R.id.contactList);
         contactList.setAdapter(adapter);
 
         contactList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String nameSelectedFromList = (String) contactList.getItemAtPosition(position);
                 Intent intent = new Intent(getApplicationContext(), SingleContact.class);
-                startActivity(intent);
+                //Based on selection from list view, open new activity based on that contact
+                if(contactInfo.containsKey(nameSelectedFromList)){
+                    String number = contactInfo.get(nameSelectedFromList);
+                    intent.putExtra("SINGLE_CONTACT_NAME", nameSelectedFromList);
+                    intent.putExtra("SINGLE_CONTACT_NUMBER", number);
+                    Log.v("ContactList hast Name", nameSelectedFromList);
+                    Log.v("ContactList hash Number", number);
+                    startActivity(intent);
+                }
+
+
+
             }
         });
     }
