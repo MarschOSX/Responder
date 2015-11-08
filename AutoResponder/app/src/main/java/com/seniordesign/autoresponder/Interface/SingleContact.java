@@ -87,9 +87,10 @@ public class SingleContact extends AppCompatActivity {
         String name = intent.getStringExtra("SINGLE_CONTACT_NAME");
         String phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
         TextView contactName = (TextView) findViewById(R.id.contactName);
+        TextView contactNumber = (TextView) findViewById(R.id.contactPhoneNumberTextView);
         contactName.setText(name);
-        Contact contactInfo = db.getContactInfo(phoneNumber);
-       // Contact testCOntact = new Contact()
+        contactNumber.setText(phoneNumber);
+        //Contact contactInfo = db.getContactInfo(phoneNumber);
         /**TODO MAJOR
          * Restructure this class for the contact info to be passed to and from the DB
          * using the contact itself. If they are blank that is ok too.
@@ -98,7 +99,7 @@ public class SingleContact extends AppCompatActivity {
 
     private void setEditText(){
         //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        String replyAll = "test";//TODO db.getReplyAll();
+        String replyAll = "I am busy right now";//TODO db.getReplyAll();
         TextView contactResponse = (TextView) findViewById(R.id.contactResponse_text);
         contactResponse.setHint(replyAll);
     }
