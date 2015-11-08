@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder.Interface;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -16,9 +17,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.widget.Toast;
 
+import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+
+import java.util.ArrayList;
 
 /**
  * By MarschOSX 11/1/2015
@@ -40,25 +46,8 @@ public class ContactsList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_list);
-        // storing string resources into Array
-        /*TODO generate contacts name list from DB instead of this test_list
-        * probably need a for loopto get the name from each contact object, and
-        * pass this into the String[] array below--->
-        */
-        String[] contactsNames = getResources().getStringArray(R.array.test_list);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactsNames);
-        ListView contactList = (ListView)findViewById(R.id.contactList);
-        contactList.setAdapter(adapter);
-
-        contactList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(getApplicationContext(), SingleContact.class);
-                        startActivity(intent);
-                    }
-                });
-
-
+        this.db = DBProvider.getInstance(false, getApplicationContext());
+        updateContactListView();
     }
 
     @Override
@@ -91,8 +80,44 @@ public class ContactsList extends AppCompatActivity {
         startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
     }
 
+    public void updateContactListView() {
+        // storing string resources into Array
+        /*TODO generate contacts name list from DB instead of this test_list
+        * probably need a for loopto get the name from each contact object, and
+        * pass this into the String[] array below--->
+        */
+        int numberOfContacts = 0;
+        ArrayList<Contact> rawContacts = db.getContactList();
+        if(rawContacts != null){
+            numberOfContacts = rawContacts.size();
+        }
+
+        String[] contactsNames = new String[numberOfContacts];
+
+        for(int i = 0; i < numberOfContacts; i++){
+            contactsNames[i] = rawContacts.get(i).getName();
+        }
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactsNames);
+        ListView contactList = (ListView)findViewById(R.id.contactList);
+        contactList.setAdapter(adapter);
+
+        contactList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == CONTACT_PICKER_RESULT) {
+            Context context = getApplicationContext();
+            int duration = Toast.LENGTH_LONG;
+            CharSequence toastText;
+            Toast toast;
             String id = "";
             String name = "";
             String phoneNumber = "";
@@ -101,7 +126,6 @@ public class ContactsList extends AppCompatActivity {
                 Uri contact = data.getData();
                 int idx;
                 cursor = getContentResolver().query(contact, null, null, null, null);
-                //TODO handle when a contact is missing particular data
                 if (cursor.moveToFirst()) {
                     //Get ID of Contact
                     idx = cursor.getColumnIndex(ContactsContract.Contacts._ID);
@@ -118,24 +142,45 @@ public class ContactsList extends AppCompatActivity {
                         if (cursor.moveToNext()) {
                             idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                             phoneNumber = cursor.getString(idx);
-                        } else {
-                            //TODO Handle the absence of data
-                            Log.v("ContactList PhoneNumber", "No PhoneNumber Found");
                         }
                     }
                 }
                 Log.v("ContactList ID", id);
                 Log.v("ContactList Name", name);
                 Log.v("ContactList PhoneNumber", phoneNumber);
-
-
             }catch (Exception e){
                 Log.v("ContactList", "Failed to get Contact Info");
             }finally {
-                if(cursor != null){
+                if (cursor != null) {
                     cursor.close();
                 }
-                //TODO take the information you recieved and update the ContactList
+
+                if (name == null || name.matches("")) {//name is blank or empty
+                    Log.v("ContactList", "Contact has bad name!");
+                    toastText = "This Contact has an empty Name!";
+                    toast = Toast.makeText(context, toastText, duration);
+                    toast.show();
+                }else if(phoneNumber == null || phoneNumber.matches("")){//TODO we might need to check exact phone number validity???
+                    Log.v("ContactList", "Contact has a Bad Phone Number");
+                    toastText = "This Contact has a bad Phone Number!";
+                    toast = Toast.makeText(context, toastText, duration);
+                    toast.show();
+                }else{
+                    Log.v("ContactList", "Successfully got Contact Info, now to push to DB");
+                    //take the information you recieved and update the ContactList
+                    Contact contact = new Contact(name, phoneNumber, "", "", false, false);
+                    //Only get the name and phone number, everything else we will set later
+                    try {
+                        db.addContact(contact);
+                        Log.v("ContactList", "Successfully added Contact to DB");
+                    } catch (Exception e) {
+                        Log.v("ContactList", "Contact already in DB!");
+                        toastText = "This Contact is already in your List!";
+                        toast = Toast.makeText(context, toastText, duration);
+                        toast.show();
+                    }
+                }
+                updateContactListView();
             }
 
         } else {
