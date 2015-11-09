@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -179,7 +180,7 @@ public class ContactsList extends AppCompatActivity {
                 }else{
                     Log.v("ContactList", "Successfully got Contact Info, now to push to DB");
                     //take the information you recieved and update the ContactList
-                    Contact contact = new Contact(name, phoneNumber, "", "", false, false);
+                    Contact contact = new Contact(name, phoneNumber, Group.DEFAULT_GROUP, null, false, false);
                     //Only get the name and phone number, everything else we will set later
                     try {
                         db.addContact(contact);

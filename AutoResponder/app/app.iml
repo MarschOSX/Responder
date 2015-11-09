@@ -94,8 +94,8 @@
     <orderEntry type="library" exported="" name="appcompat-v7-23.0.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="powermock-api-support-1.6.2" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="powermock-module-junit4-1.6.2" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="javassist-3.19.0-GA" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="powermock-module-junit4-common-1.6.2" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="javassist-3.19.0-GA" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="powermock-core-1.6.2" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="mockito-all-1.10.19" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="powermock-api-mockito-1.6.2" level="project" />

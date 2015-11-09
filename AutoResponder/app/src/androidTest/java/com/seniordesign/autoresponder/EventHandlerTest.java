@@ -75,7 +75,7 @@ public class EventHandlerTest extends InstrumentationTestCase {
             public ResponseLog getLastResponseByNum(String phoneNum) {
                 Date testDate = new Date(0);
                 ResponseLog updateLog = new ResponseLog("JUNIT MESSAGE SENT",
-                        "JUNIT MESSAGE RECIEVED", "+18568327320", testDate);
+                        "JUNIT MESSAGE RECIEVED", "+14104176404", testDate);
                 return updateLog;
             }
 
@@ -148,8 +148,6 @@ public class EventHandlerTest extends InstrumentationTestCase {
             public ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end) { return null;}
         };
 
-        //uncomment this to annoy martin
-        //for(int i = 0; i < 100; i++) {
         assertNotNull(dbi);
         if (false) {
             EventHandler ev = new EventHandler(dbi);
@@ -158,9 +156,8 @@ public class EventHandlerTest extends InstrumentationTestCase {
             assertSame(ev.respondToText("1", "", 0L, true), -1);
             assertSame(ev.respondToText("123z135", "", 0L, true), -1);
             assertSame(ev.respondToText("85683273201111", "", 0L, true), -1);
-            assertSame(ev.respondToText("+18568327320", "", -1L, true), -1);
-            assertSame(ev.respondToText("+18568327320", "", 0L, true), 0);
+            assertSame(ev.respondToText("+14104176404", "", -1L, true), -1);
+            assertSame(ev.respondToText("+14104176404", "", 0L, true), 0);
         }
-        //}
     }
 }

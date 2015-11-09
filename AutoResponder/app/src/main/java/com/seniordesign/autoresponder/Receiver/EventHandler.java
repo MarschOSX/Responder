@@ -3,6 +3,8 @@ package com.seniordesign.autoresponder.Receiver;
 
 import android.telephony.SmsManager;
 
+import com.seniordesign.autoresponder.DataStructures.Contact;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 
@@ -24,12 +26,14 @@ public class EventHandler {
         //db.getResponseToggle();
         //Check phoneNumber validity
         android.util.Log.v("EventHandler,", "EventHandler is active!");
-        if (phoneNumber == null || !phoneNumber.matches("[+][0-9]{11}")){
+        // || !phoneNumber.matches("[+][0-9]{11}")
+        if (phoneNumber == null){
             android.util.Log.v("EventHandler,", "Invalid PhoneNumber Recieved");
             return -1;
         }
+        Contact contact = db.getContactInfo(phoneNumber);
 
-        if (db.getResponseToggle()) {
+        if (db.getResponseToggle() && contact != null) {
             //get lastRecieved from database
             ResponseLog updateLog = db.getLastResponseByNum(phoneNumber);
             if (updateLog == null) {
@@ -47,7 +51,16 @@ public class EventHandler {
                     updateLog.setSenderNumber(phoneNumber);
                     //get generalResponse from Database and set as message
                     if (!debug) {
-                        message = db.getReplyAll();
+                        String contactResponse = contact.getResponse();
+                        String contactGroupName = contact.getGroupName();
+
+                        if(!contactGroupName.matches(Group.DEFAULT_GROUP)) {
+                            //message = db.getGroupMessage(groupName);
+                        }else if (contactResponse == null || contactResponse.matches("")){
+                            message = db.getReplyAll();
+                        }else{
+                            message = contactResponse;
+                        }
                     } else {
                         message += "\nGeneralReplyDEBUG:\n" + db.getReplyAll();
                     }
