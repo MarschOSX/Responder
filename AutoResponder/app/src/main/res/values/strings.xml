@@ -13,4 +13,5 @@
     <string name="title_activity_contacts_list">Contacts List</string>
     <string name="title_activity_single_contact">Contact Information:</string>
     <string name="title_activity_add_contact">Add Contact From Address Book</string>
+    <string name="title_activity_set_contact_group">SetContactGroup</string>
 </resources>

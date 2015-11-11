@@ -1,5 +1,8 @@
 package com.seniordesign.autoresponder.Interface;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,9 +14,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -23,8 +28,7 @@ public class SingleContact extends AppCompatActivity {
     private DBInstance db;
     Button setTextButton;
     EditText setTextEdit;
-    EditText setDelayNum;
-    int responseDelay = 20;
+    Contact singleContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,26 +36,25 @@ public class SingleContact extends AppCompatActivity {
         setContentView(R.layout.activity_single_contact);
         this.db = DBProvider.getInstance(false, getApplicationContext());
         Intent intent = getIntent();
-        setUpContactInfo(intent);
-        setEditText();
+        final String phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
+        singleContact = db.getContactInfo(phoneNumber);
+        setUpContactInfo(singleContact);
 
         setTextButton = (Button)findViewById(R.id.setContactTextButton);
         setTextEdit   = (EditText)findViewById(R.id.contactResponse_text);
-
 
         //This sends the General Response editText field into a string
         setTextButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        String generalReply = setTextEdit.getText().toString();
-                        Log.v("General Reply:", generalReply);
+                        String contactReply = setTextEdit.getText().toString();
+                        Log.v("Contact Reply:", contactReply);
 
-                        if(generalReply == null || generalReply.matches("")){//Its blank, get default hint
-                            generalReply = setTextEdit.getHint().toString();
+                        if (contactReply.matches("")) {//Its blank, get default hint
+                            contactReply = setTextEdit.getHint().toString();
                         }
-                        //push generalReply to DB
-                        //TODO db.setReplyAll(generalReply);
-
+                        db.setContactResponse(phoneNumber, contactReply);
+                        Log.v("Single Contact:", "Set " + phoneNumber + " reply to " + contactReply);
                     }
                 });
 
@@ -79,25 +82,95 @@ public class SingleContact extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setUpContactInfo(Intent intent){
-        //get information that was passed from ContactsList
-        String name = intent.getStringExtra("SINGLE_CONTACT_NAME");
-        String phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
+    public void setUpContactInfo( Contact singleContact){
+        //Contact Info
         TextView contactName = (TextView) findViewById(R.id.contactName);
         TextView contactNumber = (TextView) findViewById(R.id.contactPhoneNumberTextView);
-        contactName.setText(name);
-        contactNumber.setText(phoneNumber);
-        //Contact contactInfo = db.getContactInfo(phoneNumber);
-        /**TODO MAJOR
-         * Restructure this class for the contact info to be passed to and from the DB
-         * using the contact itself. If they are blank that is ok too.
-         */
+        contactName.setText(singleContact.getName());
+        contactNumber.setText(singleContact.getPhoneNumber());
+
+        //Reply to this contact
+        String contactReply = singleContact.getResponse();
+        if(contactReply == null || contactReply.matches("")){//if no message is set
+            contactReply = db.getReplyAll();
+        }
+        TextView contactResponse = (TextView) findViewById(R.id.contactResponse_text);
+        contactResponse.setHint(contactReply);
+
+
+        //Permission Switches
+        Switch location = (Switch)findViewById(R.id.contactLocationToggle);
+        Switch calendar = (Switch)findViewById(R.id.contactActivityToggle);
+        if(singleContact.isLocationPermission()){
+            location.setChecked(true);
+        }else{
+            location.setChecked(false);
+        }
+        if(singleContact.isActivityPermission()){
+            calendar.setChecked(true);
+        }else{
+            calendar.setChecked(false);
+        }
+
+        //Contact Group
+        TextView contactsGroup = (TextView) findViewById(R.id.contactGroupName);
+        if(!singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){
+            contactsGroup.setHint(singleContact.getGroupName());
+        }else{
+            contactsGroup.setHint("Default");
+        }
+
     }
 
-    private void setEditText(){
-        //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        String replyAll = "I am busy right now";//TODO db.getReplyAll();
-        TextView contactResponse = (TextView) findViewById(R.id.contactResponse_text);
-        contactResponse.setHint(replyAll);
+
+
+    // Called when the user selects a time delay radio button
+    public void contactSwitchChecker(View view) {
+        // Is the button now checked?
+        boolean isToggled = ((Switch) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.contactLocationToggle:
+                Log.v("ContactLocationToggle:", java.lang.Boolean.toString(isToggled));
+                db.setContactLocationPermission(singleContact.getPhoneNumber(), isToggled);
+                break;
+            case R.id.contactActivityToggle:
+                Log.v("ContactActivityToggle:", java.lang.Boolean.toString(isToggled));
+                db.setContactActivityPermission(singleContact.getPhoneNumber(), isToggled);
+                break;
+        }
+    }
+
+    public void deleteSingleContact(View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(SingleContact.this);
+        alert.setTitle("Delete Contact: "+singleContact.getName());
+        alert.setMessage("Are you sure you want to delete this contact?");
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //do your work here
+                Log.v("SingleContactDelete:", "YES");
+                db.removeContact(singleContact.getPhoneNumber());
+                dialog.dismiss();
+                Intent intentBack = new Intent(getApplicationContext(), ContactsList.class);
+                startActivity(intentBack);
+            }
+        });
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.v("SingleContactDelete:", "NO");
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
+    }
+
+    public void setGroup(View view) {
+        Intent intentBack = new Intent(getApplicationContext(), SetContactGroup.class);
+        startActivity(intentBack);
     }
 }
