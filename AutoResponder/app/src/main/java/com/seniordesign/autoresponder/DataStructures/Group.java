@@ -48,4 +48,8 @@ public class Group {
     public void setGroupName(String name) {
         this.group_name = name;
     }
+
+    public String toString(){
+        return this.group_name + ", " + this.response + ", " + this.locationPermission + ", " + this.activityPermission;
+    }
 }

@@ -166,7 +166,7 @@ public class PermDBInstanceTest extends AndroidTestCase {
 
         //verifies that it gives to you out of order
         for (int i = 0; i < contactTable.size(); i++){
-            Log.d("FINDME", contactTableFromDB.get(i).toString());
+            //Log.d("FINDME", contactTableFromDB.get(i).toString());
             assertTrue(contactTableFromDB.get(i).getName().compareTo(contactTable.get(i).getName()) == 0);
         }
 
@@ -178,6 +178,95 @@ public class PermDBInstanceTest extends AndroidTestCase {
         database.removeContact("+17172223338");
         database.removeContact("+17172223339");
         database.removeContact("+17172223310");
+    }
+
+    public void testGroupTableFunctions() throws Exception{
+        database = DBProvider.getInstance(false, getContext());
+
+        String groupName = "testGroupA";
+        String newGroupName = "testGroupB";
+        String response = "group_test_response";
+        Group group = new Group(groupName,response, true, true);
+        Group groupFromDB;
+
+        //in case a previously ran test failed
+        database.removeGroup(groupName);
+        database.removeGroup(newGroupName);
+
+        database.addGroup(group);
+        groupFromDB = database.getGroupInfo(groupName);
+        assertNotNull(groupFromDB);
+        assertTrue(group.getGroupName().matches(groupFromDB.getGroupName()));
+        assertTrue(group.getResponse().matches(groupFromDB.getResponse()));
+        assertTrue((group.isActivityPermission() == groupFromDB.isActivityPermission()) && group.isActivityPermission());
+        assertTrue((group.isLocationPermission() == groupFromDB.isLocationPermission()) && group.isLocationPermission());
+
+        database.changeGroupName(groupName, newGroupName);
+        groupFromDB = database.getGroupInfo(newGroupName);
+        assertTrue(groupFromDB.getGroupName().compareTo(newGroupName) == 0);
+
+        response = "new_test_response";
+        database.setGroupResponse(newGroupName, response);
+        groupFromDB = database.getGroupInfo(newGroupName);
+        assertTrue(groupFromDB.getResponse().compareTo(response) == 0);
+
+        database.setGroupActivityPermission(newGroupName, false);
+        groupFromDB = database.getGroupInfo(newGroupName);
+        assertTrue(!groupFromDB.isActivityPermission());
+
+        database.setGroupLocationPermission(newGroupName, false);
+        groupFromDB = database.getGroupInfo(newGroupName);
+        assertTrue(!groupFromDB.isLocationPermission());
+
+        //remove test group and verify only 1 entry removed
+        int count = database.removeGroup(newGroupName);
+        assertTrue(count == 1);
+        assertNull(database.getGroupInfo(newGroupName));
+
+        ArrayList<Group> groupsTable = new ArrayList<>();
+        int[] sequence = {7, 2, 0, 1, 6, 3, 5, 4};
+
+        //in case previous unit test failed
+        database.removeGroup("+testSubjectA");
+        database.removeGroup("+testSubjectB");
+        database.removeGroup("+testSubjectC");
+        database.removeGroup("+testSubjectD");
+        database.removeGroup("+testSubjectE");
+        database.removeGroup("+testSubjectF");
+        database.removeGroup("+testSubjectG");
+        database.removeGroup("+testSubjectH");
+
+        //load into arrayList in A to Z order
+        groupsTable.add(new Group("testSubjectA", "response", false, false));
+        groupsTable.add(new Group("testSubjectB", "response", false, false));
+        groupsTable.add(new Group("testSubjectC", "response", false, false));
+        groupsTable.add(new Group("testSubjectD", "response", false, false));
+        groupsTable.add(new Group("testSubjectE", "response", false, false));
+        groupsTable.add(new Group("testSubjectF", "response", false, false));
+        groupsTable.add(new Group("testSubjectG", "response", false, false));
+        groupsTable.add(new Group("testSubjectH", "response", false, false));
+
+        //add to db out of order
+        for(int i : sequence) {
+            database.addGroup(groupsTable.get(i));
+        }
+
+        ArrayList<Group> groupTableFromDB = database.getGroupList();
+
+        //verifies that it gives to you out of order
+        for (int i = 0; i < groupsTable.size(); i++){
+            //Log.d("FINDME", contactTableFromDB.get(i).toString());
+            assertTrue(groupTableFromDB.get(i).getGroupName().compareTo(groupTableFromDB.get(i).getGroupName()) == 0);
+        }
+
+        database.removeGroup("+testSubjectA");
+        database.removeGroup("+testSubjectB");
+        database.removeGroup("+testSubjectC");
+        database.removeGroup("+testSubjectD");
+        database.removeGroup("+testSubjectE");
+        database.removeGroup("+testSubjectF");
+        database.removeGroup("+testSubjectG");
+        database.removeGroup("+testSubjectH");
     }
 
     public boolean checker(Object A, Object B){

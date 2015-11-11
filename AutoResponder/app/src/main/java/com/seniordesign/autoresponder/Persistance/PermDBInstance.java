@@ -614,9 +614,8 @@ public class PermDBInstance implements DBInstance {
     //GROUP TABLE FUNCTIONS//
     /////////////////////////
 
-    //TODO TEST THIS FUNCTION
     public int addGroup(Group newGroup){
-        Log.d(TAG, "adding group....");
+        Log.d(TAG, getMethodName(0) + ": adding " + newGroup.toString() + "....");
         myDB.beginTransaction();
         try {
 
@@ -624,8 +623,8 @@ public class PermDBInstance implements DBInstance {
             ContentValues args = new ContentValues();
             args.put(DBHelper.GROUP_NAME[0], newGroup.getGroupName());
             args.put(DBHelper.GROUP_RESPONSE[0], newGroup.getResponse());
-            args.put(DBHelper.GROUP_ACTIVITYPERM[0], newGroup.isActivityPermission());
-            args.put(DBHelper.GROUP_LOCATIONPERM[0], newGroup.isLocationPermission());
+            args.put(DBHelper.GROUP_ACTIVITYPERM[0], convertBool(newGroup.isActivityPermission()));
+            args.put(DBHelper.GROUP_LOCATIONPERM[0], convertBool(newGroup.isLocationPermission()));
 
 
             //add the row to the table and checks if insert was succesfull
@@ -676,7 +675,6 @@ public class PermDBInstance implements DBInstance {
         return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_RESPONSE[0], response);
     }
 
-    //TODO TEST THIS FUNCTION
     public Group getGroupInfo(String groupName){
         final String query =
                 "SELECT * " +
@@ -706,6 +704,8 @@ public class PermDBInstance implements DBInstance {
             c = new Group(name, response, locationPermission, activityPermission);
 
             result.close();
+
+            Log.d(TAG, getMethodName(0) + ": retrieved " + c.toString());
 
             return c;
         }
