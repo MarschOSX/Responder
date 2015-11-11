@@ -34,12 +34,9 @@ public class SingleContact extends AppCompatActivity {
         Intent intent = getIntent();
         setUpContactInfo(intent);
         setEditText();
-        setTimeRadioButton();
 
         setTextButton = (Button)findViewById(R.id.setContactTextButton);
         setTextEdit   = (EditText)findViewById(R.id.contactResponse_text);
-        setDelayNum   = (EditText)findViewById(R.id.contactCustomMinText);
-        setDelayNum.requestFocus();
 
 
         //This sends the General Response editText field into a string
@@ -102,61 +99,5 @@ public class SingleContact extends AppCompatActivity {
         String replyAll = "I am busy right now";//TODO db.getReplyAll();
         TextView contactResponse = (TextView) findViewById(R.id.contactResponse_text);
         contactResponse.setHint(replyAll);
-    }
-
-    private void setTimeRadioButton(){
-       // DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        RadioButton timeDelayRB;
-        Integer timeDelay = 20;//TODO db.getDelay();
-        if(timeDelay == 5){
-            timeDelayRB = (RadioButton) findViewById(R.id.contactFiveMin_radioButton);
-            timeDelayRB.setChecked(true);
-        }else if(timeDelay == 20){
-            timeDelayRB = (RadioButton) findViewById(R.id.contactTwentyMin_radioButton);
-            timeDelayRB.setChecked(true);
-        }else if(timeDelay == 60){
-            timeDelayRB = (RadioButton) findViewById(R.id.contactOneHour_radioButton);
-            timeDelayRB.setChecked(true);
-        }else{
-            timeDelayRB = (RadioButton) findViewById(R.id.contactCustom_option);
-            timeDelayRB.setChecked(true);
-            EditText customMinText = (EditText) findViewById(R.id.contactCustomMinText);
-            customMinText.setHint(timeDelay.toString());
-        }
-
-    }
-
-    public void radioButtonDelaySet(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.contactFiveMin_radioButton:
-                if (checked)
-                    responseDelay = 5;
-                break;
-            case R.id.contactTwentyMin_radioButton:
-                if (checked)
-                    responseDelay = 20;
-                break;
-            case R.id.contactOneHour_radioButton:
-                if (checked)
-                    responseDelay = 60;
-                break;
-            case R.id.contactCustom_option:
-                if (checked)
-                    try{
-                        responseDelay = Integer.parseInt(setDelayNum.getText().toString());
-                    }catch(NumberFormatException e){
-                        responseDelay = Integer.parseInt(setDelayNum.getHint().toString());
-                    }
-                break;
-        }
-        Log.v("Time Delay:", Integer.toString(responseDelay));
-        //TODO db.setdelay to DB
-        //Default is 20 and the RadioButton is set to this
-        //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        //db.setDelay(responseDelay);
     }
 }

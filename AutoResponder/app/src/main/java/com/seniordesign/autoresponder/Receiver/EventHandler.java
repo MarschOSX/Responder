@@ -10,7 +10,7 @@ import com.seniordesign.autoresponder.Persistance.DBInstance;
 
 import java.sql.Date;
 
-/**
+/*
  * Created by MarschOSX on 10/8/2015.
  */
 public class EventHandler {
@@ -42,7 +42,7 @@ public class EventHandler {
             }
             Long lastRecieved = updateLog.getTimeStamp().getTime();
             //get delaySet from database
-            Long delaySet = 60000 * Long.valueOf(db.getDelay());//convert minutes to milliseconds
+            Long delaySet = 60000 * (long) db.getDelay();//convert minutes to milliseconds
             if (timeRecieved != null && timeRecieved >= 0L) {
                 if (lastRecieved == 0 || lastRecieved + delaySet < timeRecieved) {
                     lastRecieved = timeRecieved;
@@ -56,6 +56,8 @@ public class EventHandler {
 
                         if(!contactGroupName.matches(Group.DEFAULT_GROUP)) {
                             //message = db.getGroupMessage(groupName);
+                            android.util.Log.v("EventHandler,", "Groups Not A Feature Yet!");
+                            return -1;
                         }else if (contactResponse == null || contactResponse.matches("")){
                             message = db.getReplyAll();
                         }else{
@@ -84,7 +86,7 @@ public class EventHandler {
                 return -1;
             }
         }
-        android.util.Log.v("EventHandler,", "Response Toggle is OFF");
+        android.util.Log.v("EventHandler,", "No Text Sent!");
         return -1;
     }
 }
