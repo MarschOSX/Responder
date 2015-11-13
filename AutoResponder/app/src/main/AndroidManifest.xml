@@ -55,6 +55,10 @@
             android:name=".Interface.NewGroup"
             android:label="@string/title_activity_new_group" >
         </activity>
+        <activity
+            android:name=".Interface.SingleGroup"
+            android:label="@string/title_activity_single_group" >
+        </activity>
     </application>
 
 </manifest>

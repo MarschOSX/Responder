@@ -1,0 +1,113 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.seniordesign.autoresponder.Interface.SingleGroup">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Group Name"
+        android:id="@+id/singleGroupName"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textSize="34dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/singleGroupResponseText"
+        android:maxLength="144"
+        android:hint="I am busy right now"
+        android:layout_below="@+id/contactName"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="60dp"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Text"
+        android:id="@+id/setSingleGroupResponseTextButton"
+        android:layout_below="@+id/singleGroupResponseText"
+        android:layout_centerHorizontal="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:id="@+id/singleGroupLocationToggle"
+        android:checked="false"
+        android:textSize="24dp"
+        android:layout_below="@+id/setSingleGroupResponseTextButton"
+        android:layout_alignParentStart="true"
+        android:onClick="singleGroupSwitchSetter"
+        android:layout_marginTop="20dp" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calendar"
+        android:id="@+id/singleGroupActivityToggle"
+        android:checked="false"
+        android:textSize="24dp"
+        android:layout_alignTop="@+id/singleGroupLocationToggle"
+        android:onClick="singleGroupSwitchSetter"
+        android:layout_toEndOf="@+id/setSingleGroupResponseTextButton" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Group Members:"
+        android:id="@+id/singleGroupMembers"
+        android:textSize="30dp"
+        android:layout_below="@+id/singleGroupDeleteButton"
+        android:layout_alignEnd="@+id/setSingleGroupResponseTextButton"
+        android:layout_marginTop="30dp" />
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/singleGroupsList"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/singleGroupMembers" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Name"
+        android:id="@+id/singleGroupChangeName"
+        android:layout_marginLeft="30dp"
+        android:onClick="changeSingleGroupName"
+        android:layout_alignTop="@+id/singleGroupName"
+        android:layout_alignEnd="@+id/singleGroupResponseText" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Group"
+        android:id="@+id/singleGroupDeleteButton"
+        android:onClick="deleteSingleGroup"
+        android:layout_alignTop="@+id/singleGroupAddContact"
+        android:layout_toEndOf="@+id/singleGroupMembers" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Contact"
+        android:id="@+id/singleGroupAddContact"
+        android:onClick="singleGroupAddContact"
+        android:layout_below="@+id/singleGroupLocationToggle"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp" />
+
+</RelativeLayout>

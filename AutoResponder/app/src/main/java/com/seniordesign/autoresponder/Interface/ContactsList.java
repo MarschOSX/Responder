@@ -43,6 +43,8 @@ public class ContactsList extends AppCompatActivity {
 
     private DBInstance db;
     private static final int CONTACT_PICKER_RESULT = 1001;
+    boolean pickerFlag = false;
+    String groupName = null;
 
 
     @Override
@@ -51,6 +53,13 @@ public class ContactsList extends AppCompatActivity {
         setContentView(R.layout.activity_contacts_list);
         this.db = DBProvider.getInstance(false, getApplicationContext());
         updateContactListView();
+        Intent intent = getIntent();
+        groupName = intent.getStringExtra("ADD_CONTACT_TO_SINGLE_GROUP");
+        if (groupName != null) {
+            pickerFlag = true;
+        }
+
+
     }
 
     @Override
@@ -106,14 +115,25 @@ public class ContactsList extends AppCompatActivity {
         contactList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String nameSelectedFromList = (String) contactList.getItemAtPosition(position);
-                Intent intent = new Intent(getApplicationContext(), SingleContact.class);
-                //Based on selection from list view, open new activity based on that contact
-                if(contactInfo.containsKey(nameSelectedFromList)){
-                    String number = contactInfo.get(nameSelectedFromList);
-                    intent.putExtra("SINGLE_CONTACT_NUMBER", number);
-                    Log.v("ContactList hast Name", nameSelectedFromList);
-                    Log.v("ContactList hash Number", number);
-                    startActivity(intent);
+                if(pickerFlag){
+                    Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                    if(contactInfo.containsKey(nameSelectedFromList)){
+                        String number = contactInfo.get(nameSelectedFromList);
+                        db.setContactGroup(number,groupName);
+                        Log.v("ContactList hast Name", nameSelectedFromList);
+                        Log.v("ContactList hash Number", number);
+                        startActivity(intent);
+                    }
+                }else{
+                    Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                    //Based on selection from list view, open new activity based on that contact
+                    if(contactInfo.containsKey(nameSelectedFromList)){
+                        String number = contactInfo.get(nameSelectedFromList);
+                        intent.putExtra("SINGLE_CONTACT_NUMBER", number);
+                        Log.v("ContactList hast Name", nameSelectedFromList);
+                        Log.v("ContactList hash Number", number);
+                        startActivity(intent);
+                    }
                 }
 
 

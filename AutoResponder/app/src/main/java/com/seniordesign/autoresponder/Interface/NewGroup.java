@@ -126,12 +126,12 @@ public class NewGroup extends AppCompatActivity {
 
         if(groupName == null || groupName.matches("")){
             Log.v("NewGroup", "New Group has bad name!");
-            toastText = "This Group has an empty Name!";
+            toastText = "Group Failed to Add!";
             toast = Toast.makeText(context, toastText, duration);
             toast.show();
         }else if(doesGroupExist != null){
             Log.v("NewGroup", "New Group has a name in the DB!");
-            toastText = "This Group Name Already Exists!";
+            toastText = "Group Failed to Add!";
             toast = Toast.makeText(context, toastText, duration);
             toast.show();
         }
