@@ -401,6 +401,14 @@ public class PermDBInstance implements DBInstance {
 
     public int addContact(Contact newContact){
         Log.d(TAG, "adding contact(" + newContact.toString() + ")....");
+
+        //verify first that the group does exist
+        Group g = this.getGroupInfo(newContact.getGroupName());
+        if (g == null){
+
+            return -1;
+        }
+
         myDB.beginTransaction();
         try {
 
@@ -645,31 +653,31 @@ public class PermDBInstance implements DBInstance {
         return 0;
     }
 
-    //TODO TEST THIS FUNCTION
+
     public int removeGroup(String groupName){
         Log.d(TAG, "removing " + groupName + " from groups....");
         return remove(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0] + "=\"" + groupName + "\"");
     }
 
-    //TODO TEST THIS FUNCTION
+
     public int changeGroupName(String oldName, String newName){
         Log.d(TAG, "changing name of " + oldName + " to " + newName + ".....");
         return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], oldName ,DBHelper.GROUP_NAME[0], newName);
     }
 
-    //TODO TEST THIS FUNCTION
+
     public int setGroupLocationPermission(String groupName, boolean permission){
         Log.d(TAG, "changing activity of permission of " + groupName + " to " + permission + ".....");
         return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_LOCATIONPERM[0], permission);
     }
 
-    //TODO TEST THIS FUNCTION
+
     public int setGroupActivityPermission(String groupName, boolean permission){
         Log.d(TAG, "changing activity permission of " + groupName + " to " + permission + ".....");
         return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_ACTIVITYPERM[0], permission);
     }
 
-    //TODO TEST THIS FUNCTION
+
     public int setGroupResponse(String groupName, String response){
         Log.d(TAG, "setting group response of " + groupName + " to " + response + ".....");
         return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], groupName ,DBHelper.GROUP_RESPONSE[0], response);
@@ -715,7 +723,6 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
-    //TODO TEST THIS FUNCTION
     //returns sorted A-Z by group name
     public ArrayList<Group> getGroupList(){
         final String query =

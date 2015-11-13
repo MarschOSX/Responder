@@ -168,21 +168,34 @@ public class TestDBInstance implements DBInstance {
     * @param Contact newContact
     * @return # 0 for success, negative number for error code*/
     public int addContact(Contact newContact){
-        if (this.contactTable.size() > 0){
-            for(int i = 0; i < this.contactTable.size(); i++){
-                if (this.contactTable.get(i).getName().compareTo(newContact.getName()) < 0 ){
-                    this.contactTable.add(i, newContact);
-                    return 0;
-                }
+        //check to make sure group name exists
+        boolean groupExists = false;
+        for (int i = 0; i < this.groupTable.size(); i++){
+            if (this.groupTable.get(i).getGroupName().compareTo(newContact.getGroupName()) == 0){
+                groupExists = true;
+                break;
             }
+        }
 
-            //in case last name was the same
-            this.contactTable.add(newContact);
+        if(groupExists) {
+            if (this.contactTable.size() > 0) {
+                for (int i = 0; i < this.contactTable.size(); i++) {
+                    if (this.contactTable.get(i).getName().compareTo(newContact.getName()) < 0) {
+                        this.contactTable.add(i, newContact);
+                        return 0;
+                    }
+                }
+
+                //in case last name was the same
+                this.contactTable.add(newContact);
+            } else {
+                this.contactTable.add(newContact);
+            }
+            return 0;
         }
-        else {
-            this.contactTable.add(newContact);
+        else{
+            return -1;
         }
-        return 0;
     }
 
     /*removes all contacts with that phone number
