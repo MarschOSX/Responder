@@ -85,9 +85,16 @@ public interface DBInstance {
    * @return # of rows updated, or error code as int < 0*/
     int setContactActivityPermission(String phoneNum, boolean permission);
 
+    /*changes a contact's inheritance, ie if true, when you run getContactInfo() it will
+       return a contact, but the response and permissions returned will be from the group
+   * @param String phoneNum, String groupName
+   * @return # of rows updated, or error code as int < 0*/
+    int setContactInheritance(String phoneNum, boolean inheritance);
+
     /*changes a contact's response
     * @param String phoneNum, String response
-    * @return # of rows updated, or error code as int < 0*/
+    * @return # of rows updated,
+    * @return -1 if the new groupName does not exist*/
     int setContactGroup(String phoneNum, String groupName);
 
     /*use to get contact info for a phonenumber

@@ -276,6 +276,18 @@ public class TestDBInstance implements DBInstance {
         return -1;
     }
 
+    public int setContactInheritance(String phoneNum, boolean inheritance){
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
+                this.contactTable.get(i).setInheritance(inheritance);
+                return 0;
+            }
+        }
+
+        //no contact found to modify
+        return -1;
+    }
+
 
      /*changes a contact's group name
    * @param String phoneNum, String groupName

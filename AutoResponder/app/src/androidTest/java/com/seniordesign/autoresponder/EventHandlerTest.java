@@ -103,9 +103,11 @@ public class EventHandlerTest extends InstrumentationTestCase {
 
             public int setContactActivityPermission(String phoneNum, boolean permission) { return -1;}
 
+            public int setContactInheritance(String phoneNum, boolean permission) { return -1;}
+
             public int setContactGroup(String phoneNum, String groupName) { return -1;}
 
-            public Contact getContactInfo(String phoneNum) { return null;}
+            public Contact getContactInfo(String phoneNum) { return new Contact("Pinger", "14104176404", Group.DEFAULT_GROUP, "JUNIT TEST", false, false, false);}
 
             //returns sorted A - Z by name
             public ArrayList<Contact> getContactList() { return null;}
@@ -149,6 +151,8 @@ public class EventHandlerTest extends InstrumentationTestCase {
         };
 
         assertNotNull(dbi);
+
+        //TODO FIX EVENTHANDLER TEST
         if (false) {
             EventHandler ev = new EventHandler(dbi);
             assertSame(ev.respondToText(null, "", 0L, true), -1);

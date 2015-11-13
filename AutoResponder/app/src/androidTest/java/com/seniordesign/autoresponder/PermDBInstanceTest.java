@@ -83,16 +83,24 @@ public class PermDBInstanceTest extends AndroidTestCase {
         //Create Contact to test
         String name = "testSubjectA";
         String response = "test response";
+        String groupResponse = "test response2";
         String phoneNum = "+12345678901";
         String newPhoneNum = "+12345678902";
         String group = "testGroupA";
-        Contact contact = new Contact(name, phoneNum, group, response, true, true);
+        String newGroup = "testGroupB";
+        Contact contact = new Contact(name, phoneNum, group, groupResponse, true, true, false);
+        Group testGroup = new Group(group, response, false, false);
 
         //clear db just in case prior test failed and did not clear test rows
         database.removeContact(phoneNum);
         database.removeContact(newPhoneNum);
+        database.removeGroup(group);
+        database.removeGroup(newGroup);
 
+        assertTrue(database.addContact(contact) == -1);
+        database.addGroup(testGroup);
         database.addContact(contact);
+
         Contact contactFromDb = database.getContactInfo(phoneNum);
         assertNotNull(contactFromDb);
         assertTrue(contact.getName().matches(contactFromDb.getName()));
@@ -101,6 +109,7 @@ public class PermDBInstanceTest extends AndroidTestCase {
         assertTrue(contact.getResponse().matches(contactFromDb.getResponse()));
         assertTrue((contact.isActivityPermission() == contactFromDb.isActivityPermission()) && contact.isActivityPermission());
         assertTrue((contact.isLocationPermission() == contactFromDb.isLocationPermission()) && contact.isLocationPermission());
+        assertTrue((contact.isInheritance() == contactFromDb.isInheritance()) && !contact.isInheritance());
 
         name = "testSubjectB";
         database.setContactName(phoneNum, name);
@@ -111,10 +120,11 @@ public class PermDBInstanceTest extends AndroidTestCase {
         contactFromDb = database.getContactInfo(newPhoneNum);
         assertTrue(contactFromDb.getPhoneNumber().compareTo(newPhoneNum) == 0);
 
-        group = "testGroupB";
-        database.setContactGroup(newPhoneNum, group);
+        assertTrue(database.setContactGroup(newPhoneNum, newGroup) == -1);
+        database.changeGroupName(group, newGroup);
+        database.setContactGroup(newPhoneNum, newGroup);
         contactFromDb = database.getContactInfo(newPhoneNum);
-        assertTrue(contactFromDb.getGroupName().compareTo(group) == 0);
+        assertTrue(contactFromDb.getGroupName().compareTo(newGroup) == 0);
 
         response = "busy";
         database.setContactResponse(newPhoneNum, response);
@@ -128,6 +138,14 @@ public class PermDBInstanceTest extends AndroidTestCase {
         database.setContactLocationPermission(newPhoneNum, false);
         contactFromDb = database.getContactInfo(newPhoneNum);
         assertTrue(!contactFromDb.isLocationPermission());
+
+        database.setContactInheritance(newPhoneNum, true);
+        contactFromDb = database.getContactInfo(newPhoneNum);
+        assertTrue(contactFromDb.isInheritance());
+        assertTrue(contactFromDb.getResponse().matches(testGroup.getResponse()));
+        assertTrue((contactFromDb.isActivityPermission() == testGroup.isActivityPermission()) && !contactFromDb.isActivityPermission());
+        assertTrue((contactFromDb.isLocationPermission() == testGroup.isLocationPermission()) && !contactFromDb.isLocationPermission());
+        database.setContactInheritance(newPhoneNum, false);
 
         int count = database.removeContact(newPhoneNum);
         assertTrue(count == 1);
@@ -143,19 +161,21 @@ public class PermDBInstanceTest extends AndroidTestCase {
         database.removeContact("+17172223338");
         database.removeContact("+17172223339");
         database.removeContact("+17172223310");
+        database.removeContact("+17172223311");
+
 
         ArrayList<Contact> contactTable = new ArrayList<>();
         int[] sequence = {7, 2, 0, 1, 6, 3, 5, 4};
 
         //load into arrayList in A to Z order
-        contactTable.add(new Contact("testSubjectA", "+17172223333", Group.DEFAULT_GROUP, "response", false, false));
-        contactTable.add(new Contact("testSubjectB", "+17172223334", Group.DEFAULT_GROUP, "response", false, false));
-        contactTable.add(new Contact("testSubjectC", "+17172223335", Group.DEFAULT_GROUP, "response", false, false));
-        contactTable.add(new Contact("testSubjectD", "+17172223336", Group.DEFAULT_GROUP, "response", false, false));
-        contactTable.add(new Contact("testSubjectE", "+17172223337", Group.DEFAULT_GROUP, "response", false, false));
-        contactTable.add(new Contact("testSubjectF", "+17172223338", Group.DEFAULT_GROUP, "response", false, false));
-        contactTable.add(new Contact("testSubjectG", "+17172223339", Group.DEFAULT_GROUP, "response", false, false));
-        contactTable.add(new Contact("testSubjectH", "+17172223310", Group.DEFAULT_GROUP, "response", false, false));
+        contactTable.add(new Contact("testSubjectA", "+17172223333", Group.DEFAULT_GROUP, "response", false, false, false));
+        contactTable.add(new Contact("testSubjectB", "+17172223334", Group.DEFAULT_GROUP, "response", false, false, false));
+        contactTable.add(new Contact("testSubjectC", "+17172223335", Group.DEFAULT_GROUP, "response", false, false, false));
+        contactTable.add(new Contact("testSubjectD", "+17172223336", Group.DEFAULT_GROUP, "response", false, false, false));
+        contactTable.add(new Contact("testSubjectE", "+17172223337", Group.DEFAULT_GROUP, "response", false, false, false));
+        contactTable.add(new Contact("testSubjectF", "+17172223338", Group.DEFAULT_GROUP, "response", false, false, false));
+        contactTable.add(new Contact("testSubjectG", "+17172223339", Group.DEFAULT_GROUP, "response", false, false, false));
+        contactTable.add(new Contact("testSubjectH", "+17172223310", Group.DEFAULT_GROUP, "response", false, false, false));
 
         //add to db out of order
         for(int i : sequence) {
@@ -170,6 +190,14 @@ public class PermDBInstanceTest extends AndroidTestCase {
             assertTrue(contactTableFromDB.get(i).getName().compareTo(contactTable.get(i).getName()) == 0);
         }
 
+        database.addContact(new Contact("testSubjectI", "+17172223311", newGroup, "response", false, false, false));
+        contactTableFromDB = database.getGroup(Group.DEFAULT_GROUP);
+        //verifies that it gives to you out of order
+        for (int i = 0; i < contactTable.size(); i++){
+            //Log.d("FINDME", contactTableFromDB.get(i).toString());
+            assertTrue(contactTableFromDB.get(i).getName().compareTo(contactTable.get(i).getName()) == 0);
+        }
+
         database.removeContact("+17172223333");
         database.removeContact("+17172223334");
         database.removeContact("+17172223335");
@@ -178,6 +206,9 @@ public class PermDBInstanceTest extends AndroidTestCase {
         database.removeContact("+17172223338");
         database.removeContact("+17172223339");
         database.removeContact("+17172223310");
+        database.removeContact("+17172223311");
+        database.removeGroup(group);
+        database.removeGroup(newGroup);
     }
 
     public void testGroupTableFunctions() throws Exception{
@@ -227,14 +258,14 @@ public class PermDBInstanceTest extends AndroidTestCase {
         int[] sequence = {7, 2, 0, 1, 6, 3, 5, 4};
 
         //in case previous unit test failed
-        database.removeGroup("+testSubjectA");
-        database.removeGroup("+testSubjectB");
-        database.removeGroup("+testSubjectC");
-        database.removeGroup("+testSubjectD");
-        database.removeGroup("+testSubjectE");
-        database.removeGroup("+testSubjectF");
-        database.removeGroup("+testSubjectG");
-        database.removeGroup("+testSubjectH");
+        database.removeGroup("testSubjectA");
+        database.removeGroup("testSubjectB");
+        database.removeGroup("testSubjectC");
+        database.removeGroup("testSubjectD");
+        database.removeGroup("testSubjectE");
+        database.removeGroup("testSubjectF");
+        database.removeGroup("testSubjectG");
+        database.removeGroup("testSubjectH");
 
         //load into arrayList in A to Z order
         groupsTable.add(new Group("testSubjectA", "response", false, false));
@@ -259,14 +290,14 @@ public class PermDBInstanceTest extends AndroidTestCase {
             assertTrue(groupTableFromDB.get(i).getGroupName().compareTo(groupTableFromDB.get(i).getGroupName()) == 0);
         }
 
-        database.removeGroup("+testSubjectA");
-        database.removeGroup("+testSubjectB");
-        database.removeGroup("+testSubjectC");
-        database.removeGroup("+testSubjectD");
-        database.removeGroup("+testSubjectE");
-        database.removeGroup("+testSubjectF");
-        database.removeGroup("+testSubjectG");
-        database.removeGroup("+testSubjectH");
+        database.removeGroup("testSubjectA");
+        database.removeGroup("testSubjectB");
+        database.removeGroup("testSubjectC");
+        database.removeGroup("testSubjectD");
+        database.removeGroup("testSubjectE");
+        database.removeGroup("testSubjectF");
+        database.removeGroup("testSubjectG");
+        database.removeGroup("testSubjectH");
     }
 
     public boolean checker(Object A, Object B){

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
 /**
@@ -14,7 +15,7 @@ import com.seniordesign.autoresponder.DataStructures.Setting;
 public class DBHelper extends SQLiteOpenHelper{
     private static final String TAG = "DBHelper";
     public static final String DATABASE_NAME = "autoResponder.db";
-    public static final int DATABASE_VERSION = 5; //**IMPORTANT** increment version if you make changes to table structure or add a new table
+    public static final int DATABASE_VERSION = 6; //**IMPORTANT** increment version if you make changes to table structure or add a new table
 
     //TABLE INFO HERE:
     //Column info is stored as a 2 element array with 0 the title and 1 the datatype
@@ -55,13 +56,15 @@ public class DBHelper extends SQLiteOpenHelper{
     public static final String[] CONTACT_RESPONSE = {"response", "VARCHAR(144)"};
     public static final String[] CONTACT_LOCATIONPERM = {"location_permission", "BOOLEAN"};
     public static final String[] CONTACT_ACTIVITYPERM = {"activity_permission", "BOOLEAN"};
+    public static final String[] CONTACT_INHERITANCE = {"inheritance", "BOOLEAN"};
     private static final String CREATE_CONTACT = "CREATE TABLE " + TABLE_CONTACT +
             "(" + CONTACT_NAME[0] + " " + CONTACT_NAME[1]
             + ", " + CONTACT_PHONENUM[0] + " " + CONTACT_PHONENUM[1]
             + ", " + CONTACT_GROUP[0] + " " + CONTACT_GROUP[1]
             + ", " + CONTACT_RESPONSE[0] + " " + CONTACT_RESPONSE[1]
             + ", " + CONTACT_LOCATIONPERM[0] + " " + CONTACT_LOCATIONPERM[1]
-            + ", " + CONTACT_ACTIVITYPERM[0] + " " + CONTACT_ACTIVITYPERM[1] + ")";
+            + ", " + CONTACT_ACTIVITYPERM[0] + " " + CONTACT_ACTIVITYPERM[1]
+            + ", " + CONTACT_INHERITANCE[0] + " " + CONTACT_INHERITANCE[1] + ")";
 
     public static final String TABLE_GROUP = "group_table";
     public static final String[] GROUP_NAME = {"name", "TEXT NOT NULL UNIQUE"};
@@ -116,6 +119,32 @@ public class DBHelper extends SQLiteOpenHelper{
                 db.endTransaction();
             }
         }
+
+        //add default group
+
+        db.beginTransaction();
+        try {
+            ContentValues insertSetting = new ContentValues();
+            insertSetting.put(GROUP_NAME[0], Group.DEFAULT_GROUP);
+            insertSetting.put(GROUP_RESPONSE[0], Setting.REPLY_ALL_DEF);
+            insertSetting.put(GROUP_ACTIVITYPERM[0], "false");
+            insertSetting.put(GROUP_LOCATIONPERM[0], "false");
+            if (db.insert(TABLE_GROUP, null, insertSetting) == -1){
+                Log.d(TAG, "could not create " + Group.DEFAULT_GROUP);
+            }
+            else{
+                Log.d(TAG, Group.DEFAULT_GROUP + " was added");
+            }
+            db.setTransactionSuccessful();
+        }
+        catch (Exception e){
+            db.endTransaction();
+            throw e;
+        }
+        finally {
+            db.endTransaction();
+        }
+
     }
 
     @Override

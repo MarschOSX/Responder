@@ -9,7 +9,6 @@ import android.util.Log;
 public class DBProvider{
     private static final String TAG = "DBProvider";
     private static DBInstance testDB;
-    private static DBInstance permDB;
 
     public static DBInstance getInstance(boolean testMode, Context context){
         if (testMode){
@@ -22,8 +21,7 @@ public class DBProvider{
         }
         else{
             Log.d(TAG, "accessing database");
-            permDB = new PermDBInstance(context);
-            return permDB;
+            return new PermDBInstance(context);
         }
     }
 }
