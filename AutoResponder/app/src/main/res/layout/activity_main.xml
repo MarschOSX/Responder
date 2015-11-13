@@ -10,7 +10,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_height="350dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/linearLayout">
@@ -70,17 +70,18 @@
         <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="GROUPS"
+                    android:id="@+id/manageGroups"
+                    android:onClick="gotoManageGroups"
+                    android:layout_gravity="center_horizontal" />
+
+        <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="Settings"
                     android:id="@+id/settings_button"
                     android:onClick="gotoSettings"
                     android:layout_column="6" />
-
-        <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="Version 0.12"
-                    android:id="@+id/textView" />
 
     </LinearLayout>
 
@@ -92,5 +93,15 @@
         android:id="@+id/textView2"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/linearLayout" />
+
+    <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Version 0.12"
+                android:id="@+id/textView"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignStart="@+id/linearLayout" />
 
 </RelativeLayout>

@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.seniordesign.autoresponder.Interface.NewGroup">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/newGroupName"
+        android:maxLength="144"
+        android:hint="NewGroupName"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="40dp"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Name"
+        android:id="@+id/setNewGroupName"
+        android:layout_below="@+id/newGroupName"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/newGroupResponseText"
+        android:maxLength="144"
+        android:layout_below="@+id/GroupResponseHeader"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_alignEnd="@+id/newGroupName"
+        android:hint="ResponseToGroup" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Response Text"
+        android:id="@+id/setNewGroupResponseText"
+        android:layout_below="@+id/newGroupResponseText"
+        android:layout_alignEnd="@+id/createNewGroup" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Group Name:"
+        android:id="@+id/groupNameHeader"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textSize="25dp"
+        android:textColor="@color/abc_background_cache_hint_selector_material_dark" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Group Response:"
+        android:id="@+id/GroupResponseHeader"
+        android:textSize="25dp"
+        android:textColor="@color/abc_background_cache_hint_selector_material_dark"
+        android:layout_marginTop="49dp"
+        android:layout_below="@+id/setNewGroupName"
+        android:layout_alignParentStart="true" />
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:id="@+id/newGroupLocationToggle"
+        android:checked="false"
+        android:textSize="24dp"
+        android:layout_alignTop="@+id/newGroupActivityToggle"
+        android:onClick="setNewGroupToggles"
+        android:layout_alignEnd="@+id/groupNameHeader" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calendar"
+        android:id="@+id/newGroupActivityToggle"
+        android:checked="false"
+        android:textSize="24dp"
+        android:layout_below="@+id/setNewGroupResponseText"
+        android:layout_alignEnd="@+id/newGroupResponseText"
+        android:onClick="setNewGroupToggles"
+        android:layout_marginTop="40dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create New Group"
+        android:id="@+id/createNewGroup"
+        android:layout_alignParentBottom="true"
+        android:onClick="createNewGroup"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>

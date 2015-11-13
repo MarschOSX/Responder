@@ -43,6 +43,18 @@
             android:name=".Interface.SingleContact"
             android:label="@string/title_activity_single_contact" >
         </activity>
+        <activity
+            android:name=".Interface.SetContactGroup"
+            android:label="@string/title_activity_set_contact_group" >
+        </activity>
+        <activity
+            android:name=".Interface.ManageGroups"
+            android:label="@string/title_activity_manage_groups" >
+        </activity>
+        <activity
+            android:name=".Interface.NewGroup"
+            android:label="@string/title_activity_new_group" >
+        </activity>
     </application>
 
 </manifest>

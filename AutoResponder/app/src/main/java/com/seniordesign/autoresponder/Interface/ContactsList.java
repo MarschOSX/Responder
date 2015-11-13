@@ -110,7 +110,6 @@ public class ContactsList extends AppCompatActivity {
                 //Based on selection from list view, open new activity based on that contact
                 if(contactInfo.containsKey(nameSelectedFromList)){
                     String number = contactInfo.get(nameSelectedFromList);
-                    intent.putExtra("SINGLE_CONTACT_NAME", nameSelectedFromList);
                     intent.putExtra("SINGLE_CONTACT_NUMBER", number);
                     Log.v("ContactList hast Name", nameSelectedFromList);
                     Log.v("ContactList hash Number", number);
