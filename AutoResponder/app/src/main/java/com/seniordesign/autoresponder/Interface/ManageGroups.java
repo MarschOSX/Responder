@@ -80,22 +80,15 @@ public class ManageGroups extends AppCompatActivity {
         final ListView groupsList = (ListView)findViewById(R.id.groupsList);
         groupsList.setAdapter(adapter);
 
-        /*contactList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        groupsList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String nameSelectedFromList = (String) contactList.getItemAtPosition(position);
-                Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                String groupName = (String) groupsList.getItemAtPosition(position);
+                Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
                 //Based on selection from list view, open new activity based on that contact
-                if(contactInfo.containsKey(nameSelectedFromList)){
-                    String number = contactInfo.get(nameSelectedFromList);
-                    intent.putExtra("SINGLE_CONTACT_NUMBER", number);
-                    Log.v("ContactList hast Name", nameSelectedFromList);
-                    Log.v("ContactList hash Number", number);
-                    startActivity(intent);
-                }
-
-
-
+                intent.putExtra("GROUP_NAME", groupName);
+                Log.v("GroupName Selected: ", groupName);
+                startActivity(intent);
             }
-        });*/
+        });
     }
 }

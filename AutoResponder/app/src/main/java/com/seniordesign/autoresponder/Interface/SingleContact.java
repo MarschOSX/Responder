@@ -152,7 +152,7 @@ public class SingleContact extends AppCompatActivity {
                 Log.v("SingleContactDelete:", "YES");
                 db.removeContact(singleContact.getPhoneNumber());
                 dialog.dismiss();
-                Intent intentBack = new Intent(getApplicationContext(), ContactsList.class);
+                Intent intentBack = new Intent(getApplicationContext(), Main.class);
                 startActivity(intentBack);
             }
         });
