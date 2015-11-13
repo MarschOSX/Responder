@@ -43,7 +43,6 @@ public class SingleContact extends AppCompatActivity {
         setTextButton = (Button)findViewById(R.id.setContactTextButton);
         setTextEdit   = (EditText)findViewById(R.id.contactResponse_text);
 
-        //This sends the General Response editText field into a string
         setTextButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
