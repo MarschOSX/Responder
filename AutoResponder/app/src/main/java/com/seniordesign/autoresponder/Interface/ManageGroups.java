@@ -68,14 +68,21 @@ public class ManageGroups extends AppCompatActivity {
         int numberOfGroups = 0;
         ArrayList<Group> rawGroups = db.getGroupList();
         if(rawGroups != null){
-            numberOfGroups = rawGroups.size();
+            numberOfGroups = rawGroups.size() - 1;
         }
 
         String[] groupNames = new String[numberOfGroups];
 
         for(int i = 0; i < numberOfGroups; i++){
-            groupNames[i] = rawGroups.get(i).getGroupName();//this is for the ListView
+            String groupName = rawGroups.get(i).getGroupName();
+            if(!groupName.matches(Group.DEFAULT_GROUP)) {
+                groupNames[i] = groupName;//this is for the ListView
+            }else{
+                rawGroups.remove(i);
+                i--;
+            }
         }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, groupNames);
         final ListView groupsList = (ListView)findViewById(R.id.groupsList);
         groupsList.setAdapter(adapter);
