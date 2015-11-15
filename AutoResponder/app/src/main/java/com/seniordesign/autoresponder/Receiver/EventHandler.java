@@ -74,8 +74,8 @@ public class EventHandler {
                     //Send the GeneralResponse Message
                     SmsManager sms = SmsManager.getDefault();
 
-                    sms.sendTextMessage(phoneNumber, null, message, null, null);
                     android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + message);
+                    sms.sendTextMessage(phoneNumber, null, message, null, null);
                     return 0;
                 } else {
                     android.util.Log.v("EventHandler,", "Cannot send a response yet!");

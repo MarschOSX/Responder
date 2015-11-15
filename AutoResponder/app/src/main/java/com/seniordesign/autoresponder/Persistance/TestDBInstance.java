@@ -180,7 +180,7 @@ public class TestDBInstance implements DBInstance {
         if(groupExists) {
             if (this.contactTable.size() > 0) {
                 for (int i = 0; i < this.contactTable.size(); i++) {
-                    if (this.contactTable.get(i).getName().compareTo(newContact.getName()) < 0) {
+                    if (this.contactTable.get(i).getName().compareTo(newContact.getName()) > 0) {
                         this.contactTable.add(i, newContact);
                         return 0;
                     }
@@ -335,12 +335,22 @@ public class TestDBInstance implements DBInstance {
    * @param String phoneNum
    * @return contact if found, null if not found or there was an error*/
     public Contact getContactInfo(String phoneNum){
+
+
         for (int i = 0; i < this.contactTable.size(); i++){
             if (this.contactTable.get(i).getPhoneNumber().compareTo(phoneNum) == 0){
-                return this.contactTable.get(i);
+                Contact c = this.contactTable.get(i);
+
+                if (c.isInheritance()){
+                    Group g = this.getGroupInfo(c.getGroupName());
+                    c.setResponse(g.getResponse());
+                    c.setActivityPermission(g.isActivityPermission());
+                    c.setLocationPermission(g.isLocationPermission());
+                }
+
+                return c;
             }
         }
-
         return null;
     }
 
@@ -460,9 +470,9 @@ public class TestDBInstance implements DBInstance {
    * @return # of contacts removed as int >= 0, or error code as int < 0*/
     public int setGroupResponse(String groupName, String response){
         int count = 0;
-        for (int i = 0; i < this.contactTable.size(); i++){
-            if (this.contactTable.get(i).getGroupName().compareTo(groupName) == 0){
-                this.contactTable.get(i).setResponse(response);
+        for (int i = 0; i < this.groupTable.size(); i++){
+            if (this.groupTable.get(i).getGroupName().compareTo(groupName) == 0){
+                this.groupTable.get(i).setResponse(response);
                 count++;
             }
         }
