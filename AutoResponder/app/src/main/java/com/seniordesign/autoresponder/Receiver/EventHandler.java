@@ -55,9 +55,7 @@ public class EventHandler {
                         String contactGroupName = contact.getGroupName();
 
                         if(!contactGroupName.matches(Group.DEFAULT_GROUP)) {
-                            //message = db.getGroupMessage(groupName);
-                            android.util.Log.v("EventHandler,", "Groups Not A Feature Yet!");
-                            return -1;
+                            message = db.getGroupInfo(contactGroupName).getResponse();
                         }else if (contactResponse == null || contactResponse.matches("")){
                             message = db.getReplyAll();
                         }else{

@@ -1,5 +1,6 @@
 package com.seniordesign.autoresponder.Interface;
 
+import android.content.Context;
 import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
@@ -24,12 +26,22 @@ import java.util.HashMap;
 public class ManageGroups extends AppCompatActivity {
 
     private DBInstance db;
+    boolean pickerFlag = false;
+    String contactNumber = null;
+    int duration = Toast.LENGTH_LONG;
+    CharSequence toastText;
+    Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_groups);
+        Intent intent = getIntent();
         this.db = DBProvider.getInstance(false, getApplicationContext());
+        contactNumber = intent.getStringExtra("CONTACT_NUMBER");
+        if(contactNumber != null){
+            pickerFlag = true;
+        }
         updateGroupsListView();
 
     }
@@ -57,9 +69,16 @@ public class ManageGroups extends AppCompatActivity {
     }
 
     public void doLaunchAddNewGroup(View view) {
+        Context context = getApplicationContext();
         // Do something in response to button
-        Intent intent = new Intent(this, NewGroup.class);
-        startActivity(intent);
+        if(!pickerFlag) {
+            Intent intent = new Intent(this, NewGroup.class);
+            startActivity(intent);
+        }else{
+            toastText = "Please Select From Current Groups!";
+            toast = Toast.makeText(context, toastText, duration);
+            toast.show();
+        }
 
     }
 
@@ -90,11 +109,19 @@ public class ManageGroups extends AppCompatActivity {
         groupsList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String groupName = (String) groupsList.getItemAtPosition(position);
-                Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
-                //Based on selection from list view, open new activity based on that contact
-                intent.putExtra("GROUP_NAME", groupName);
-                Log.v("GroupName Selected: ", groupName);
-                startActivity(intent);
+
+                if(pickerFlag){
+                    db.setContactGroup(contactNumber, groupName);
+                    Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                    intent.putExtra("SINGLE_CONTACT_NUMBER", contactNumber);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                    //Based on selection from list view, open new activity based on that contact
+                    intent.putExtra("GROUP_NAME", groupName);
+                    Log.v("GroupName Selected: ", groupName);
+                    startActivity(intent);
+                }
             }
         });
     }
