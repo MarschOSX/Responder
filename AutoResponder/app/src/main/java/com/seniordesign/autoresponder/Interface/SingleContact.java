@@ -29,6 +29,7 @@ public class SingleContact extends AppCompatActivity {
     Button setTextButton;
     EditText setTextEdit;
     Contact singleContact;
+    String phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class SingleContact extends AppCompatActivity {
         setContentView(R.layout.activity_single_contact);
         this.db = DBProvider.getInstance(false, getApplicationContext());
         Intent intent = getIntent();
-        final String phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
+        phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
         singleContact = db.getContactInfo(phoneNumber);
         setUpContactInfo(singleContact);
 
@@ -172,7 +173,8 @@ public class SingleContact extends AppCompatActivity {
     }
 
     public void setGroup(View view) {
-        Intent intentBack = new Intent(getApplicationContext(), SetContactGroup.class);
-        startActivity(intentBack);
+        Intent intent = new Intent(getApplicationContext(), SetContactGroup.class);
+        intent.putExtra("SINGLE_CONTACT_NUMBER", phoneNumber);
+        startActivity(intent);
     }
 }
