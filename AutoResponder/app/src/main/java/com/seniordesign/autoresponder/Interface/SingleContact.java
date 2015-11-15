@@ -1,6 +1,5 @@
 package com.seniordesign.autoresponder.Interface;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,10 +9,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -35,10 +32,17 @@ public class SingleContact extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_contact);
-        this.db = DBProvider.getInstance(false, getApplicationContext());
         Intent intent = getIntent();
+        this.db = DBProvider.getInstance(false, getApplicationContext());
         phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
-        singleContact = db.getContactInfo(phoneNumber);
+
+        if(phoneNumber == null) {//i am unit testing
+            //TODO pass info from JUnit test
+            singleContact = new Contact("Test","555", "Default", "Hello JUnit", false, false, false);
+        }else{
+            singleContact = db.getContactInfo(phoneNumber);
+        }
+
         setUpContactInfo(singleContact);
 
         setTextButton = (Button)findViewById(R.id.setContactTextButton);
@@ -84,7 +88,7 @@ public class SingleContact extends AppCompatActivity {
 
     public void setUpContactInfo(Contact singleContact){
         //Contact Info
-        TextView contactName = (TextView) findViewById(R.id.contactName);
+        TextView contactName = (TextView) findViewById(R.id.singleContactNameOfContact);
         TextView contactNumber = (TextView) findViewById(R.id.contactPhoneNumberTextView);
         contactName.setText(singleContact.getName());
         contactNumber.setText(singleContact.getPhoneNumber());
