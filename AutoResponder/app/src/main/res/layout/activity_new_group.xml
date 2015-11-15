@@ -18,14 +18,6 @@
         android:layout_marginTop="40dp"
         android:layout_alignParentEnd="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set Name"
-        android:id="@+id/setNewGroupName"
-        android:layout_below="@+id/newGroupName"
-        android:layout_centerHorizontal="true" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,14 +30,6 @@
         android:layout_marginTop="10dp"
         android:layout_alignEnd="@+id/newGroupName"
         android:hint="ResponseToGroup" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set Response Text"
-        android:id="@+id/setNewGroupResponseText"
-        android:layout_below="@+id/newGroupResponseText"
-        android:layout_alignEnd="@+id/createNewGroup" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -66,9 +50,9 @@
         android:id="@+id/GroupResponseHeader"
         android:textSize="25dp"
         android:textColor="@color/abc_background_cache_hint_selector_material_dark"
-        android:layout_marginTop="49dp"
-        android:layout_below="@+id/setNewGroupName"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/newGroupName" />
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,10 +71,10 @@
         android:id="@+id/newGroupActivityToggle"
         android:checked="false"
         android:textSize="24dp"
-        android:layout_below="@+id/setNewGroupResponseText"
         android:layout_alignEnd="@+id/newGroupResponseText"
         android:onClick="setNewGroupToggles"
-        android:layout_marginTop="40dp" />
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/newGroupResponseText" />
 
     <Button
         android:layout_width="wrap_content"
@@ -100,6 +84,4 @@
         android:layout_alignParentBottom="true"
         android:onClick="createNewGroup"
         android:layout_centerHorizontal="true" />
-
-
 </RelativeLayout>

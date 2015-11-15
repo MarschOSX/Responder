@@ -22,13 +22,10 @@ import com.seniordesign.autoresponder.R;
 public class NewGroup extends AppCompatActivity {
 
     private DBInstance db;
-    Button setNameButton;
-    Button setResponseTextButton;
     EditText groupNameEditText;
     EditText groupResponseEditText;
 
-    String groupName;
-    String groupResponse;
+
     Boolean groupLocation = false;
     Boolean groupActivity = false;
     int duration = Toast.LENGTH_LONG;
@@ -42,44 +39,6 @@ public class NewGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
         this.db = DBProvider.getInstance(false, getApplicationContext());
-
-
-        final Context context = getApplicationContext();
-        setNameButton = (Button)findViewById(R.id.setNewGroupName);
-        setResponseTextButton = (Button)findViewById(R.id.setNewGroupResponseText);
-        groupNameEditText = (EditText)findViewById(R.id.newGroupName);
-        groupResponseEditText = (EditText)findViewById(R.id.newGroupResponseText);
-
-        setNameButton.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View view) {
-                        Group doesGroupExist = db.getGroupInfo(groupNameEditText.getText().toString());
-                        if (groupNameEditText.getText().toString().matches("") || doesGroupExist != null) {//Its blank, get default hint
-                            Log.v("NewGroup", "New Group has bad name!");
-                            toastText = "This Group has an Empty Name or Already Exists!";
-                            toast = Toast.makeText(context, toastText, duration);
-                            toast.show();
-                        }else{
-                            groupName = groupNameEditText.getText().toString();
-                        }
-                        Log.v("NewGroup", "New Group Name is: " + groupName);
-
-                    }
-                });
-
-        setResponseTextButton.setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View view) {
-                        if (groupResponseEditText.getText().toString().matches("")) {//Its blank, get default hint
-                            groupResponse = db.getReplyAll();
-                            groupResponseEditText.setHint(groupResponse);
-                        } else {
-                            groupResponse = groupResponseEditText.getText().toString();
-                        }
-                        Log.v("NewGroup", "New Group Response is: " + groupResponse);
-
-                    }
-                });
     }
 
     @Override
@@ -120,26 +79,46 @@ public class NewGroup extends AppCompatActivity {
         }
     }
 
-    public void createNewGroup(View view) {
+    public void createNewGroup(View view) {//returns -1 on fail, 0 on success
         Context context = getApplicationContext();
+
+        //get info from EditTexts
+        groupNameEditText = (EditText)findViewById(R.id.newGroupName);
+        groupResponseEditText = (EditText)findViewById(R.id.newGroupResponseText);
+        String groupName = groupNameEditText.getText().toString();
+        String groupResponse = groupResponseEditText.getText().toString();
+
+        //Does this group already exist?
         Group doesGroupExist = db.getGroupInfo(groupName);
 
-        if(groupName == null || groupName.matches("")){
-            Log.v("NewGroup", "New Group has bad name!");
-            toastText = "Group Failed to Add!";
+        //Get NewGroup Name
+        if (groupName.matches("")) {//Its blank, throw error
+            Log.v("NewGroup", "Please fill out Group Name!");
+            toastText = "Please fill out Group Name!";
             toast = Toast.makeText(context, toastText, duration);
             toast.show();
-        }else if(doesGroupExist != null){
+            return;
+        }else if(doesGroupExist != null){//group already exists in DB, need new name!
             Log.v("NewGroup", "New Group has a name in the DB!");
-            toastText = "Group Failed to Add!";
+            toastText = "Group with name " +doesGroupExist.getGroupName()+ " already exists!";
             toast = Toast.makeText(context, toastText, duration);
             toast.show();
-        }
-        if(groupResponse == null || groupResponse.matches("")){
-            groupResponse = db.getReplyAll();
+            return;//fail
+        }else{
+            Log.v("NewGroup", "New Group Name is: " + groupName);
         }
 
+
+        //Get NewGroup Response
+        if (groupResponse.matches("")) {//Its blank, set it to default response
+            groupResponse = db.getReplyAll();
+        }
+        Log.v("NewGroup", "New Group Response is: " + groupResponse);
+
+        //create new group
         Group newGroup = new Group(groupName, groupResponse, groupLocation, groupActivity);
+
+        //attempt to add to db
         try {
             db.addGroup(newGroup);
             Log.v("NewGroup", "Group Added Successfully to DB!");
@@ -147,9 +126,14 @@ public class NewGroup extends AppCompatActivity {
 
         }catch (Exception e){
             Log.v("NewGroup", "Group Failed to add to DB!");
+            toastText = "Group with name " + newGroup.getGroupName() + " failed to add!";
+            toast = Toast.makeText(context, toastText, duration);
+            toast.show();
+            return;//fail
         }
+
+        //group was added!
         Intent intentBack = new Intent(getApplicationContext(), ManageGroups.class);
         startActivity(intentBack);
-
     }
 }
