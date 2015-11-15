@@ -152,8 +152,6 @@ public class EventHandlerTest extends InstrumentationTestCase {
 
         assertNotNull(dbi);
 
-        //TODO FIX EVENTHANDLER TEST
-
             EventHandler ev = new EventHandler(dbi);
             assertSame(ev.respondToText(null, "", 0L, true), -1);
             //assertSame(ev.respondToText("", "", 0L, true), -1);

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Switch;
 import android.util.Log;
 
+import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -73,7 +74,7 @@ public class Main extends AppCompatActivity {
 
     public void gotoSettings(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(this, UserSettings.class);
         startActivity(intent);
     }
 
