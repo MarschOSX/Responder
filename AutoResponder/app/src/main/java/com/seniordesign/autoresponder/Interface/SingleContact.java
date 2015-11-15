@@ -81,7 +81,7 @@ public class SingleContact extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setUpContactInfo( Contact singleContact){
+    public void setUpContactInfo(Contact singleContact){
         //Contact Info
         TextView contactName = (TextView) findViewById(R.id.contactName);
         TextView contactNumber = (TextView) findViewById(R.id.contactPhoneNumberTextView);
@@ -113,9 +113,12 @@ public class SingleContact extends AppCompatActivity {
 
         //Contact Group
         TextView contactsGroup = (TextView) findViewById(R.id.contactGroupName);
+        Log.v("Single Contact:", "Group Name is: " + singleContact.getGroupName());
         if(!singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){
+            Log.v("SingleContact", "reached");
             contactsGroup.setHint(singleContact.getGroupName());
         }else{
+            Log.v("SingleContact", "default reached");
             contactsGroup.setHint("Default");
         }
 

@@ -120,8 +120,7 @@ public class ContactsList extends AppCompatActivity {
                     if(contactInfo.containsKey(nameSelectedFromList)){
                         String number = contactInfo.get(nameSelectedFromList);
                         db.setContactGroup(number,groupName);
-                        Log.v("ContactList hast Name", nameSelectedFromList);
-                        Log.v("ContactList hash Number", number);
+                        intent.putExtra("GROUP_NAME", groupName);
                         startActivity(intent);
                     }
                 }else{

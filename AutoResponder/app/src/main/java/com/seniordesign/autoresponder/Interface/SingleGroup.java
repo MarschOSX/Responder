@@ -122,7 +122,8 @@ public class SingleGroup extends AppCompatActivity {
         final HashMap<String, String> contactInfo = new HashMap<>();
 
         for(int i = 0; i < numberOfContactsInGroup; i++){
-            contactNames[i] = contactsInGroup.get(i).getGroupName();//this is for the ListView
+            contactNames[i] = contactsInGroup.get(i).getName();//this is for the ListView
+            Log.v("ContactNames: ", contactsInGroup.get(i).getName());
             contactInfo.put(contactsInGroup.get(i).getName(), contactsInGroup.get(i).getPhoneNumber());//This is for SingleContact activity
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactNames);
@@ -173,6 +174,23 @@ public class SingleGroup extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 //do your work here
                 Log.v("SingleGroupDelete:", "YES");
+                // storing string resources into Array
+                int numberOfContactsInGroup = 0;
+                ArrayList<Contact> contactsInGroup = db.getContactList();
+                if(contactsInGroup != null){
+                    numberOfContactsInGroup = contactsInGroup.size();
+                }
+
+                for(int i = 0; i < numberOfContactsInGroup; i++){
+                    Log.v("Contact: ", contactsInGroup.get(i).getName());
+                    Log.v("Contact Group : ", contactsInGroup.get(i).getGroupName());
+                    if(contactsInGroup.get(i).getGroupName().matches(singleGroup.getGroupName())) {
+                        Log.v("Group", "This will be changed!!");
+                        db.setContactGroup(contactsInGroup.get(i).getPhoneNumber(), Group.DEFAULT_GROUP);
+                    }
+                    Log.v("Contact: ", contactsInGroup.get(i).getName());
+                    Log.v("Contact Group : ", contactsInGroup.get(i).getGroupName());
+                }
                 db.removeGroup(singleGroup.getGroupName());
                 dialog.dismiss();
                 Intent intentBack = new Intent(getApplicationContext(), Main.class);
@@ -192,10 +210,9 @@ public class SingleGroup extends AppCompatActivity {
     }
 
     public void singleGroupAddContact(View view){
-
-        /*Intent intent = new Intent(getApplicationContext(), ContactsList.class);
+        Intent intent = new Intent(getApplicationContext(), ContactsList.class);
         intent.putExtra("ADD_CONTACT_TO_SINGLE_GROUP", singleGroup.getGroupName());
-        startActivity(intent);*/
+        startActivity(intent);
     }
 
 
