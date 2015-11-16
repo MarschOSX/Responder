@@ -41,7 +41,7 @@ public class ManageGroups extends AppCompatActivity {
         contactNumber = intent.getStringExtra("CONTACT_NUMBER");
         if(contactNumber != null){
             pickerFlag = true;
-        }
+        }else pickerFlag = false;
         updateGroupsListView();
 
     }

@@ -42,7 +42,12 @@ public class SingleGroup extends AppCompatActivity {
         this.db = DBProvider.getInstance(false, getApplicationContext());
         Intent intent = getIntent();
         final String groupName = intent.getStringExtra("GROUP_NAME");
-        singleGroup = db.getGroupInfo(groupName);
+        if(groupName == null) {
+            singleGroup = new Group("JUnit test", "JUnit Response", false,false);
+        }else{
+            singleGroup = db.getGroupInfo(groupName);
+
+        }
         setUpGroupInfo(singleGroup);
 
         setTextButton = (Button)findViewById(R.id.setSingleGroupResponseTextButton);

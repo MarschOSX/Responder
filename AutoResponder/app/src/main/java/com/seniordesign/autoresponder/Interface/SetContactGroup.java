@@ -33,7 +33,10 @@ public class SetContactGroup extends AppCompatActivity {
         Intent intent = getIntent();
         this.db = DBProvider.getInstance(false, getApplicationContext());
         phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
-        setUp();
+        if(phoneNumber != null){
+            setUp();
+        }
+
     }
 
     @Override
