@@ -27,6 +27,7 @@ public class SingleContact extends AppCompatActivity {
     EditText setTextEdit;
     Contact singleContact;
     String phoneNumber;
+    String fromSingleGroup = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +36,9 @@ public class SingleContact extends AppCompatActivity {
         Intent intent = getIntent();
         this.db = DBProvider.getInstance(false, getApplicationContext());
         phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
+        fromSingleGroup = intent.getStringExtra("FROM_SINGLE_GROUP");
 
         if(phoneNumber == null) {//i am unit testing
-            //TODO pass info from JUnit test
             singleContact = new Contact("Test","555", "Default", "Hello JUnit", false, false, false);
         }else{
             singleContact = db.getContactInfo(phoneNumber);
@@ -85,6 +86,14 @@ public class SingleContact extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    /*@Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), ContactsList.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }*/
 
     public void setUpContactInfo(Contact singleContact){
         //Contact Info
@@ -160,8 +169,18 @@ public class SingleContact extends AppCompatActivity {
                 Log.v("SingleContactDelete:", "YES");
                 db.removeContact(singleContact.getPhoneNumber());
                 dialog.dismiss();
-                Intent intentBack = new Intent(getApplicationContext(), Main.class);
-                startActivity(intentBack);
+                if (fromSingleGroup != null) {
+                    Intent intentBack = new Intent(getApplicationContext(), SingleGroup.class);
+                    intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intentBack.putExtra("GROUP_NAME", fromSingleGroup);
+                    startActivity(intentBack);
+                    finish();
+                }else{
+                    Intent intentBack = new Intent(getApplicationContext(), ContactsList.class);
+                    intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intentBack);
+                    finish();
+                }
             }
         });
         alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {

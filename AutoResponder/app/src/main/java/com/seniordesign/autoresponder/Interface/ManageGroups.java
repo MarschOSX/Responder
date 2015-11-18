@@ -73,6 +73,7 @@ public class ManageGroups extends AppCompatActivity {
         // Do something in response to button
         if(!pickerFlag) {
             Intent intent = new Intent(this, NewGroup.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }else{
             toastText = "Please Select From Current Groups!";
@@ -114,7 +115,9 @@ public class ManageGroups extends AppCompatActivity {
                     db.setContactGroup(contactNumber, groupName);
                     Intent intent = new Intent(getApplicationContext(), SingleContact.class);
                     intent.putExtra("SINGLE_CONTACT_NUMBER", contactNumber);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                    finish();
                 }else{
                     Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
                     //Based on selection from list view, open new activity based on that contact

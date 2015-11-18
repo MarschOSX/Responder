@@ -134,6 +134,8 @@ public class NewGroup extends AppCompatActivity {
 
         //group was added!
         Intent intentBack = new Intent(getApplicationContext(), ManageGroups.class);
+        intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intentBack);
+        finish();
     }
 }

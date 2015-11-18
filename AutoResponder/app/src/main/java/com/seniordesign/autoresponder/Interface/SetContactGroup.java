@@ -69,6 +69,7 @@ public class SetContactGroup extends AppCompatActivity {
     public void addToGroup(View view) {
         Intent intent = new Intent(getApplicationContext(), ManageGroups.class);
         intent.putExtra("CONTACT_NUMBER", phoneNumber);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 
@@ -83,8 +84,13 @@ public class SetContactGroup extends AppCompatActivity {
                 Log.v("SingleGroupDelete:", "YES");
                 db.setContactGroup(phoneNumber, Group.DEFAULT_GROUP);
 
-                TextView groupNameTextView = (TextView)findViewById(R.id.currentGroupName);
-                groupNameTextView.setText(db.getContactInfo(phoneNumber).getGroupName());
+                /*TextView groupNameTextView = (TextView)findViewById(R.id.currentGroupName);
+                groupNameTextView.setText(db.getContactInfo(phoneNumber).getGroupName());*/
+                Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                intent.putExtra("SINGLE_CONTACT_NUMBER", phoneNumber);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         });
         alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {

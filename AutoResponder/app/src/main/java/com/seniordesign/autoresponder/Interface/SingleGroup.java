@@ -34,6 +34,7 @@ public class SingleGroup extends AppCompatActivity {
     Button setTextButton;
     EditText setTextEdit;
     Group singleGroup;
+    String groupName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class SingleGroup extends AppCompatActivity {
         setContentView(R.layout.activity_single_group);
         this.db = DBProvider.getInstance(false, getApplicationContext());
         Intent intent = getIntent();
-        final String groupName = intent.getStringExtra("GROUP_NAME");
+        groupName = intent.getStringExtra("GROUP_NAME");
         if(groupName == null) {
             singleGroup = new Group("JUnit test", "JUnit Response", false,false);
         }else{
@@ -95,7 +96,7 @@ public class SingleGroup extends AppCompatActivity {
 
     public void setUpGroupInfo(Group singleGroup) {
         //Set Group Name
-        TextView groupName = (TextView) findViewById(R.id.singleGroupName);
+        final TextView groupName = (TextView) findViewById(R.id.singleGroupName);
         groupName.setText(singleGroup.getGroupName());
 
         //Set Single Group Response
@@ -143,7 +144,7 @@ public class SingleGroup extends AppCompatActivity {
                 if(contactInfo.containsKey(nameSelectedFromList)){
                     String number = contactInfo.get(nameSelectedFromList);
                     intent.putExtra("SINGLE_CONTACT_NUMBER", number);
-                    intent.putExtra("FROM_SINGLE_GROUP", true);
+                    intent.putExtra("FROM_SINGLE_GROUP", groupName.getText());
                     Log.v("ContactList hast Name", nameSelectedFromList);
                     Log.v("ContactList hash Number", number);
                     startActivity(intent);
@@ -198,8 +199,10 @@ public class SingleGroup extends AppCompatActivity {
                 }
                 db.removeGroup(singleGroup.getGroupName());
                 dialog.dismiss();
-                Intent intentBack = new Intent(getApplicationContext(), Main.class);
+                Intent intentBack = new Intent(getApplicationContext(), ManageGroups.class);
+                intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intentBack);
+                finish();
             }
         });
         alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
