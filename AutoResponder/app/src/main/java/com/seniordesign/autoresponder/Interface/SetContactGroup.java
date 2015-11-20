@@ -87,6 +87,7 @@ public class SetContactGroup extends AppCompatActivity {
                 //do your work here
                 Log.v("SingleGroupDelete:", "YES");
                 db.setContactGroup(phoneNumber, Group.DEFAULT_GROUP);
+                db.setContactInheritance(phoneNumber, false);//default is false
 
                 /*TextView groupNameTextView = (TextView)findViewById(R.id.currentGroupName);
                 groupNameTextView.setText(db.getContactInfo(phoneNumber).getGroupName());*/

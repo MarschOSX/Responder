@@ -206,10 +206,17 @@ public class SingleContact extends AppCompatActivity {
 
     public void setInheritance(View view) {
         boolean isToggled = ((Switch) view).isChecked();
+        Switch inheritance = (Switch)findViewById(R.id.SingleContactInheritance);
         switch(view.getId()) {
             case R.id.SingleContactInheritance:
                 Log.v("SingleContInheritance:", java.lang.Boolean.toString(isToggled));
-                db.setContactInheritance(singleContact.getPhoneNumber(), isToggled);
+                if(singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){
+                    db.setContactInheritance(singleContact.getPhoneNumber(), false);
+                    inheritance.setChecked(false);
+                }else{
+                    db.setContactInheritance(singleContact.getPhoneNumber(), isToggled);
+                    inheritance.setChecked(isToggled);
+                }
                 break;
         }
     }
