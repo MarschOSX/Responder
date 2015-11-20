@@ -200,7 +200,17 @@ public class SingleContact extends AppCompatActivity {
     public void setGroup(View view) {
         Intent intent = new Intent(getApplicationContext(), SetContactGroup.class);
         intent.putExtra("SINGLE_CONTACT_NUMBER", phoneNumber);
-        intent.putExtra("FROM_SINGLE_GROUP",fromSingleGroup);
+        intent.putExtra("FROM_SINGLE_GROUP", fromSingleGroup);
         startActivity(intent);
+    }
+
+    public void setInheritance(View view) {
+        boolean isToggled = ((Switch) view).isChecked();
+        switch(view.getId()) {
+            case R.id.SingleContactInheritance:
+                Log.v("SingleContInheritance:", java.lang.Boolean.toString(isToggled));
+                db.setContactInheritance(singleContact.getPhoneNumber(), isToggled);
+                break;
+        }
     }
 }
