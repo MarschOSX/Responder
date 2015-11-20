@@ -14,14 +14,14 @@ import android.widget.TextView;
 
 import com.seniordesign.autoresponder.R;
 
-public class SettingListAdapter extends ArrayAdapter<String> {
+public class SettingListAdapter /*extends ArrayAdapter<String> */{
 
-    private final Activity context;
+   /* private final Activity context;
     private final String[] itemname;
     private final Integer[] imgid;
 
     public SettingListAdapter(Activity context, String[] itemname, Integer[] imgid) {
-        super(context, R.layout.setting_list, itemname);
+        super(context, R.layout.setting_row_with_description, itemname);
         // TODO Auto-generated constructor stub
 
         this.context=context;
@@ -31,7 +31,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
 
     public View getView(int position,View view,ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.setting_list, null,true);
+        View rowView=inflater.inflate(R.layout.setting_row_with_description, null,true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
@@ -42,5 +42,5 @@ public class SettingListAdapter extends ArrayAdapter<String> {
         extratxt.setText("Description "+itemname[position]);
         return rowView;
 
-    };
+    };*/
 }

@@ -18,4 +18,6 @@
     <string name="title_activity_new_group">Create New Group</string>
     <string name="title_activity_single_group">Single Group</string>
     <string name="title_activity_user_settings">User Settings</string>
+    <string name="large_setting_text">Medium Text</string>
+    <string name="small_setting_text">Small Text</string>
 </resources>
