@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class SetContactGroup extends AppCompatActivity {
 
     String phoneNumber;
+    String singleGroupName = null;
     private DBInstance db;
 
 
@@ -33,6 +34,8 @@ public class SetContactGroup extends AppCompatActivity {
         Intent intent = getIntent();
         this.db = DBProvider.getInstance(false, getApplicationContext());
         phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
+        singleGroupName = intent.getStringExtra("FROM_SINGLE_GROUP");
+
         if(phoneNumber != null){
             setUp();
         }
@@ -69,6 +72,7 @@ public class SetContactGroup extends AppCompatActivity {
     public void addToGroup(View view) {
         Intent intent = new Intent(getApplicationContext(), ManageGroups.class);
         intent.putExtra("CONTACT_NUMBER", phoneNumber);
+        intent.putExtra("FROM_SINGLE_GROUP", singleGroupName);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
@@ -86,11 +90,20 @@ public class SetContactGroup extends AppCompatActivity {
 
                 /*TextView groupNameTextView = (TextView)findViewById(R.id.currentGroupName);
                 groupNameTextView.setText(db.getContactInfo(phoneNumber).getGroupName());*/
-                Intent intent = new Intent(getApplicationContext(), SingleContact.class);
-                intent.putExtra("SINGLE_CONTACT_NUMBER", phoneNumber);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                if (singleGroupName == null) {
+                    Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                    intent.putExtra("SINGLE_CONTACT_NUMBER", phoneNumber);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                    intent.putExtra("GROUP_NAME", singleGroupName);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Log.v("GroupName Selected: ", singleGroupName);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
         alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {

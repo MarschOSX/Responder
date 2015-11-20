@@ -89,10 +89,12 @@ public class SingleContact extends AppCompatActivity {
 
     /*@Override
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), ContactsList.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
+        if(fromSingleGroup != null) {
+            Intent intent = new Intent(getApplicationContext(), ContactsList.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
     }*/
 
     public void setUpContactInfo(Contact singleContact){
@@ -198,6 +200,7 @@ public class SingleContact extends AppCompatActivity {
     public void setGroup(View view) {
         Intent intent = new Intent(getApplicationContext(), SetContactGroup.class);
         intent.putExtra("SINGLE_CONTACT_NUMBER", phoneNumber);
+        intent.putExtra("FROM_SINGLE_GROUP",fromSingleGroup);
         startActivity(intent);
     }
 }
