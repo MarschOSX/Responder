@@ -14,21 +14,25 @@ import android.widget.ArrayAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.seniordesign.autoresponder.DataStructures.Setting;
+import com.seniordesign.autoresponder.DataStructures.Group;
+import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.DBProvider;
+import com.seniordesign.autoresponder.Persistance.PermDBInstance;
 import com.seniordesign.autoresponder.R;
 
-import java.util.ArrayList;
 
 public class SettingListAdapter extends ArrayAdapter<String> {
     private final String TAG = "SettingListAdapter";
     private final Context context;
     private final String[] settingList;
+    private final DBInstance db;
 
     public SettingListAdapter(Context context, String[] settingList) {
         super(context, R.layout.setting_row, settingList);
 
         this.context = context;
         this.settingList = settingList;
+        this.db = DBProvider.getInstance(false, context);
     }
 
     @Override
@@ -43,9 +47,29 @@ public class SettingListAdapter extends ArrayAdapter<String> {
         switch (settingList[position]){
             case "Default Contact Location Setting": //default group location toggle
                 title.setText(R.string.defaultGroup_location_toggle);
+
+                description.setText(R.string.defaultGroup_location_toggle_descr);
+
+                toggle.setChecked(db.getGroupInfo(Group.DEFAULT_GROUP).isLocationPermission());
+                toggle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        db.setGroupLocationPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isLocationPermission());
+                    }
+                });
                 break;
             case "Default Contact Activity Setting": //default group activity toggle
                 title.setText(R.string.defaultGroup_activity_toggle);
+
+                description.setText(R.string.defaultGroup_activity_toggle_descr);
+
+                toggle.setChecked(db.getGroupInfo(Group.DEFAULT_GROUP).isActivityPermission());
+                toggle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        db.setGroupActivityPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isActivityPermission());
+                    }
+                });
                 break;
             case "Time Delay": //default group time delay
                 toggle.setVisibility(View.GONE);

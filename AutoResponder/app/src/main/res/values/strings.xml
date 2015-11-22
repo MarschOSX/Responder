@@ -23,7 +23,9 @@
 
     <!-- Settings -->
     <string name="defaultGroup_location_toggle">Default Contact Location Setting</string>
+    <string name="defaultGroup_location_toggle_descr">Specify the default location permission</string>
     <string name="defaultGroup_activity_toggle">Default Contact Activity Setting</string>
+    <string name="defaultGroup_activity_toggle_descr">Specify the default activity permission</string>
     <string name="setting_timeDelay">Time Delay</string>
     <string name="defaultGroup_Response">Default Contact Response</string>
 </resources>
