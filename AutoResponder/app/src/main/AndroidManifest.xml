@@ -63,6 +63,14 @@
             android:name=".Interface.Settings.UserSettings"
             android:label="@string/title_activity_user_settings" >
         </activity>
+        <activity
+            android:name=".Interface.Settings.TimeDelay"
+            android:label="@string/title_activity_time_delay">
+        </activity>
+        <activity
+            android:name=".Interface.Settings.DefaultContactResponse"
+            android:label="@string/title_activity_default_contact_response">
+        </activity>
     </application>
 
 </manifest>

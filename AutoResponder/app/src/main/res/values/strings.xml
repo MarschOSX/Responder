@@ -28,4 +28,6 @@
     <string name="defaultGroup_activity_toggle_descr">Specify the default activity permission</string>
     <string name="setting_timeDelay">Time Delay</string>
     <string name="defaultGroup_Response">Default Contact Response</string>
+    <string name="title_activity_time_delay">Time Delay</string>
+    <string name="title_activity_default_contact_response">Default Contact Response</string>
 </resources>

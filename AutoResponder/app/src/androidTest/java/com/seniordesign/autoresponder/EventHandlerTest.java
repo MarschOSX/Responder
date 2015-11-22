@@ -26,6 +26,10 @@ public class EventHandlerTest extends InstrumentationTestCase {
 
             }
 
+            public void setActivityToggle(boolean toggle){}
+
+            public void setLocationToggle(boolean toggle){}
+
             @Override
             public String getReplyAll() {
                 return "I am busy right now JUNIT";

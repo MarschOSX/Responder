@@ -43,7 +43,7 @@
         android:text="Location"
         android:id="@+id/singleGroupLocationToggle"
         android:checked="false"
-        android:textSize="24dp"
+        android:textSize="24sp"
         android:layout_below="@+id/setSingleGroupResponseTextButton"
         android:layout_alignParentStart="true"
         android:onClick="singleGroupSwitchSetter"

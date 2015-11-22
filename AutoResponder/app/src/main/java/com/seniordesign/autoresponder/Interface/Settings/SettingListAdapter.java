@@ -4,8 +4,9 @@ package com.seniordesign.autoresponder.Interface.Settings;
  * Created by Garlan on 11/15/2015.
  */
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,6 @@ import android.widget.TextView;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
-import com.seniordesign.autoresponder.Persistance.PermDBInstance;
 import com.seniordesign.autoresponder.R;
 
 
@@ -26,13 +26,15 @@ public class SettingListAdapter extends ArrayAdapter<String> {
     private final Context context;
     private final String[] settingList;
     private final DBInstance db;
+    private AppCompatActivity parentApp;
 
-    public SettingListAdapter(Context context, String[] settingList) {
+    public SettingListAdapter(Context context, String[] settingList, AppCompatActivity parentApp) {
         super(context, R.layout.setting_row, settingList);
 
         this.context = context;
         this.settingList = settingList;
         this.db = DBProvider.getInstance(false, context);
+        this.parentApp = parentApp;
     }
 
     @Override
@@ -75,11 +77,28 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                 toggle.setVisibility(View.GONE);
                 title.setText(R.string.setting_timeDelay);
                 description.setVisibility(View.GONE);
+
+
+                rowView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(parentApp, TimeDelay.class);
+                        parentApp.startActivity(intent);
+                    }
+                });
                 break;
             case "Default Contact Response":
                 toggle.setVisibility(View.GONE);
                 title.setText(R.string.defaultGroup_Response);
                 description.setVisibility(View.GONE);
+
+                rowView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(parentApp, DefaultContactResponse.class);
+                        parentApp.startActivity(intent);
+                    }
+                });
                 break;
             default:
                 Log.e(TAG, "this setting has not been configured!!!!");
