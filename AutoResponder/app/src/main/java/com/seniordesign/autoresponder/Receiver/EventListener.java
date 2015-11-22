@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class EventListener extends BroadcastReceiver{
     //for more information about incoming SMS, set to true
-    boolean debug = false;
+   // boolean debug = false;
 
     //Listener gets a message
     @Override
@@ -39,11 +39,11 @@ public class EventListener extends BroadcastReceiver{
             SmsMessage[] sms = new SmsMessage[messages.length];
             for (int n = 0; n < messages.length; n++) {
                 sms[n] = SmsMessage.createFromPdu((byte[]) messages[n]);
-                if(debug == false) {
-                    phoneNumber = sms[n].getOriginatingAddress();
-                    message = sms[n].getMessageBody();
-                    timeRecieved = sms[n].getTimestampMillis();
-                }else{
+                //if(debug == false) {
+                phoneNumber = sms[n].getOriginatingAddress();
+                message = sms[n].getMessageBody();
+                timeRecieved = sms[n].getTimestampMillis();
+                /*}else{
                     message += "OriginatingAddress:\n";
                     message += sms[n].getOriginatingAddress();
                     phoneNumber = sms[n].getOriginatingAddress();
@@ -51,14 +51,14 @@ public class EventListener extends BroadcastReceiver{
                     message += sms[n].getMessageBody();
                     message += "\nMilliseconds Timestamp:\n";
                     message += String.valueOf(sms[n].getTimestampMillis());
-                }
+                }*/
             }
         }
 
         //pass information to EventHandler.respondToText()
         if(phoneNumber != null) {
             EventHandler ev= new EventHandler(DBProvider.getInstance(false, context));
-            ev.respondToText(phoneNumber, message, timeRecieved, debug);
+            ev.respondToText(phoneNumber, message, timeRecieved);
         }else{
             android.util.Log.v("EventHandler,", "Invalid Phone Number");
             throw new IllegalArgumentException("Invalid Phone Number in EventListener");

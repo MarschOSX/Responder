@@ -237,7 +237,7 @@ public class ContactsList extends AppCompatActivity {
                 }else{
                     Log.v("ContactList", "Successfully got Contact Info, now to push to DB");
                     //take the information you recieved and update the ContactList
-                    Contact contact = new Contact(name, phoneNumber, Group.DEFAULT_GROUP, null, false, false, false);
+                    Contact contact = new Contact(name, phoneNumber, Group.DEFAULT_GROUP, db.getReplyAll(), false, false, true);
                     //Only get the name and phone number, everything else we will set later
                     try {
                         db.addContact(contact);
