@@ -1,5 +1,7 @@
 package com.seniordesign.autoresponder.DataStructures;
 
+import java.util.ArrayList;
+
 /**
  * Created by Garlan on 9/28/2015.
  */
@@ -25,6 +27,13 @@ public class Setting {
                     {ACTIVITY_TOGGLE, ACTIVITY_TOGGLE_DEF},
                     {LOCATION_TOGGLE, LOCATION_TOGGLE_DEF}
             };
+
+    public static final String[] settingUIList = {
+            "Default Contact Location Setting",
+            "Default Contact Activity Setting",
+            "Default Contact Response",
+            "Time Delay"
+    };
 
 
     private String name;

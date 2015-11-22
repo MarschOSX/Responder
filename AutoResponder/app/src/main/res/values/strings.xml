@@ -20,4 +20,10 @@
     <string name="title_activity_user_settings">User Settings</string>
     <string name="large_setting_text">Medium Text</string>
     <string name="small_setting_text">Small Text</string>
+
+    <!-- Settings -->
+    <string name="defaultGroup_location_toggle">Default Contact Location Setting</string>
+    <string name="defaultGroup_activity_toggle">Default Contact Activity Setting</string>
+    <string name="setting_timeDelay">Time Delay</string>
+    <string name="defaultGroup_Response">Default Contact Response</string>
 </resources>
