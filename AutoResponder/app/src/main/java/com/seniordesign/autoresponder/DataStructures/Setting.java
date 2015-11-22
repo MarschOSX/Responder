@@ -11,13 +11,19 @@ public class Setting {
     public static final String TIME_DELAY_DEF = "20";
     public static final String RESPONSE_TOGGLE = "response_toggle";
     public static final String RESPONSE_TOGGLE_DEF = "true";
+    public static final String ACTIVITY_TOGGLE = "activity_toggle";
+    public static final String ACTIVITY_TOGGLE_DEF = "false";
+    public static final String LOCATION_TOGGLE = "location_toggle";
+    public static final String LOCATION_TOGGLE_DEF = "false";
 
     //if you are adding a new setting, it and its default value must be added here
     public static final String[][] DEFAULT_SETTINGS =
             {       //name        value
                     {REPLY_ALL, REPLY_ALL_DEF},
                     {TIME_DELAY, TIME_DELAY_DEF},
-                    {RESPONSE_TOGGLE, RESPONSE_TOGGLE_DEF}
+                    {RESPONSE_TOGGLE, RESPONSE_TOGGLE_DEF},
+                    {ACTIVITY_TOGGLE, ACTIVITY_TOGGLE_DEF},
+                    {LOCATION_TOGGLE, LOCATION_TOGGLE_DEF}
             };
 
 

@@ -107,6 +107,16 @@ public class PermDBInstance implements DBInstance {
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.RESPONSE_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
     }
 
+    public void setActivityToggle(boolean responseToggle){
+        Log.d(TAG, "setting  activityToggle to " + responseToggle + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.ACTIVITY_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
+    }
+
+    public void setLocationToggle(boolean responseToggle){
+        Log.d(TAG, "setting  locationToggle to " + responseToggle + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.LOCATION_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
+    }
+
     public boolean getResponseToggle(){
         final String query =
                 "SELECT " + DBHelper.SETTING_VALUE[0] +

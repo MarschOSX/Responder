@@ -26,6 +26,10 @@ public interface DBInstance {
 
     void setResponseToggle(boolean toggle);
 
+    void setActivityToggle(boolean toggle);
+
+    void setLocationToggle(boolean toggle);
+
     boolean getResponseToggle();
 
     ////////////////////////////////

@@ -72,6 +72,28 @@ public class TestDBInstance implements DBInstance {
         this.settings.put(Setting.RESPONSE_TOGGLE, responseToggleText);
     }
 
+    public void setActivityToggle(boolean responseToggle){
+        String responseToggleText;
+        if(responseToggle){
+            responseToggleText = "true";
+        }
+        else{
+            responseToggleText = "false";
+        }
+        this.settings.put(Setting.ACTIVITY_TOGGLE, responseToggleText);
+    }
+
+    public void setLocationToggle(boolean responseToggle){
+        String responseToggleText;
+        if(responseToggle){
+            responseToggleText = "true";
+        }
+        else{
+            responseToggleText = "false";
+        }
+        this.settings.put(Setting.LOCATION_TOGGLE, responseToggleText);
+    }
+
     public boolean getResponseToggle(){
         String value = this.settings.get(Setting.RESPONSE_TOGGLE);
         if(value.compareTo("true") == 0){
