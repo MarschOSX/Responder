@@ -49,17 +49,37 @@
             android:text="@string/oneHour_option"
             android:id="@+id/radioButton_60"
             android:checked="false"
-            android:onClick="radioButtonDelaySet"
-            android:layout_gravity="left" />
+            android:onClick="radioButtonDelaySet" />
 
-        <RadioButton
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/custom_option"
-            android:id="@+id/radioButton_custom"
-            android:checked="false"
-            android:onClick="radioButtonDelaySet"
-            android:layout_gravity="left" />
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/custom_option"
+                android:id="@+id/radioButton_custom"
+                android:checked="false"
+                android:onClick="radioButtonDelaySet" />
+
+            <EditText
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/customVal"
+                android:numeric="integer"
+                android:maxLength="3"
+                android:longClickable="false"
+                android:autoText="false"
+                android:password="false"
+                android:hint="15"
+                android:layout_alignTop="@+id/radioGroup"
+                android:layout_alignParentEnd="true" />
+        </LinearLayout>
+
     </RadioGroup>
 
 </RelativeLayout>
