@@ -1,6 +1,9 @@
 package com.seniordesign.autoresponder.Interface.Contacts;
 
+import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,8 +18,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.widget.Toast;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
@@ -43,6 +48,9 @@ public class ContactsList extends AppCompatActivity {
     private static final int CONTACT_PICKER_RESULT = 1001;
     boolean pickerFlag = false;
     String groupName = null;
+    int duration = Toast.LENGTH_LONG;
+    CharSequence toastText;
+    Toast toast;
 
 
     @Override
@@ -84,10 +92,9 @@ public class ContactsList extends AppCompatActivity {
 
     public void doLaunchContactPicker(View view) {
         // Do something in response to button
-
-        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
-                Contacts.CONTENT_URI);
-        startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+            Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                    Contacts.CONTENT_URI);
+            startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
     }
 
     public void updateContactListView() {
@@ -114,12 +121,45 @@ public class ContactsList extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String nameSelectedFromList = (String) contactList.getItemAtPosition(position);
                 if(pickerFlag){
-                    Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
-                    if(contactInfo.containsKey(nameSelectedFromList)){
-                        String number = contactInfo.get(nameSelectedFromList);
-                        db.setContactGroup(number,groupName);
-                        intent.putExtra("GROUP_NAME", groupName);
-                        startActivity(intent);
+                    final Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                    if(contactInfo.containsKey(nameSelectedFromList)) {
+                        final String number = contactInfo.get(nameSelectedFromList);
+
+                        Contact contact = db.getContactInfo(number);
+                        if (!contact.getGroupName().matches(Group.DEFAULT_GROUP)) {
+                            AlertDialog.Builder alert = new AlertDialog.Builder(ContactsList.this);
+                            alert.setTitle("Changing Contact Group");
+                            alert.setMessage("Are you sure you want to change the group of this contact?");
+                            alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //do your work here
+                                    db.setContactGroup(number, groupName);
+                                    db.setContactGroup(number,groupName);
+                                    intent.putExtra("GROUP_NAME", groupName);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                            alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Log.v("SingleContactDelete:", "NO");
+                                    dialog.dismiss();
+                                }
+                            });
+
+                            alert.show();
+                        } else {
+                            db.setContactGroup(number, groupName);
+                            intent.putExtra("GROUP_NAME", groupName);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                 }else{
                     Intent intent = new Intent(getApplicationContext(), SingleContact.class);
@@ -127,9 +167,11 @@ public class ContactsList extends AppCompatActivity {
                     if(contactInfo.containsKey(nameSelectedFromList)){
                         String number = contactInfo.get(nameSelectedFromList);
                         intent.putExtra("SINGLE_CONTACT_NUMBER", number);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         Log.v("ContactList hast Name", nameSelectedFromList);
                         Log.v("ContactList hash Number", number);
                         startActivity(intent);
+                        //finish();
                     }
                 }
 

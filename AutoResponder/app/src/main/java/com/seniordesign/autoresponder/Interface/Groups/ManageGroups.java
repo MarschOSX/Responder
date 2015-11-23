@@ -24,11 +24,11 @@ import java.util.ArrayList;
 public class ManageGroups extends AppCompatActivity {
 
     private DBInstance db;
-    boolean pickerFlag = false;
     String contactNumber = null;
     int duration = Toast.LENGTH_LONG;
     CharSequence toastText;
     Toast toast;
+    String singleGroupName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +37,8 @@ public class ManageGroups extends AppCompatActivity {
         Intent intent = getIntent();
         this.db = DBProvider.getInstance(false, getApplicationContext());
         contactNumber = intent.getStringExtra("CONTACT_NUMBER");
-        if(contactNumber != null){
-            pickerFlag = true;
-        }
+        singleGroupName = intent.getStringExtra("FROM_SINGLE_GROUP");
         updateGroupsListView();
-
     }
 
     @Override
@@ -69,8 +66,9 @@ public class ManageGroups extends AppCompatActivity {
     public void doLaunchAddNewGroup(View view) {
         Context context = getApplicationContext();
         // Do something in response to button
-        if(!pickerFlag) {
+        if(contactNumber == null) {
             Intent intent = new Intent(this, NewGroup.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
         }else{
             toastText = "Please Select From Current Groups!";
@@ -108,17 +106,28 @@ public class ManageGroups extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String groupName = (String) groupsList.getItemAtPosition(position);
 
-                if(pickerFlag){
+                if(contactNumber != null && singleGroupName == null){
                     db.setContactGroup(contactNumber, groupName);
                     Intent intent = new Intent(getApplicationContext(), SingleContact.class);
                     intent.putExtra("SINGLE_CONTACT_NUMBER", contactNumber);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                    finish();
                 }else{
-                    Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
-                    //Based on selection from list view, open new activity based on that contact
-                    intent.putExtra("GROUP_NAME", groupName);
-                    Log.v("GroupName Selected: ", groupName);
-                    startActivity(intent);
+                    if(singleGroupName == null) {//from the contacts
+                        Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                        intent.putExtra("GROUP_NAME", groupName);
+                        Log.v("GroupName Selected: ", groupName);
+                        startActivity(intent);
+                    }else{//from a single group, into a single contact, to change the group
+                        db.setContactGroup(contactNumber, groupName);
+                        Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                        intent.putExtra("GROUP_NAME", groupName);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        Log.v("GroupName Selected: ", groupName);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
         });

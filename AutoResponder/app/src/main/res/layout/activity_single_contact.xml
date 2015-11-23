@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Contact Name"
-        android:id="@+id/contactName"
+        android:id="@+id/singleContactNameOfContact"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
@@ -26,9 +26,9 @@
         android:id="@+id/contactResponse_text"
         android:maxLength="144"
         android:hint="I am busy right now"
-        android:layout_below="@+id/contactName"
+        android:layout_below="@+id/singleContactNameOfContact"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/contactName"
+        android:layout_alignEnd="@+id/singleContactNameOfContact"
         android:layout_marginTop="40dp" />
 
     <Button
@@ -47,7 +47,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Phone Number"
         android:id="@+id/contactPhoneNumberTextView"
-        android:layout_below="@+id/contactName"
+        android:layout_below="@+id/singleContactNameOfContact"
         android:layout_alignParentStart="true" />
 
     <Switch
@@ -81,7 +81,7 @@
         android:onClick="setGroup"
         android:layout_alignTop="@+id/contactGroupName"
         android:layout_alignEnd="@+id/contactActivityToggle"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginTop="-5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -89,10 +89,10 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/contactGroupName"
         android:hint="No Group"
-        android:layout_below="@+id/singleContactGroupInfo"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:textSize="30dp" />
+        android:textSize="30dp"
+        android:layout_alignTop="@+id/singleContactGroupName"
+        android:layout_toEndOf="@+id/singleContactGroupName"
+        android:layout_marginLeft="5dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -107,13 +107,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Group Info"
+        android:text="Group Information:"
         android:id="@+id/singleContactGroupInfo"
         android:layout_below="@+id/contactLocationToggle"
         android:layout_alignParentStart="true"
-        android:textSize="34dp"
+        android:textSize="40dp"
         android:layout_marginTop="40dp"
-        android:textColor="@color/abc_primary_text_material_light" />
+        android:textColor="@color/abc_primary_text_material_light"
+        android:layout_alignEnd="@+id/contactActivityToggle" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/SingleContactInheritance"
+        android:checked="false"
+        android:layout_marginLeft="50dp"
+        android:text="Inheritence"
+        android:textSize="24dp"
+        android:onClick="setInheritance"
+        android:layout_below="@+id/singleContactGroupInfo"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp"
+        android:layout_toStartOf="@+id/setContactGroup" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Name:"
+        android:id="@+id/singleContactGroupName"
+        android:textSize="30dp"
+        android:textColor="@color/abc_primary_text_disable_only_material_light"
+        android:layout_below="@+id/SingleContactInheritance"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp" />
 
 
 </RelativeLayout>

@@ -24,7 +24,7 @@
         android:id="@+id/singleGroupResponseText"
         android:maxLength="144"
         android:hint="I am busy right now"
-        android:layout_below="@+id/contactName"
+        android:layout_below="@+id/singleContactNameOfContact"
         android:layout_alignParentStart="true"
         android:layout_marginTop="60dp"
         android:layout_alignParentEnd="true" />

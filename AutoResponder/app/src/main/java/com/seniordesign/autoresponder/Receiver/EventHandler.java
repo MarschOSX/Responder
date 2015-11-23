@@ -53,7 +53,8 @@ public class EventHandler {
                     if (!debug) {
                         String contactResponse = contact.getResponse();
                         String contactGroupName = contact.getGroupName();
-
+                        //TODO get inheritance bit from contact!
+                        //TODO check the inheritance bit to see to use Contact Message or Group Message, same for location and calendar info
                         if(!contactGroupName.matches(Group.DEFAULT_GROUP)) {
                             message = db.getGroupInfo(contactGroupName).getResponse();
                         }else if (contactResponse == null || contactResponse.matches("")){

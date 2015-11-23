@@ -28,15 +28,23 @@ public class SingleContact extends AppCompatActivity {
     EditText setTextEdit;
     Contact singleContact;
     String phoneNumber;
+    String fromSingleGroup = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_contact);
-        this.db = DBProvider.getInstance(false, getApplicationContext());
         Intent intent = getIntent();
+        this.db = DBProvider.getInstance(false, getApplicationContext());
         phoneNumber = intent.getStringExtra("SINGLE_CONTACT_NUMBER");
-        singleContact = db.getContactInfo(phoneNumber);
+        fromSingleGroup = intent.getStringExtra("FROM_SINGLE_GROUP");
+
+        if(phoneNumber == null) {//i am unit testing
+            singleContact = new Contact("Test","555", "Default", "Hello JUnit", false, false, false);
+        }else{
+            singleContact = db.getContactInfo(phoneNumber);
+        }
+
         setUpContactInfo(singleContact);
 
         setTextButton = (Button)findViewById(R.id.setContactTextButton);
@@ -80,9 +88,19 @@ public class SingleContact extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*@Override
+    public void onBackPressed() {
+        if(fromSingleGroup != null) {
+            Intent intent = new Intent(getApplicationContext(), ContactsList.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        }
+    }*/
+
     public void setUpContactInfo(Contact singleContact){
         //Contact Info
-        TextView contactName = (TextView) findViewById(R.id.contactName);
+        TextView contactName = (TextView) findViewById(R.id.singleContactNameOfContact);
         TextView contactNumber = (TextView) findViewById(R.id.contactPhoneNumberTextView);
         contactName.setText(singleContact.getName());
         contactNumber.setText(singleContact.getPhoneNumber());
@@ -154,8 +172,18 @@ public class SingleContact extends AppCompatActivity {
                 Log.v("SingleContactDelete:", "YES");
                 db.removeContact(singleContact.getPhoneNumber());
                 dialog.dismiss();
-                Intent intentBack = new Intent(getApplicationContext(), Main.class);
-                startActivity(intentBack);
+                if (fromSingleGroup != null) {
+                    Intent intentBack = new Intent(getApplicationContext(), SingleGroup.class);
+                    intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intentBack.putExtra("GROUP_NAME", fromSingleGroup);
+                    startActivity(intentBack);
+                    finish();
+                }else{
+                    Intent intentBack = new Intent(getApplicationContext(), ContactsList.class);
+                    intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intentBack);
+                    finish();
+                }
             }
         });
         alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -173,6 +201,24 @@ public class SingleContact extends AppCompatActivity {
     public void setGroup(View view) {
         Intent intent = new Intent(getApplicationContext(), SetContactGroup.class);
         intent.putExtra("SINGLE_CONTACT_NUMBER", phoneNumber);
+        intent.putExtra("FROM_SINGLE_GROUP", fromSingleGroup);
         startActivity(intent);
+    }
+
+    public void setInheritance(View view) {
+        boolean isToggled = ((Switch) view).isChecked();
+        Switch inheritance = (Switch)findViewById(R.id.SingleContactInheritance);
+        switch(view.getId()) {
+            case R.id.SingleContactInheritance:
+                Log.v("SingleContInheritance:", java.lang.Boolean.toString(isToggled));
+                if(singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){
+                    db.setContactInheritance(singleContact.getPhoneNumber(), false);
+                    inheritance.setChecked(false);
+                }else{
+                    db.setContactInheritance(singleContact.getPhoneNumber(), isToggled);
+                    inheritance.setChecked(isToggled);
+                }
+                break;
+        }
     }
 }

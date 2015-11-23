@@ -28,7 +28,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add To Group..."
+        android:text="Change Group..."
         android:id="@+id/addToGroup"
         android:onClick="addToGroup"
         android:layout_below="@+id/currentGroupName"
