@@ -62,11 +62,6 @@ public class EventHandler {
                         android.util.Log.v("EventHandler,", "Contact is inheriting group info/permissions");
                         permissionsMessage = permissionsRequested(contact,message,true);
                         if(permissionsMessage == null) {//no permissions, get normal response
-                            /*if (!contactGroupName.matches(Group.DEFAULT_GROUP)) {//contact groups
-                                message = db.getGroupInfo(contactGroupName).getResponse();
-                            } else {
-                                message = db.getReplyAll();
-                            }*/
                             message = db.getGroupInfo(contactGroupName).getResponse();
                             android.util.Log.v("EventHandler,", "Message is the group response");
                         }else{
