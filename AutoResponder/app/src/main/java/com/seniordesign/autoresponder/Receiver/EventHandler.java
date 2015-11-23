@@ -21,7 +21,7 @@ public class EventHandler {
         this.db = db;
     }
 
-    public int respondToText(String phoneNumber, String message, Long timeRecieved, boolean debug) {
+    public int respondToText(String phoneNumber, String message, Long timeRecieved) {
         //get toggle off/on from DB and CHECK to see if you run!
         //db.getResponseToggle();
         //Check phoneNumber validity
@@ -50,21 +50,20 @@ public class EventHandler {
                     updateLog.setMessageReceived(message);
                     updateLog.setSenderNumber(phoneNumber);
                     //get generalResponse from Database and set as message
-                    if (!debug) {
-                        String contactResponse = contact.getResponse();
-                        String contactGroupName = contact.getGroupName();
-                        //TODO get inheritance bit from contact!
-                        //TODO check the inheritance bit to see to use Contact Message or Group Message, same for location and calendar info
-                        if(!contactGroupName.matches(Group.DEFAULT_GROUP)) {
+                    String contactResponse = contact.getResponse();
+                    String contactGroupName = contact.getGroupName();
+                    Boolean contactInheritance = contact.isInheritance();
+                    //Check the inheritance bit to see to use Contact Message or Group Message
+                    if(contactInheritance){//inheritance from...
+                        if(!contactGroupName.matches(Group.DEFAULT_GROUP)) {//contact groups
                             message = db.getGroupInfo(contactGroupName).getResponse();
-                        }else if (contactResponse == null || contactResponse.matches("")){
+                        }else{//default group
                             message = db.getReplyAll();
-                        }else{
-                            message = contactResponse;
                         }
-                    } else {
-                        message += "\nGeneralReplyDEBUG:\n" + db.getReplyAll();
+                    }else{//no inheritance, get contact info
+                        message = contactResponse;
                     }
+
                     updateLog.setMessageSent(message);
 
                     //Add number, message sent, message recieved, and lastRecieved time to DB

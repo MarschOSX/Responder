@@ -3,6 +3,7 @@ package com.seniordesign.autoresponder.Interface.Contacts;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,6 +52,7 @@ public class SingleContact extends AppCompatActivity {
         setTextButton = (Button)findViewById(R.id.setContactTextButton);
         setTextEdit   = (EditText)findViewById(R.id.contactResponse_text);
 
+
         setTextButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
@@ -60,8 +62,11 @@ public class SingleContact extends AppCompatActivity {
                         if (contactReply.matches("")) {//Its blank, get default hint
                             contactReply = setTextEdit.getHint().toString();
                         }
+                        setTextEdit.setText(null);
                         db.setContactResponse(phoneNumber, contactReply);
                         Log.v("Single Contact:", "Set " + phoneNumber + " reply to " + contactReply);
+                        singleContact = db.getContactInfo(phoneNumber);
+                        setUpContactInfo(singleContact);
                     }
                 });
 
@@ -89,17 +94,9 @@ public class SingleContact extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*@Override
-    public void onBackPressed() {
-        if(fromSingleGroup != null) {
-            Intent intent = new Intent(getApplicationContext(), ContactsList.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        }
-    }*/
-
     public void setUpContactInfo(Contact singleContact){
+        boolean isInheriting = db.getContactInfo(singleContact.getPhoneNumber()).isInheritance();
+
         //Contact Info
         TextView contactName = (TextView) findViewById(R.id.singleContactNameOfContact);
         TextView contactNumber = (TextView) findViewById(R.id.contactPhoneNumberTextView);
@@ -107,27 +104,50 @@ public class SingleContact extends AppCompatActivity {
         contactNumber.setText(singleContact.getPhoneNumber());
 
         //Reply to this contact
-        String contactReply = singleContact.getResponse();
-        if(contactReply == null || contactReply.matches("")){//if no message is set
+        String contactReply;
+        if(isInheriting && singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){//inheriting from default
             contactReply = db.getReplyAll();
+        }else if(isInheriting && !singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){//inheriting from a group
+            contactReply = db.getGroupInfo(singleContact.getGroupName()).getResponse();
+        }else{//no inheritance
+            contactReply = singleContact.getResponse();
         }
-        TextView contactResponse = (TextView) findViewById(R.id.contactResponse_text);
+
+        EditText contactResponse = (EditText)findViewById(R.id.contactResponse_text);
         contactResponse.setHint(contactReply);
+        //contactResponse.setFocusable(false);
 
 
         //Permission Switches
         Switch location = (Switch)findViewById(R.id.contactLocationToggle);
         Switch calendar = (Switch)findViewById(R.id.contactActivityToggle);
-        if(singleContact.isLocationPermission()){
-            location.setChecked(true);
+        if(isInheriting) {
+            if (db.getGroupInfo(singleContact.getGroupName()).isLocationPermission()) {
+                location.setChecked(true);
+            } else {
+                location.setChecked(false);
+            }
+            if (db.getGroupInfo(singleContact.getGroupName()).isActivityPermission()) {
+                calendar.setChecked(true);
+            } else {
+                calendar.setChecked(false);
+            }
         }else{
-            location.setChecked(false);
+            if(singleContact.isLocationPermission()){
+                location.setChecked(true);
+            }else{
+                location.setChecked(false);
+            }
+            if(singleContact.isActivityPermission()){
+                calendar.setChecked(true);
+            }else{
+                calendar.setChecked(false);
+            }
         }
-        if(singleContact.isActivityPermission()){
-            calendar.setChecked(true);
-        }else{
-            calendar.setChecked(false);
-        }
+
+
+
+
 
         //Contact Group
         TextView contactsGroup = (TextView) findViewById(R.id.contactGroupName);
@@ -140,6 +160,28 @@ public class SingleContact extends AppCompatActivity {
             contactsGroup.setHint("Default");
         }
 
+        //to determine if greyed out text based on Inheritance from group info
+        Switch inheritance = (Switch)findViewById(R.id.SingleContactInheritance);
+        if(isInheriting){
+            Button setContactTextButton = (Button) findViewById(R.id.setContactTextButton);
+            contactResponse.setEnabled(false);
+            setContactTextButton.setEnabled(false);
+            contactResponse.setEnabled(false);
+            location.setEnabled(false);
+            calendar.setEnabled(false);
+            inheritance.setChecked(true);
+        }else{
+            Button setContactTextButton = (Button) findViewById(R.id.setContactTextButton);
+            contactResponse.setEnabled(true);
+            setContactTextButton.setEnabled(true);
+            contactResponse.setEnabled(true);
+            location.setEnabled(true);
+            calendar.setEnabled(true);
+            inheritance.setChecked(false);
+        }
+
+
+
     }
 
 
@@ -149,15 +191,24 @@ public class SingleContact extends AppCompatActivity {
         // Is the button now checked?
         boolean isToggled = ((Switch) view).isChecked();
         // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.contactLocationToggle:
-                Log.v("ContactLocationToggle:", java.lang.Boolean.toString(isToggled));
-                db.setContactLocationPermission(singleContact.getPhoneNumber(), isToggled);
-                break;
-            case R.id.contactActivityToggle:
-                Log.v("ContactActivityToggle:", java.lang.Boolean.toString(isToggled));
-                db.setContactActivityPermission(singleContact.getPhoneNumber(), isToggled);
-                break;
+        if(!db.getContactInfo(phoneNumber).isInheritance()) {
+            switch (view.getId()) {
+                case R.id.contactLocationToggle:
+                    Log.v("ContactLocationToggle:", java.lang.Boolean.toString(isToggled));
+                    db.setContactLocationPermission(singleContact.getPhoneNumber(), isToggled);
+                    break;
+                case R.id.contactActivityToggle:
+                    Log.v("ContactActivityToggle:", java.lang.Boolean.toString(isToggled));
+                    db.setContactActivityPermission(singleContact.getPhoneNumber(), isToggled);
+                    break;
+            }
+            singleContact = db.getContactInfo(phoneNumber);
+            setUpContactInfo(singleContact);
+        }else{
+            Switch location = (Switch)findViewById(R.id.contactLocationToggle);
+            Switch calendar = (Switch)findViewById(R.id.contactActivityToggle);
+            location.setChecked(location.isChecked());
+            calendar.setChecked(calendar.isChecked());
         }
     }
 
@@ -208,17 +259,13 @@ public class SingleContact extends AppCompatActivity {
 
     public void setInheritance(View view) {
         boolean isToggled = ((Switch) view).isChecked();
-        Switch inheritance = (Switch)findViewById(R.id.SingleContactInheritance);
         switch(view.getId()) {
             case R.id.SingleContactInheritance:
                 Log.v("SingleContInheritance:", java.lang.Boolean.toString(isToggled));
-                if(singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){
-                    db.setContactInheritance(singleContact.getPhoneNumber(), false);
-                    inheritance.setChecked(false);
-                }else{
-                    db.setContactInheritance(singleContact.getPhoneNumber(), isToggled);
-                    inheritance.setChecked(isToggled);
-                }
+                    db.setContactInheritance(phoneNumber, isToggled);
+                    //singleContact.setInheritance(isToggled);
+                    singleContact = db.getContactInfo(phoneNumber);
+                    setUpContactInfo(singleContact);
                 break;
         }
     }

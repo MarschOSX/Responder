@@ -157,13 +157,13 @@ public class EventHandlerTest extends InstrumentationTestCase {
         assertNotNull(dbi);
 
             EventHandler ev = new EventHandler(dbi);
-            assertSame(ev.respondToText(null, "", 0L, true), -1);
+            assertSame(ev.respondToText(null, "", 0L), -1);
             //assertSame(ev.respondToText("", "", 0L, true), -1);
             //assertSame(ev.respondToText("1", "", 0L, true), -1);
             //assertSame(ev.respondToText("123z135", "", 0L, true), -1);
             //assertSame(ev.respondToText("85683273201111", "", 0L, true), -1);
-            assertSame(ev.respondToText("+14104176404", "", -1L, true), -1);
-            assertSame(ev.respondToText("+14104176404", "", 0L, true), 0);
+            assertSame(ev.respondToText("+14104176404", "", -1L), -1);
+            assertSame(ev.respondToText("+14104176404", "", 0L), 0);
 
     }
 }
