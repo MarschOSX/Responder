@@ -42,11 +42,12 @@ public class PermDBInstance implements DBInstance {
 
     public void setReplyAll(String reply){
         Log.d(TAG, "setting replyAll to " + reply + "....");
-        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.REPLY_ALL, DBHelper.SETTING_VALUE[0], reply);
+        //update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.REPLY_ALL, DBHelper.SETTING_VALUE[0], reply);
+        this.setGroupResponse(Group.DEFAULT_GROUP, reply);
     }
 
     public String getReplyAll(){
-        final String query =
+        /*final String query =
                 "SELECT " + DBHelper.SETTING_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
                  " WHERE " + DBHelper.SETTING_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
@@ -68,7 +69,9 @@ public class PermDBInstance implements DBInstance {
         else {
             Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
             return null;
-        }
+        }*/
+
+        return this.getGroupInfo(Group.DEFAULT_GROUP).getResponse();
     }
 
     public void setDelay(int minutes){

@@ -26,10 +26,10 @@ public class TimeDelay extends AppCompatActivity {
         setContentView(R.layout.activity_time_delay);
 
         this.db = DBProvider.getInstance(false, getApplicationContext());
-        setTimeRadioButton();
-
         setDelayNum   = (EditText)findViewById(R.id.customVal);
         setDelayNum.requestFocus();
+
+        setTimeRadioButton();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class TimeDelay extends AppCompatActivity {
     }
 
     private void setTimeRadioButton(){
-        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+        //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
         RadioButton timeDelayRB;
         Integer timeDelay = db.getDelay();
         if(timeDelay == 5){
@@ -82,19 +82,19 @@ public class TimeDelay extends AppCompatActivity {
 
         // Check which radio button was clicked
         switch(view.getId()) {
-            case R.id.fiveMin_radioButton:
+            case R.id.radioButton_5:
                 if (checked)
                     responseDelay = 5;
                 break;
-            case R.id.twentyMin_radioButton:
+            case R.id.radioButton_20:
                 if (checked)
                     responseDelay = 20;
                 break;
-            case R.id.oneHour_radioButton:
+            case R.id.radioButton_60:
                 if (checked)
                     responseDelay = 60;
                 break;
-            case R.id.custom_option:
+            case R.id.radioButton_custom:
                 if (checked)
                     try{
                         responseDelay = Integer.parseInt(setDelayNum.getText().toString());

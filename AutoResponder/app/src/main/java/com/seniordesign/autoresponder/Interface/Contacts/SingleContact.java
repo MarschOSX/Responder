@@ -104,14 +104,15 @@ public class SingleContact extends AppCompatActivity {
         contactNumber.setText(singleContact.getPhoneNumber());
 
         //Reply to this contact
-        String contactReply;
-        if(isInheriting && singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){//inheriting from default
+        String contactReply = singleContact.getResponse();
+
+        /*if(isInheriting && singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){//inheriting from default
             contactReply = db.getReplyAll();
         }else if(isInheriting && !singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){//inheriting from a group
             contactReply = db.getGroupInfo(singleContact.getGroupName()).getResponse();
         }else{//no inheritance
             contactReply = singleContact.getResponse();
-        }
+        }*/
 
         EditText contactResponse = (EditText)findViewById(R.id.contactResponse_text);
         contactResponse.setHint(contactReply);
