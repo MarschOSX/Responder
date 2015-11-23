@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder.Interface;
+package com.seniordesign.autoresponder.Interface.Groups;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +8,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;

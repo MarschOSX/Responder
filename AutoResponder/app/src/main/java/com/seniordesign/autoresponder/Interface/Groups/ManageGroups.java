@@ -1,8 +1,7 @@
-package com.seniordesign.autoresponder.Interface;
+package com.seniordesign.autoresponder.Interface.Groups;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,14 +13,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
+import com.seniordesign.autoresponder.Interface.Contacts.SingleContact;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ManageGroups extends AppCompatActivity {
 

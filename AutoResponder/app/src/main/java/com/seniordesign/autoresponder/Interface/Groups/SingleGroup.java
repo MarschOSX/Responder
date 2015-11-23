@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder.Interface;
+package com.seniordesign.autoresponder.Interface.Groups;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,6 +21,9 @@ import android.widget.Toast;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
+import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
+import com.seniordesign.autoresponder.Interface.Contacts.SingleContact;
+import com.seniordesign.autoresponder.Interface.Main;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;

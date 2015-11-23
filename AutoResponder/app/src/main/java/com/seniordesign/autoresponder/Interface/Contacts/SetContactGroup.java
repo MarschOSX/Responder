@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder.Interface;
+package com.seniordesign.autoresponder.Interface.Contacts;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,16 +9,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
+import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
-
-import java.util.ArrayList;
 
 public class SetContactGroup extends AppCompatActivity {
 

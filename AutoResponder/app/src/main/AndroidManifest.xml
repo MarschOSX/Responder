@@ -32,31 +32,27 @@
         </receiver>
 
         <activity
-            android:name=".Interface.SettingsActivity"
-            android:label="@string/title_activity_settings" >
-        </activity>
-        <activity
-            android:name=".Interface.ContactsList"
+            android:name=".Interface.Contacts.ContactsList"
             android:label="@string/title_activity_contacts_list" >
         </activity>
         <activity
-            android:name=".Interface.SingleContact"
+            android:name=".Interface.Contacts.SingleContact"
             android:label="@string/title_activity_single_contact" >
         </activity>
         <activity
-            android:name=".Interface.SetContactGroup"
+            android:name=".Interface.Contacts.SetContactGroup"
             android:label="@string/title_activity_set_contact_group" >
         </activity>
         <activity
-            android:name=".Interface.ManageGroups"
+            android:name=".Interface.Groups.ManageGroups"
             android:label="@string/title_activity_manage_groups" >
         </activity>
         <activity
-            android:name=".Interface.NewGroup"
+            android:name=".Interface.Groups.NewGroup"
             android:label="@string/title_activity_new_group" >
         </activity>
         <activity
-            android:name=".Interface.SingleGroup"
+            android:name=".Interface.Groups.SingleGroup"
             android:label="@string/title_activity_single_group" >
         </activity>
         <activity

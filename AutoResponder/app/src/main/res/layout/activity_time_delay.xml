@@ -9,11 +9,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000000"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/setting_timeDelay_descr"
         android:id="@+id/textView3"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textSize="20sp" />
 
     <RadioGroup
         android:layout_width="wrap_content"
@@ -27,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/fiveMinutes_option"
-            android:id="@+id/radioButton"
+            android:id="@+id/radioButton_5"
             android:layout_gravity="left|center_horizontal"
             android:checked="false"
             android:onClick="radioButtonDelaySet" />
@@ -36,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/twentyMinutes_option"
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioButton_20"
             android:layout_gravity="left|center_horizontal"
             android:checked="false"
             android:onClick="radioButtonDelaySet" />
@@ -45,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/oneHour_option"
-            android:id="@+id/radioButton3"
+            android:id="@+id/radioButton_60"
             android:checked="false"
             android:onClick="radioButtonDelaySet"
             android:layout_gravity="left" />
@@ -54,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/custom_option"
-            android:id="@+id/radioButton4"
+            android:id="@+id/radioButton_custom"
             android:checked="false"
             android:onClick="radioButtonDelaySet"
             android:layout_gravity="left" />
