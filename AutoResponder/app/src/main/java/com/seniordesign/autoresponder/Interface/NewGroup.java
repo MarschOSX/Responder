@@ -31,6 +31,7 @@ public class NewGroup extends AppCompatActivity {
     int duration = Toast.LENGTH_LONG;
     CharSequence toastText;
     Toast toast;
+    String contactNumber = null;
 
 
 
@@ -39,6 +40,9 @@ public class NewGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
         this.db = DBProvider.getInstance(false, getApplicationContext());
+        Intent intent = getIntent();
+        contactNumber = intent.getStringExtra("CONTACT_NUMBER");
+
     }
 
     @Override
@@ -79,7 +83,7 @@ public class NewGroup extends AppCompatActivity {
         }
     }
 
-    public void createNewGroup(View view) {//returns -1 on fail, 0 on success
+    public void createNewGroup(View view) {
         Context context = getApplicationContext();
 
         //get info from EditTexts
@@ -135,6 +139,9 @@ public class NewGroup extends AppCompatActivity {
         //group was added!
         Intent intentBack = new Intent(getApplicationContext(), ManageGroups.class);
         intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (contactNumber != null) {
+            intentBack.putExtra("CONTACT_NUMBER", contactNumber);
+        }
         startActivity(intentBack);
         finish();
     }

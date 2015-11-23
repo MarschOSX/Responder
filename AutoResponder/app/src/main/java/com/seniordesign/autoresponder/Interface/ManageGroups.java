@@ -66,18 +66,11 @@ public class ManageGroups extends AppCompatActivity {
     }
 
     public void doLaunchAddNewGroup(View view) {
-        Context context = getApplicationContext();
-        // Do something in response to button
-        if(contactNumber == null) {
-            Intent intent = new Intent(this, NewGroup.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(intent);
-        }else{
-            toastText = "Please Select From Current Groups!";
-            toast = Toast.makeText(context, toastText, duration);
-            toast.show();
-        }
-
+        Intent intent = new Intent(this, NewGroup.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("CONTACT_NUMBER", contactNumber);
+        startActivity(intent);
+        finish();
     }
 
     public void updateGroupsListView() {
