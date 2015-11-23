@@ -7,7 +7,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.seniordesign.autoresponder.Interface.SingleContact;
+import com.seniordesign.autoresponder.Interface.Contacts.SingleContact;
 
 public class SingleContactTest extends ActivityInstrumentationTestCase2<SingleContact> {
     public SingleContactTest() {

@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 
-import com.seniordesign.autoresponder.Interface.ContactsList;
+import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
 import com.seniordesign.autoresponder.Interface.Main;
 
 public class ContactsListTest extends ActivityInstrumentationTestCase2<ContactsList> {

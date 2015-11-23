@@ -4,7 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
+import com.seniordesign.autoresponder.DataStructures.Setting;
 import com.seniordesign.autoresponder.R;
 
 public class UserSettings extends AppCompatActivity {
@@ -13,6 +15,11 @@ public class UserSettings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
+
+        final ListView listView = (ListView) findViewById(R.id.listView);
+        final SettingListAdapter adapter = new SettingListAdapter(this.getApplicationContext(), Setting.settingUIList, this);
+
+        listView.setAdapter(adapter);
     }
 
     @Override

@@ -8,8 +8,8 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.seniordesign.autoresponder.Interface.NewGroup;
-import com.seniordesign.autoresponder.Interface.SingleGroup;
+import com.seniordesign.autoresponder.Interface.Groups.NewGroup;
+import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
 
 public class NewGroupTest extends ActivityInstrumentationTestCase2<NewGroup> {
     public NewGroupTest() {

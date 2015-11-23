@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder.Interface;
+package com.seniordesign.autoresponder.Interface.Contacts;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
+import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
