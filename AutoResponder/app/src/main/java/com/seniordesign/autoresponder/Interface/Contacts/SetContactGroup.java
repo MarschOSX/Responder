@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
+import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
