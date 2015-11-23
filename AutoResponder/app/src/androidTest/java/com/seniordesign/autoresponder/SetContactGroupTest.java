@@ -8,8 +8,8 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.seniordesign.autoresponder.Interface.SetContactGroup;
-import com.seniordesign.autoresponder.Interface.SingleGroup;
+import com.seniordesign.autoresponder.Interface.Contacts.SetContactGroup;
+import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
 
 public class SetContactGroupTest extends ActivityInstrumentationTestCase2<SetContactGroup> {
     public SetContactGroupTest() {

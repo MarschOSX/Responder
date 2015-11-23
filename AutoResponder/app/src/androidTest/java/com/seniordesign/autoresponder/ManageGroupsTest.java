@@ -6,8 +6,8 @@ import android.test.UiThreadTest;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.seniordesign.autoresponder.Interface.ContactsList;
-import com.seniordesign.autoresponder.Interface.ManageGroups;
+import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
+import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
 
 public class ManageGroupsTest extends ActivityInstrumentationTestCase2<ManageGroups> {
     public ManageGroupsTest() {

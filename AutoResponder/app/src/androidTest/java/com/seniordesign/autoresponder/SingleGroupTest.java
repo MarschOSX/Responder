@@ -9,9 +9,9 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.seniordesign.autoresponder.Interface.ContactsList;
-import com.seniordesign.autoresponder.Interface.SingleContact;
-import com.seniordesign.autoresponder.Interface.SingleGroup;
+import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
+import com.seniordesign.autoresponder.Interface.Contacts.SingleContact;
+import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
 
 public class SingleGroupTest extends ActivityInstrumentationTestCase2<SingleGroup> {
     public SingleGroupTest() {
