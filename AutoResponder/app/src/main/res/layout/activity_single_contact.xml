@@ -113,7 +113,6 @@
         android:layout_alignParentStart="true"
         android:textSize="30dp"
         android:layout_marginTop="40dp"
-        android:textColor="@color/abc_primary_text_material_light"
         android:layout_alignEnd="@+id/contactActivityToggle" />
 
     <Switch
@@ -136,7 +135,6 @@
         android:text="Name:"
         android:id="@+id/singleContactGroupName"
         android:textSize="30dp"
-        android:textColor="@color/abc_primary_text_disable_only_material_light"
         android:layout_below="@+id/singleContactGroupInfo"
         android:layout_alignParentStart="true"
         android:layout_marginTop="10dp" />
