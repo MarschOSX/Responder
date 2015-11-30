@@ -7,7 +7,6 @@ import android.provider.CalendarContract;
 import android.telephony.SmsManager;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
-import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.R;
@@ -20,6 +19,13 @@ import java.sql.Date;
 public class EventHandler extends ListActivity{
 
     private DBInstance db;
+    //String[] possibleRequests;
+
+    /*@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        possibleRequests = getResources().getStringArray(R.array.activity_requests_list);
+    }*/
 
     public EventHandler(DBInstance db) {
         this.db = db;
@@ -56,23 +62,40 @@ public class EventHandler extends ListActivity{
 
                     //get response from Database and set as message
                     String contactResponse = contact.getResponse();
-                    String permissionsMessage = permissionsRequested(contact,message);
+                    Boolean locationPermission = contact.isLocationPermission();
+                    Boolean activityPermission = contact.isActivityPermission();
 
-                    if(permissionsMessage == null) {//no permissions, get normal response
-                        message = contactResponse;
-                    }else{
-                        message = permissionsMessage;
+                    if (locationPermission && activityPermission) {//if they are both true
+                        String locMessage = getLocationInfo(message);
+                        String actMessage = getActivityInfo(message);
+                        //if both requested, send two texts as long as they are not null
+                        if(locMessage !=  null) {
+                            sendSMS(phoneNumber, locMessage);
+                        }
+                        if(actMessage != null) {
+                            sendSMS(phoneNumber, actMessage);
+                        }
+                        //if both are null send normal response
+                        if(locMessage == null && actMessage == null){
+                            sendSMS(phoneNumber, contactResponse);
+                        }
+                    }else if(locationPermission) {//if just Location permission is true
+                        String locMessage = getLocationInfo(message);
+                        if(locMessage != null){
+                            sendSMS(phoneNumber, locMessage);
+                        }else{
+                            sendSMS(phoneNumber,contactResponse);//if null, send the normal message
+                        }
+                    } else if (activityPermission) {//if just Activity permission is true
+                        String actMessage = getActivityInfo(message);
+                        if(actMessage != null){
+                            sendSMS(phoneNumber, actMessage);
+                        }else{
+                            sendSMS(phoneNumber,contactResponse);//if null, send the normal message
+                        }
+                    }else {//both permissions are false, go to normal response
+                        sendSMS(phoneNumber, contactResponse);//if null, send the normal message
                     }
-                    //Send the GeneralResponse Message
-                    SmsManager sms = SmsManager.getDefault();
-
-                    android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + message);
-                    sms.sendTextMessage(phoneNumber, null, message, null, null);
-
-                    //Add number, message sent, message recieved, and lastRecieved time to DB
-                    db.addToResponseLog(updateLog);
-                    updateLog.setMessageSent(message);
-
                     return 0;
                 } else {
                     android.util.Log.v("EventHandler,", "Cannot send a response yet!");
@@ -87,41 +110,44 @@ public class EventHandler extends ListActivity{
         return -1;
     }
 
-    public String permissionsRequested(Contact contact, String message) {
-        String returnMessage;
-
-        //TODO why do these functions go to group? Why is activity permission always true?
-        Boolean locationPermission = contact.isLocationPermission();
-        Boolean activityPermission = contact.isActivityPermission();
-
-        if(!locationPermission && !activityPermission){//if both are false, nothing to do here
-            return null;
-        }else if(locationPermission && activityPermission){//if they are both true
-            return null;//TODO how do we handle if both are requested
-        }else if (locationPermission) {//if just Location permission is true
-            returnMessage = getLocationInfo(message);
-            return returnMessage;
-            //TODO Why is activity permission always true?
-        }else if (activityPermission) {//if just Activity permission is true
-            returnMessage = getActivityInfo(message);
-            return returnMessage;
+    public void sendSMS(String phoneNumber, String message){
+        ResponseLog updateLog = db.getLastResponseByNum(phoneNumber);
+        if (updateLog == null) {
+            android.util.Log.v("EventHandler,", "Invalid, UpdateLog is NULL");
+            return;
         }
-        return null;
+
+        //Send the GeneralResponse Message
+        SmsManager sms = SmsManager.getDefault();
+
+        android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + message);
+        sms.sendTextMessage(phoneNumber, null, message, null, null);
+
+        //Add number, message sent, message recieved, and lastRecieved time to DB
+        db.addToResponseLog(updateLog);
+        updateLog.setMessageSent(message);
     }
 
-
     public String getActivityInfo(String message){
-        //you have permission, check SMS message to see if activity was requested
-        String[] possibleRequests = getResources().getStringArray(R.array.activity_requests_list);
+        //Load in different types of activity requests in string form
+        /*Resources res = getResources();
+        String[] possibleRequests = res.getStringArray(R.array.activity_requests_list);*/
+
+        //TODO this is not efficient, but it works for now, try to get above method working with extends at the top of file
+        String[] possibleRequests = {"are you busy", "are you free", "whats up", "you doing anything", "what are you up to"};
+
+        //Return message based on request, if null then no request made
         String returnMessage = null;
+
         //goes through a list of possible location responses
-        for (String possibleRequest : possibleRequests)
+        for (String possibleRequest : possibleRequests) {
+            //if there was a match
             if (message.contains(possibleRequest)) {
                 //then we want to give that person your calendar info
                 try {//attempt to access calendar information
                     long begin = System.currentTimeMillis() % 1000;
                     //long end = begin;// ending time in milliseconds
-                            String[] query =
+                    String[] query =
                             new String[]{
                                     CalendarContract.Instances._ID,
                                     CalendarContract.Instances.BEGIN,
@@ -131,9 +157,10 @@ public class EventHandler extends ListActivity{
                             CalendarContract.Instances.query(getContentResolver(), query, begin, begin);
                     if (cursor.getCount() > 0) {//yes we are busy
                         returnMessage = "I'm at an event right now";
-
+                        android.util.Log.v("EventHandler,", "Accessing Calendar Successful and busy");
+                        /*
                         //get event ID so we can get more info on it
-                        /*int eventID = cursor.getColumnIndex(CalendarContract.Instances.EVENT_ID);
+                        int eventID = cursor.getColumnIndex(CalendarContract.Instances.EVENT_ID);
                         String[] proj =
                                 new String[]{
                                         CalendarContract.Events._ID,
@@ -147,30 +174,45 @@ public class EventHandler extends ListActivity{
                         if (cursor2.moveToFirst()) {
                             // read event data
                         }*/
+                    }else{
+                        returnMessage = null;
+                        android.util.Log.v("EventHandler,", "Accessing Calendar Successful, and free");
                     }
 
                 } catch (Exception e) {//if exception, just
-                    returnMessage = null;
+                    android.util.Log.v("EventHandler,", "Accessing Calendar Failed");
                 }
 
+                //return the message
                 return returnMessage;
             }
+        }
         return null;
     }
 
     public String getLocationInfo(String message){
+        //TODO use this function to respond with the location, remove static fields
         String returnMessage;
         //you have permission, check SMS message to see if location was requested
         if (message.contains("where are you")) {
             //then we want to give that person your location
-            returnMessage = "I am at Kinsley.";//TODO make this not static
+            returnMessage = "I am at Kinsley.";
             return returnMessage;
         }
-        //TODO more examples here, maybe go to another class to check/compare SMS strings?
-        //TODO might want to return a drop pin instead of a message??
         return null;
     }
 
+    public String getActInfoPrim(String message){
+        //TODO use this function to respond with the location, remove static fields
+        String returnMessage;
+        //you have permission, check SMS message to see if location was requested
+        if (message.contains("are you free")) {
+            //then we want to give that person your location
+            returnMessage = "I am in class.";
+            return returnMessage;
+        }
+        return null;
+    }
 
 }
 
