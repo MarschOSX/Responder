@@ -2,7 +2,10 @@ package com.seniordesign.autoresponder.Receiver;
 
 
 import android.app.ListActivity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.CalendarContract;
 import android.telephony.SmsManager;
 
@@ -145,35 +148,22 @@ public class EventHandler extends ListActivity{
             if (message.contains(possibleRequest)) {
                 //then we want to give that person your calendar info
                 try {//attempt to access calendar information
-                    long begin = System.currentTimeMillis() % 1000;
-                    //long end = begin;// ending time in milliseconds
-                    String[] query =
-                            new String[]{
-                                    CalendarContract.Instances._ID,
-                                    CalendarContract.Instances.BEGIN,
-                                    CalendarContract.Instances.END,
-                                    CalendarContract.Instances.EVENT_ID};
-                    Cursor cursor =
-                            CalendarContract.Instances.query(getContentResolver(), query, begin, begin);
-                    if (cursor.getCount() > 0) {//yes we are busy
+                    long beginTime = System.currentTimeMillis() % 1000;
+                    long endTime = beginTime + 1;// ending time in milliseconds
+
+                    String[] EVENT_PROJECTION = new String[]{CalendarContract.Events.TITLE, CalendarContract.Events.EVENT_LOCATION, CalendarContract.Instances.BEGIN, CalendarContract.Instances.END, CalendarContract.Events.ALL_DAY};
+                    ContentResolver resolver = getContentResolver();
+                    Uri.Builder eventsUriBuilder = CalendarContract.Instances.CONTENT_URI.buildUpon();
+                    ContentUris.appendId(eventsUriBuilder, beginTime);
+                    ContentUris.appendId(eventsUriBuilder, endTime);
+                    Uri eventUri = eventsUriBuilder.build();
+                    String selection = "((" + CalendarContract.Events.CALENDAR_ID + " = ?))";
+                    //String[] selectionArgs = new String[]{"" + cal.getCalId()};
+
+                    Cursor eventCursor = resolver.query(eventUri, EVENT_PROJECTION, selection, null, CalendarContract.Instances.BEGIN + " ASC");
+                    if (eventCursor.getCount() > 0) {//yes we are busy
                         returnMessage = "I'm at an event right now";
                         android.util.Log.v("EventHandler,", "Accessing Calendar Successful and busy");
-                        /*
-                        //get event ID so we can get more info on it
-                        int eventID = cursor.getColumnIndex(CalendarContract.Instances.EVENT_ID);
-                        String[] proj =
-                                new String[]{
-                                        CalendarContract.Events._ID,
-                                        CalendarContract.Events.DTSTART,
-                                        CalendarContract.Events.DTEND,
-                                        CalendarContract.Events.RRULE,
-                                        CalendarContract.Events.TITLE};
-                        Cursor cursor2 =
-                                getContentResolver().
-                                        query(CalendarContract.Events.CONTENT_URI, proj, CalendarContract.Events._ID + " = ? ", new String[]{Long.toString(eventID)}, null);
-                        if (cursor2.moveToFirst()) {
-                            // read event data
-                        }*/
                     }else{
                         returnMessage = null;
                         android.util.Log.v("EventHandler,", "Accessing Calendar Successful, and free");
@@ -197,18 +187,6 @@ public class EventHandler extends ListActivity{
         if (message.contains("where are you")) {
             //then we want to give that person your location
             returnMessage = "I am at Kinsley.";
-            return returnMessage;
-        }
-        return null;
-    }
-
-    public String getActInfoPrim(String message){
-        //TODO use this function to respond with the location, remove static fields
-        String returnMessage;
-        //you have permission, check SMS message to see if location was requested
-        if (message.contains("are you free")) {
-            //then we want to give that person your location
-            returnMessage = "I am in class.";
             return returnMessage;
         }
         return null;
