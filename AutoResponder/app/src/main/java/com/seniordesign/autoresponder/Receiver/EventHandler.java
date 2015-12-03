@@ -4,6 +4,7 @@ package com.seniordesign.autoresponder.Receiver;
 import android.app.ListActivity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
@@ -15,6 +16,9 @@ import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.R;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /*
  * Created by MarschOSX on 10/8/2015.
@@ -22,6 +26,7 @@ import java.sql.Date;
 public class EventHandler extends ListActivity{
 
     private DBInstance db;
+    Context getContext;
     //String[] possibleRequests;
 
     /*@Override
@@ -34,8 +39,9 @@ public class EventHandler extends ListActivity{
         this.db = db;
     }
 
-    public int respondToText(String phoneNumber, String message, Long timeRecieved) {
+    public int respondToText(String phoneNumber, String message, Long timeRecieved, Context context) {
         //get toggle off/on from DB and CHECK to see if you run!
+        getContext = context;
         //db.getResponseToggle();
         //Check phoneNumber validity
         android.util.Log.v("EventHandler,", "EventHandler is active!");
@@ -135,6 +141,14 @@ public class EventHandler extends ListActivity{
         //Load in different types of activity requests in string form
         /*Resources res = getResources();
         String[] possibleRequests = res.getStringArray(R.array.activity_requests_list);*/
+        Cursor calCursor;
+        Context context;
+        ArrayList<Long> eventID = new ArrayList<Long>();
+        ArrayList<String> nameOfEvent = new ArrayList<String>();
+        ArrayList<String> startDates = new ArrayList<String>();
+        ArrayList<String> endDates = new ArrayList<String>();
+        ArrayList<String> descriptions = new ArrayList<String>();
+        ArrayList<String> location = new ArrayList<String>();
 
         //TODO this is not efficient, but it works for now, try to get above method working with extends at the top of file
         String[] possibleRequests = {"are you busy", "are you free", "whats up", "you doing anything", "what are you up to"};
@@ -148,20 +162,57 @@ public class EventHandler extends ListActivity{
             if (message.contains(possibleRequest)) {
                 //then we want to give that person your calendar info
                 try {//attempt to access calendar information
-                    long beginTime = System.currentTimeMillis() % 1000;
-                    long endTime = beginTime + 1;// ending time in milliseconds
+                    eventID.clear();
+                    nameOfEvent.clear();
+                    startDates.clear();
+                    endDates.clear();
+                    descriptions.clear();
+                    location.clear();
+                    ContentResolver contentResolver = getContext.getContentResolver();
 
-                    String[] EVENT_PROJECTION = new String[]{CalendarContract.Events.TITLE, CalendarContract.Events.EVENT_LOCATION, CalendarContract.Instances.BEGIN, CalendarContract.Instances.END, CalendarContract.Events.ALL_DAY};
-                    ContentResolver resolver = getContentResolver();
-                    Uri.Builder eventsUriBuilder = CalendarContract.Instances.CONTENT_URI.buildUpon();
-                    ContentUris.appendId(eventsUriBuilder, beginTime);
-                    ContentUris.appendId(eventsUriBuilder, endTime);
-                    Uri eventUri = eventsUriBuilder.build();
-                    String selection = "((" + CalendarContract.Events.CALENDAR_ID + " = ?))";
-                    //String[] selectionArgs = new String[]{"" + cal.getCalId()};
+                    android.util.Log.v("EventHandler,", "Created Cal Info Getters");
 
-                    Cursor eventCursor = resolver.query(eventUri, EVENT_PROJECTION, selection, null, CalendarContract.Instances.BEGIN + " ASC");
-                    if (eventCursor.getCount() > 0) {//yes we are busy
+                    //query the calendar
+                    calCursor = contentResolver
+                            .query(Uri.parse("content://com.android.calendar/events"),
+                                    new String[] { "calendar_id", "title", "description",
+                                            "dtstart", "dtend", "eventLocation" }, null,
+                                    null, null);
+
+                    android.util.Log.v("EventHandler,", "Successful Cal Query");
+                    calCursor.moveToFirst();
+                    /* fetching calendars name
+                    String CNames[] = new String[calCursor.getCount()];
+
+                    // fetching calendars id
+                    nameOfEvent.clear();
+                    startDates.clear();
+                    endDates.clear();
+                    descriptions.clear();
+                    location.clear();
+
+                    for (int i = 0; i < CNames.length; i++) {
+                        eventID.add(calCursor.getLong(0));
+                        nameOfEvent.add(calCursor.getString(1));
+                        if (calCursor.getString(2) != null) {
+                            descriptions.add(calCursor.getString(2));
+                        } else {
+                            descriptions.add("");
+                        }
+                        startDates.add(getDate(Long.parseLong(calCursor.getString(3))));
+                        endDates.add(getDate(Long.parseLong(calCursor.getString(4))));
+
+                        if (calCursor.getString(5) != null) {
+                            location.add(calCursor.getString(5));
+                        } else {
+                            location.add("");
+                        }
+                        CNames[i] = calCursor.getString(1);
+                        calCursor.moveToNext();
+                    }
+                    */
+
+                    if (calCursor.getCount() > 0) {//yes we are busy
                         returnMessage = "I'm at an event right now";
                         android.util.Log.v("EventHandler,", "Accessing Calendar Successful and busy");
                     }else{
@@ -178,6 +229,14 @@ public class EventHandler extends ListActivity{
             }
         }
         return null;
+    }
+
+    public static String getDate(long milliSeconds) {
+        SimpleDateFormat formatter = new SimpleDateFormat(
+                "dd/MM/yyyy hh:mm:ss a");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 
     public String getLocationInfo(String message){
