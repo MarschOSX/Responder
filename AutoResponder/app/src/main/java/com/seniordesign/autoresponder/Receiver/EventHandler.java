@@ -8,7 +8,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
+import android.support.design.widget.TabLayout;
 import android.telephony.SmsManager;
+import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
@@ -24,7 +26,7 @@ import java.util.Calendar;
  * Created by MarschOSX on 10/8/2015.
  */
 public class EventHandler extends ListActivity{
-
+    private static final String TAG = "EventHandler";
     private DBInstance db;
     Context getContext;
     //String[] possibleRequests;
@@ -145,10 +147,12 @@ public class EventHandler extends ListActivity{
         Context context;
         ArrayList<Long> eventID = new ArrayList<Long>();
         ArrayList<String> nameOfEvent = new ArrayList<String>();
-        ArrayList<String> startDates = new ArrayList<String>();
-        ArrayList<String> endDates = new ArrayList<String>();
+        ArrayList<Long> startDates = new ArrayList<Long>();
+        ArrayList<Long> endDates = new ArrayList<Long>();
         ArrayList<String> descriptions = new ArrayList<String>();
         ArrayList<String> location = new ArrayList<String>();
+        Long focusedStart;
+        Long focusedEnd;
 
         //TODO this is not efficient, but it works for now, try to get above method working with extends at the top of file
         String[] possibleRequests = {"are you busy", "are you free", "whats up", "you doing anything", "what are you up to"};
@@ -181,8 +185,10 @@ public class EventHandler extends ListActivity{
 
                     android.util.Log.v("EventHandler,", "Successful Cal Query");
                     calCursor.moveToFirst();
-                    /* fetching calendars name
-                    String CNames[] = new String[calCursor.getCount()];
+                    // fetching calendars name
+                    //String CNames[] = new String[calCursor.getCount()];
+
+                    android.util.Log.v("EventHandler,", "Populated CNames with: " + calCursor.getCount() + " Events");
 
                     // fetching calendars id
                     nameOfEvent.clear();
@@ -191,7 +197,7 @@ public class EventHandler extends ListActivity{
                     descriptions.clear();
                     location.clear();
 
-                    for (int i = 0; i < CNames.length; i++) {
+                    for (int i = 0; i < calCursor.getCount(); i++) {
                         eventID.add(calCursor.getLong(0));
                         nameOfEvent.add(calCursor.getString(1));
                         if (calCursor.getString(2) != null) {
@@ -199,29 +205,50 @@ public class EventHandler extends ListActivity{
                         } else {
                             descriptions.add("");
                         }
-                        startDates.add(getDate(Long.parseLong(calCursor.getString(3))));
-                        endDates.add(getDate(Long.parseLong(calCursor.getString(4))));
+                        Log.d(TAG, calCursor.getString(0) + " " + calCursor.getString(1) + " " + calCursor.getString(2) + " " + calCursor.getString(3) + " " + calCursor.getString(4));
+
+                        startDates.add(Long.parseLong(calCursor.getString(3)));
+                        focusedStart = Long.parseLong(calCursor.getString(3));
+
+                        if(calCursor.getString(3) == null) {
+                            endDates.add(Long.parseLong(calCursor.getString(4)));
+                            focusedEnd = Long.parseLong(calCursor.getString(4));
+                        }else{
+                            endDates.add(Long.parseLong(calCursor.getString(3)));
+                            focusedEnd = Long.parseLong(calCursor.getString(3));
+                        }
+                        long currentTime = System.currentTimeMillis();
+                        Log.d(TAG, "start: " + getDate(focusedStart) + " end: " + getDate(focusedEnd));
+                        Log.d(TAG, "current time: " + getDate(currentTime));
+                        if(currentTime > focusedStart && currentTime < focusedEnd) {
+                            //we are currently at an event
+                            returnMessage = "I'm at an event right now";
+                            android.util.Log.v("EventHandler,", "Accessing Calendar Successful and busy!");
+                            break;
+                        }
+
+
 
                         if (calCursor.getString(5) != null) {
                             location.add(calCursor.getString(5));
                         } else {
                             location.add("");
                         }
-                        CNames[i] = calCursor.getString(1);
-                        calCursor.moveToNext();
-                    }
-                    */
 
-                    if (calCursor.getCount() > 0) {//yes we are busy
-                        returnMessage = "I'm at an event right now";
-                        android.util.Log.v("EventHandler,", "Accessing Calendar Successful and busy");
-                    }else{
-                        returnMessage = null;
-                        android.util.Log.v("EventHandler,", "Accessing Calendar Successful, and free");
+                        calCursor.moveToNext();
+
                     }
+
+                    calCursor.close();
+
+                    if(returnMessage == null){
+                        android.util.Log.v("EventHandler,", "Accessing Calendar Successful and free!");
+                    }
+
 
                 } catch (Exception e) {//if exception, just
                     android.util.Log.v("EventHandler,", "Accessing Calendar Failed");
+                    throw e;
                 }
 
                 //return the message
@@ -233,7 +260,7 @@ public class EventHandler extends ListActivity{
 
     public static String getDate(long milliSeconds) {
         SimpleDateFormat formatter = new SimpleDateFormat(
-                "dd/MM/yyyy hh:mm:ss a");
+                "MM/dd/yyyy hh:mm:ss a");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());
