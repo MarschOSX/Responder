@@ -58,7 +58,7 @@ public class EventListener extends BroadcastReceiver{
         //pass information to EventHandler.respondToText()
         if(phoneNumber != null) {
             EventHandler ev= new EventHandler(DBProvider.getInstance(false, context));
-            ev.respondToText(phoneNumber, message, timeRecieved);
+            ev.respondToText(phoneNumber, message, timeRecieved, context);
         }else{
             android.util.Log.v("EventHandler,", "Invalid Phone Number");
             throw new IllegalArgumentException("Invalid Phone Number in EventListener");
