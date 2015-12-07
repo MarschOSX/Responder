@@ -6,12 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.CompletionInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
@@ -42,16 +45,30 @@ public class TimeDelay extends AppCompatActivity {
 
         //set listener to be called when text is changed
         setDelayNum   = (EditText)findViewById(R.id.customVal);
-        setDelayNum.addTextChangedListener(new TextWatcher() {
+        setDelayNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (actionId == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
 
+                    try{
+                        responseDelay = Integer.parseInt(setDelayNum.getText().toString());
+                    }catch(NumberFormatException e){
+                        responseDelay = Integer.parseInt(setDelayNum.getHint().toString());
+                    }
+
+                    db.setDelay(responseDelay);
+                    return true;
+                }
+                return false;
             }
+        });
+        /*setDelayNum.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -61,7 +78,7 @@ public class TimeDelay extends AppCompatActivity {
                     db.setDelay(Integer.parseInt(time));
                 }
             }
-        });
+        });*/
 
         setTimeRadioButton();
     }

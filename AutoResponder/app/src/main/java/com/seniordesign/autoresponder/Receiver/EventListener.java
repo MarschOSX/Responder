@@ -3,9 +3,11 @@ package com.seniordesign.autoresponder.Receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.ArrayMap;
+import android.util.Log;
 
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 
@@ -14,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EventListener extends BroadcastReceiver{
+    public static final String TAG = "EventListener";
     //for more information about incoming SMS, set to true
    // boolean debug = false;
 
@@ -22,6 +25,12 @@ public class EventListener extends BroadcastReceiver{
     public void onReceive(Context context, Intent intent)
     {
         //EventListener passes info to EventHandler
+
+        //location info demo
+        Locator locator = new Locator(context);
+        Location currentLocation = locator.getCurrentLocation();
+        if (currentLocation != null) Log.d(TAG, currentLocation.getLatitude() + " " + currentLocation.getLongitude());
+        else Log.e(TAG, "no location returned");
 
         android.util.Log.v("EventListener,", "Intent received: " + intent.getAction());
         String phoneNumber = null;
