@@ -45,7 +45,7 @@ public class TimeDelay extends AppCompatActivity {
 
         //set listener to be called when text is changed
         setDelayNum   = (EditText)findViewById(R.id.customVal);
-        setDelayNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        /*setDelayNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (actionId == KeyEvent.KEYCODE_ENTER)) {
@@ -62,8 +62,8 @@ public class TimeDelay extends AppCompatActivity {
                 }
                 return false;
             }
-        });
-        /*setDelayNum.addTextChangedListener(new TextWatcher() {
+        });*/
+        setDelayNum.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
@@ -78,7 +78,7 @@ public class TimeDelay extends AppCompatActivity {
                     db.setDelay(Integer.parseInt(time));
                 }
             }
-        });*/
+        });
 
         setTimeRadioButton();
     }
