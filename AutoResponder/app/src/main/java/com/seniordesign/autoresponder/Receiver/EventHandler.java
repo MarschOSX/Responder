@@ -144,15 +144,13 @@ public class EventHandler extends ListActivity{
         /*Resources res = getResources();
         String[] possibleRequests = res.getStringArray(R.array.activity_requests_list);*/
         Cursor calCursor;
-        Context context;
-        ArrayList<Long> eventID = new ArrayList<Long>();
-        ArrayList<String> nameOfEvent = new ArrayList<String>();
-        ArrayList<Long> startDates = new ArrayList<Long>();
-        ArrayList<Long> endDates = new ArrayList<Long>();
-        ArrayList<String> descriptions = new ArrayList<String>();
-        ArrayList<String> location = new ArrayList<String>();
-        Long focusedStart;
-        Long focusedEnd;
+        Long timeManager;
+        Long startTime = null;
+        Long endTime = null;
+        Long currentTime;
+        Long past24;
+        Long future24;
+        Long twentyFourHours = 86400000l;
 
         //TODO this is not efficient, but it works for now, try to get above method working with extends at the top of file
         String[] possibleRequests = {"are you busy", "are you free", "whats up", "you doing anything", "what are you up to"};
@@ -166,85 +164,90 @@ public class EventHandler extends ListActivity{
             if (message.contains(possibleRequest)) {
                 //then we want to give that person your calendar info
                 try {//attempt to access calendar information
-                    eventID.clear();
-                    nameOfEvent.clear();
-                    startDates.clear();
-                    endDates.clear();
-                    descriptions.clear();
-                    location.clear();
                     ContentResolver contentResolver = getContext.getContentResolver();
-
                     android.util.Log.v("EventHandler,", "Created Cal Info Getters");
 
-                    //query the calendar
-                    calCursor = contentResolver
-                            .query(Uri.parse("content://com.android.calendar/events"),
-                                    new String[] { "calendar_id", "title", "description",
-                                            "dtstart", "dtend", "eventLocation" }, null,
-                                    null, null);
+                    //look at currentTime
+                    currentTime = System.currentTimeMillis();
+                    past24 = currentTime - twentyFourHours;
+                    future24 = currentTime + twentyFourHours;
 
+
+                    Uri.Builder eventsUriBuilder = CalendarContract.Instances.CONTENT_URI
+                            .buildUpon();
+                    ContentUris.appendId(eventsUriBuilder, past24);
+                    ContentUris.appendId(eventsUriBuilder, future24);
+                    Uri eventsUri = eventsUriBuilder.build();
+
+
+                    //query the calendar, more information can be used in future updates
+
+                    calCursor = contentResolver.query(eventsUri, new String[]{"calendar_id", "title", "description", "begin", "end", "duration", "allDay", "eventLocation", "eventStatus", "rrule"}, null, null, CalendarContract.Instances.BEGIN  + " ASC");
                     android.util.Log.v("EventHandler,", "Successful Cal Query");
-                    calCursor.moveToFirst();
-                    // fetching calendars name
-                    //String CNames[] = new String[calCursor.getCount()];
 
+                    //Start at first Event
+                    calCursor.moveToFirst();
                     android.util.Log.v("EventHandler,", "Populated CNames with: " + calCursor.getCount() + " Events");
 
-                    // fetching calendars id
-                    nameOfEvent.clear();
-                    startDates.clear();
-                    endDates.clear();
-                    descriptions.clear();
-                    location.clear();
-
+                    //Loop through event times and compare to current times
                     for (int i = 0; i < calCursor.getCount(); i++) {
-                        eventID.add(calCursor.getLong(0));
-                        nameOfEvent.add(calCursor.getString(1));
-                        if (calCursor.getString(2) != null) {
-                            descriptions.add(calCursor.getString(2));
-                        } else {
-                            descriptions.add("");
+                        //info of the event that is being looked at
+                        Log.d(TAG, calCursor.getString(0) + " " + calCursor.getString(1) + " " + calCursor.getString(2) + " " + calCursor.getString(3) + " " + calCursor.getString(4)  + " " + calCursor.getString(5) + " " + calCursor.getString(6) + " " + calCursor.getString(7) + " " + calCursor.getString(8)  + " " + calCursor.getString(9));
+
+
+
+
+                        //look at startTime
+                        if(calCursor.getString(3) != null){
+                            timeManager = Long.parseLong(calCursor.getString(3));
+                            Log.d(TAG, "start time: " + getDate(timeManager));
+                            //its within 48 hours
+                            if(timeManager > past24 && timeManager < future24){
+                                startTime = timeManager;
+                            }
                         }
-                        Log.d(TAG, calCursor.getString(0) + " " + calCursor.getString(1) + " " + calCursor.getString(2) + " " + calCursor.getString(3) + " " + calCursor.getString(4));
 
-                        startDates.add(Long.parseLong(calCursor.getString(3)));
-                        focusedStart = Long.parseLong(calCursor.getString(3));
+                        //look at endTime
+                        if(calCursor.getString(4) != null) {
+                            timeManager = Long.parseLong(calCursor.getString(4));
+                            Log.d(TAG, "end time: " + getDate(timeManager));
+                            //its within 48 hours
+                            if(timeManager > past24 && timeManager < future24){
+                                endTime = timeManager;
+                            }
+                        }
 
-                        if(calCursor.getString(3) == null) {
-                            endDates.add(Long.parseLong(calCursor.getString(4)));
-                            focusedEnd = Long.parseLong(calCursor.getString(4));
+                        //if times are not null
+                        if(startTime != null && endTime != null) {
+
+                            //See times in Date Readable Format
+                            Log.d(TAG, "start: " + getDate(startTime) + " end: " + getDate(endTime));
+                            Log.d(TAG, "current time: " + getDate(currentTime));
+
+                            //Compare times to see if busy
+                            if (currentTime > startTime && currentTime < endTime) {
+                                //we are currently at an event
+                                returnMessage = "I'm at an event right now";
+                                android.util.Log.v("EventHandler,", "Accessing Calendar Successful and busy!");
+                                break;
+                            }else{
+                                android.util.Log.v(TAG, "This Event does not take place right now!");
+                            }
                         }else{
-                            endDates.add(Long.parseLong(calCursor.getString(3)));
-                            focusedEnd = Long.parseLong(calCursor.getString(3));
-                        }
-                        long currentTime = System.currentTimeMillis();
-                        Log.d(TAG, "start: " + getDate(focusedStart) + " end: " + getDate(focusedEnd));
-                        Log.d(TAG, "current time: " + getDate(currentTime));
-                        if(currentTime > focusedStart && currentTime < focusedEnd) {
-                            //we are currently at an event
-                            returnMessage = "I'm at an event right now";
-                            android.util.Log.v("EventHandler,", "Accessing Calendar Successful and busy!");
-                            break;
+                            Log.d(TAG, "startTime or endTime was null for this event!");
                         }
 
-
-
-                        if (calCursor.getString(5) != null) {
-                            location.add(calCursor.getString(5));
-                        } else {
-                            location.add("");
-                        }
-
+                        //Cycle to next Event
                         calCursor.moveToNext();
-
                     }
 
+                    //Close calCursor
                     calCursor.close();
 
+                    //If not modified, we are free!
                     if(returnMessage == null){
                         android.util.Log.v("EventHandler,", "Accessing Calendar Successful and free!");
                     }
-
 
                 } catch (Exception e) {//if exception, just
                     android.util.Log.v("EventHandler,", "Accessing Calendar Failed");
@@ -258,6 +261,7 @@ public class EventHandler extends ListActivity{
         return null;
     }
 
+    //convert milliseconds into a date readable format
     public static String getDate(long milliSeconds) {
         SimpleDateFormat formatter = new SimpleDateFormat(
                 "MM/dd/yyyy hh:mm:ss a");
