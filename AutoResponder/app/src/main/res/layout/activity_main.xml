@@ -26,7 +26,6 @@
                 android:layout_height="60dp"
                 android:text="Auto Response"
                 android:id="@+id/autoRespond_switch"
-                android:onClick="switchChecker"
                 android:textSize="32sp" />
 
             <LinearLayout

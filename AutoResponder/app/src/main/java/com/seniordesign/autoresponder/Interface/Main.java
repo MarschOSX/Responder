@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder.Interface;
 
 import android.content.Intent;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,28 +16,80 @@ import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Receiver.GoogleLocator;
 
 
 public class Main extends AppCompatActivity {
-
+    private Switch mLocationToggle;
+    private Switch mCalenderToggle;
+    private Switch mResponseToggle;
+    //private Location currentLocation;
+    //GoogleLocator locator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        setToggleSwitch();
+
+        //build the all the toggles
+        buildSwitches();
     }
 
-    //checks DB for the current toggle on/off setting
-    private void setToggleSwitch(){
+    //build the switches and add the listeners
+    private void buildSwitches(){
         DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        boolean isActive = db.getResponseToggle();
-        Switch toggleButton = (Switch)findViewById(R.id.autoRespond_switch);
-        toggleButton.setChecked(isActive);
-        //Add other switches here when implemented....
+
+        mResponseToggle = (Switch)findViewById(R.id.autoRespond_switch);
+        mResponseToggle.setChecked(db.getResponseToggle());
+        mResponseToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                db.setResponseToggle(mResponseToggle.isChecked());
+            }
+        });
+
+        mCalenderToggle = (Switch)findViewById(R.id.calendar_switch);
+        mCalenderToggle.setChecked(db.getActivityToggle());
+        mCalenderToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                db.setActivityToggle(mCalenderToggle.isChecked());
+                //getLocation();
+            }
+        });
+
+        //locator = new GoogleLocator(getApplicationContext());
+
+        mLocationToggle = (Switch)findViewById(R.id.location_switch);
+        mLocationToggle.setChecked(db.getLocationToggle());
+        mLocationToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                db.setLocationToggle(mLocationToggle.isChecked());
+                //getLocation();
+                //if (!mLocationToggle.isChecked()) locator.close();
+            }
+        });
     }
+
+   /* private void getLocation(){
+        //GoogleLocator locator = new GoogleLocator(getApplicationContext());
+        this.currentLocation = locator.getCurrentLocation();
+        printLocation();
+        //locator.close();
+    }
+
+    private void printLocation(){
+        if (this.currentLocation != null) Log.d("TEST", this.currentLocation.getLatitude() + " " + this.currentLocation.getLongitude());
+        else Log.e("TEST", "no location returned");
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,8 +147,8 @@ public class Main extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Called when the user selects a time delay radio button
-    public void switchChecker(View view) {
+
+    /*public void switchChecker(View view) {
         // Is the button now checked?
         boolean autoRespondOffOn = ((Switch) view).isChecked();
         // Check which radio button was clicked
@@ -107,5 +160,6 @@ public class Main extends AppCompatActivity {
                     db.setResponseToggle(autoRespondOffOn);
                 break;
         }
-    }
+    }*/
+
 }
