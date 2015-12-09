@@ -27,10 +27,10 @@ public class EventListener extends BroadcastReceiver{
         //EventListener passes info to EventHandler
 
         //location info demo
-        Locator locator = new Locator(context);
+        /*Locator locator = new Locator(context);
         Location currentLocation = locator.getCurrentLocation();
         if (currentLocation != null) Log.d(TAG, currentLocation.getLatitude() + " " + currentLocation.getLongitude());
-        else Log.e(TAG, "no location returned");
+        else Log.e(TAG, "no location returned");*/
 
         android.util.Log.v("EventListener,", "Intent received: " + intent.getAction());
         String phoneNumber = null;
