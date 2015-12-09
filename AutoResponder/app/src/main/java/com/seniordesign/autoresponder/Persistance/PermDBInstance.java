@@ -154,6 +154,73 @@ public class PermDBInstance implements DBInstance {
         return toggle;
     }
 
+    public boolean getActivityToggle(){
+        final String query =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.ACTIVITY_TOGGLE + "\"";
+
+        //query database and ensure cursor returned is valid
+        Cursor result = myDB.rawQuery(query, null);
+        boolean toggle;
+        if ((result != null) && (result.moveToFirst())){
+
+            //retrieve setting value
+            String response = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
+
+            //determine if value is true or false and returns as translates into a boolean
+            if( response.compareTo("true") == 0){
+                toggle = true;
+            }
+            else if ( response.compareTo("false") == 0){
+                toggle = false;
+            }
+            else{
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": found " + response + " when a value of true or false was expected from: " + query);
+                throw new InputMismatchException();
+            }
+            result.close();
+        } else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not get/access cursor object from: " + query);
+            throw new NullPointerException();
+        }
+        Log.d(TAG, getMethodName(0) + ": toggle is " + toggle);
+        return toggle;
+    }
+
+    public boolean getLocationToggle(){
+        final String query =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.LOCATION_TOGGLE + "\"";
+
+        //query database and ensure cursor returned is valid
+        Cursor result = myDB.rawQuery(query, null);
+        boolean toggle;
+        if ((result != null) && (result.moveToFirst())){
+
+            //retrieve setting value
+            String response = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
+
+            //determine if value is true or false and returns as translates into a boolean
+            if( response.compareTo("true") == 0){
+                toggle = true;
+            }
+            else if ( response.compareTo("false") == 0){
+                toggle = false;
+            }
+            else{
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": found " + response + " when a value of true or false was expected from: " + query);
+                throw new InputMismatchException();
+            }
+            result.close();
+        } else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not get/access cursor object from: " + query);
+            throw new NullPointerException();
+        }
+        Log.d(TAG, getMethodName(0) + ": toggle is " + toggle);
+        return toggle;
+    }
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
     ////////////////////////////////

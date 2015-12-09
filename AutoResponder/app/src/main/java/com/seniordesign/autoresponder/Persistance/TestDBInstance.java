@@ -108,6 +108,34 @@ public class TestDBInstance implements DBInstance {
         }
     }
 
+    public boolean getActivityToggle(){
+        String value = this.settings.get(Setting.ACTIVITY_TOGGLE);
+        if(value.compareTo("true") == 0){
+            return true;
+        }
+        else if(value.compareTo("false") == 0){
+            return false;
+        }
+        else{
+            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.ACTIVITY_TOGGLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
+    }
+
+    public boolean getLocationToggle(){
+        String value = this.settings.get(Setting.LOCATION_TOGGLE);
+        if(value.compareTo("true") == 0){
+            return true;
+        }
+        else if(value.compareTo("false") == 0){
+            return false;
+        }
+        else{
+            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.LOCATION_TOGGLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
+    }
+
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
     ////////////////////////////////

@@ -31,6 +31,10 @@ public interface DBInstance {
     void setLocationToggle(boolean toggle);
 
     boolean getResponseToggle();
+    
+    boolean getLocationToggle();
+
+    boolean getActivityToggle();
 
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
