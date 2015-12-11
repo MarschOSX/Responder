@@ -92,7 +92,10 @@ public class EventHandler extends ListActivity{
                         }
                     }*/
                     if(locationPermission) {//if just Location permission is true
-                        if (this.messageReceived.toLowerCase().contains("where are you")) locator = new GoogleLocator(context, this);
+                        if (this.messageReceived.toLowerCase().contains("where are you") ||
+                                this.messageReceived.toLowerCase().contains("where r you") ||
+                                this.messageReceived.toLowerCase().contains("where are u") ||
+                                this.messageReceived.toLowerCase().contains("where r u")) locator = new GoogleLocator(context, this);
                     }
                     if (activityPermission) {//if just Activity permission is true
                         String actMessage = getActivityInfo(messageRecieved);
