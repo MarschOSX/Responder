@@ -141,12 +141,20 @@ public class EventHandler extends ListActivity{
 
     public void sendLocationInfo(){
         String addressText;
+        String link;
+        String message;
+
+        Location currentLocation = locator.getCurrentLocation();
         Address currentAddress = locator.getCurrentAddress();
+
         locator.close();
 
         addressText = currentAddress.getAddressLine(0) + " " + currentAddress.getAddressLine(1) + " " + currentAddress.getAddressLine(2);
+        link = "http://maps.google.com/?q=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
-        sendSMS(addressText, this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
+        message = addressText + "\n\n" + link;
+
+        sendSMS(message, this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
     }
 
 
