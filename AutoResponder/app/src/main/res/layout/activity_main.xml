@@ -57,7 +57,8 @@
                     android:layout_height="wrap_content"
                     android:text="General Reply"
                     android:id="@+id/generalReply_button"
-                    android:onClick="gotoGeneralResponse"/>
+                    android:onClick="gotoGeneralResponse"
+            android:visibility="gone" />
 
         <Button
                     android:layout_width="match_parent"
