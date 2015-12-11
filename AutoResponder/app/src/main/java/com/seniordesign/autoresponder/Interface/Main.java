@@ -150,14 +150,24 @@ public class Main extends AppCompatActivity {
 
     /*public void switchChecker(View view) {
         // Is the button now checked?
-        boolean autoRespondOffOn = ((Switch) view).isChecked();
+        boolean switchOffOn = ((Switch) view).isChecked();
+        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.autoRespond_switch:
-                    Log.v("AutoResponder Active? ", java.lang.Boolean.toString(autoRespondOffOn));
+                    Log.v("AutoResponder Active? ", java.lang.Boolean.toString(switchOffOn));
                     //push Toggle on/off to DB
-                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-                    db.setResponseToggle(autoRespondOffOn);
+                    db.setResponseToggle(switchOffOn);
+                break;
+            case R.id.calendar_switch:
+                    Log.v("Calendar Active? ", java.lang.Boolean.toString(switchOffOn));
+                    //push Toggle on/off to DB
+                    db.setActivityToggle(switchOffOn);
+                break;
+            case R.id.location_switch:
+                    Log.v("Location Active? ", java.lang.Boolean.toString(switchOffOn));
+                    //push Toggle on/off to DB
+                    db.setLocationToggle(switchOffOn);
                 break;
         }
     }*/

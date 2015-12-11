@@ -55,6 +55,14 @@ public class EventHandler extends ListActivity{
                     Boolean locationPermission = contact.isLocationPermission();
                     Boolean activityPermission = contact.isActivityPermission();
 
+                    //check main switches for location and calendar to see if active or not, need DB call!
+                    if(!db.getLocationToggle()){
+                        locationPermission = false;
+                    }
+                    if(!db.getActivityToggle()){
+                        activityPermission = false;
+                    }
+
                     if (locationPermission && activityPermission) {//if they are both true
                         String locMessage = getLocationInfo(messageRecieved);
                         String actMessage = getActivityInfo(messageRecieved);
