@@ -68,6 +68,13 @@ public class EventHandler extends ListActivity{
                     Boolean locationPermission = contact.isLocationPermission();
                     Boolean activityPermission = contact.isActivityPermission();
 
+                    if(!db.getLocationToggle()){
+                        locationPermission = false;
+                    }
+                    if(!db.getActivityToggle()){
+                        activityPermission = false;
+                    }
+                    
                     /*if (locationPermission && activityPermission) {//if they are both true
                         String locMessage = sendLocationInfo(messageRecieved);
                         String actMessage = getActivityInfo(messageRecieved);
