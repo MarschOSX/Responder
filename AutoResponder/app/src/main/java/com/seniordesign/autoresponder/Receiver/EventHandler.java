@@ -152,7 +152,7 @@ public class EventHandler extends ListActivity{
         addressText = currentAddress.getAddressLine(0) + " " + currentAddress.getAddressLine(1) + " " + currentAddress.getAddressLine(2);
         link = "http://maps.google.com/?q=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude();
 
-        message = addressText + "\n\n" + link;
+        message = "I am at: \n" + addressText + "\n\n" + link;
 
         sendSMS(message, this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
     }
