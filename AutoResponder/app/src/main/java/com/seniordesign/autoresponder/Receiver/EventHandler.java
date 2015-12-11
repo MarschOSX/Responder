@@ -5,6 +5,8 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Location;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.telephony.SmsManager;
@@ -24,6 +26,11 @@ import java.util.Calendar;
 public class EventHandler extends ListActivity{
     private static final String TAG = "EventHandler";
     private DBInstance db;
+    private Context context;
+    private GoogleLocator locator;
+    private String phoneNumber;
+    private String messageReceived;
+    private Long timeReceived;
     Context getContext;
 
     public EventHandler(DBInstance db) {
@@ -31,6 +38,12 @@ public class EventHandler extends ListActivity{
     }
 
     public int respondToText(String phoneNumber, String messageRecieved, Long timeRecieved, Context context) {
+        //EventListener passes info to EventHandler
+        this.context = context;
+        this.phoneNumber = phoneNumber;
+        this.messageReceived = messageRecieved;
+        this.timeReceived = timeRecieved;
+
         getContext = context;
         android.util.Log.v("EventHandler,", "EventHandler is active!");
         if (phoneNumber == null){
@@ -55,8 +68,8 @@ public class EventHandler extends ListActivity{
                     Boolean locationPermission = contact.isLocationPermission();
                     Boolean activityPermission = contact.isActivityPermission();
 
-                    if (locationPermission && activityPermission) {//if they are both true
-                        String locMessage = getLocationInfo(messageRecieved);
+                    /*if (locationPermission && activityPermission) {//if they are both true
+                        String locMessage = sendLocationInfo(messageRecieved);
                         String actMessage = getActivityInfo(messageRecieved);
                         //if both requested, send two texts as long as they are not null
                         if(locMessage !=  null) {
@@ -70,21 +83,26 @@ public class EventHandler extends ListActivity{
                             sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
 
                         }
-                    }else if(locationPermission) {//if just Location permission is true
-                        String locMessage = getLocationInfo(messageRecieved);
-                        if(locMessage != null){
+                    }*/
+                    if(locationPermission) {//if just Location permission is true
+                        if (this.messageReceived.contains("where are you")) locator = new GoogleLocator(context, this);
+                        //String locMessage =
+                        //sendLocationInfo(messageRecieved);
+                        /*if(locMessage != null){
                             sendSMS(locMessage, messageRecieved, phoneNumber, new Date(timeRecieved));
                         }else{
                             sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
-                        }
-                    } else if (activityPermission) {//if just Activity permission is true
+                        }*/
+                    }
+                    if (activityPermission) {//if just Activity permission is true
                         String actMessage = getActivityInfo(messageRecieved);
                         if(actMessage != null){
                             sendSMS(actMessage, messageRecieved, phoneNumber, new Date(timeRecieved));
                         }else{
                             sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
                         }
-                    }else {//both permissions are false, go to normal response
+                    }
+                    if (!locationPermission && !activityPermission){//both permissions are false, go to normal response
                         sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
                     }
                     android.util.Log.v("EventHandler,", "Finished EventHandler");
@@ -114,21 +132,14 @@ public class EventHandler extends ListActivity{
         db.addToResponseLog(updateLog);
     }
 
-    public String getLocationInfo(String message){
-        //TODO: Garlan use this function to respond with the location, remove static fields, go to new class if necessary
-        String returnMessage;
-        //you have permission, check SMS message to see if location was requested
-        if (message.contains("where are you")) {
-            //then we want to give that person your location
-            returnMessage = "I am at Kinsley.";
-            return returnMessage;
-        }
-        return null;
-        /**
-         *If the message returns null, the EventHandler will interperate that as no location information, and can handle it
-         * If you return a String with your location, the EventHandler will send that string
-         * If you are using a DropPin, I dont know how to handle that, you may need to rework things for sendSMS
-         */
+    public void sendLocationInfo(){
+        String addressText;
+        Address currentAddress = locator.getCurrentAddress();
+        locator.close();
+
+        addressText = currentAddress.getAddressLine(0) + " " + currentAddress.getAddressLine(1) + " " + currentAddress.getAddressLine(2);
+
+        sendSMS(addressText, this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
     }
 
 

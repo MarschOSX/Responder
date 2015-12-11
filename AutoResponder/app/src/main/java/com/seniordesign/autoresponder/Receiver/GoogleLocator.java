@@ -3,7 +3,8 @@ package com.seniordesign.autoresponder.Receiver;
 //code based off of code provided by Ravi Tamada at http://www.androidhive.info/2015/02/android-location-api-using-google-play-services/
 
 import android.content.Context;
-import android.location.GpsStatus;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +14,9 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by gabowser on 12/7/15.
@@ -24,7 +27,8 @@ public class GoogleLocator implements GoogleApiClient.ConnectionCallbacks, Googl
     private GoogleApiClient mGoogleApiClient;
     //private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private Location mCurrentLocation;
-    private EventListener mListener;
+    private Address mCurrentAddress;
+    private EventHandler mHandler;
 
     public GoogleLocator(Context context){
         this.mContext = context;
@@ -37,16 +41,24 @@ public class GoogleLocator implements GoogleApiClient.ConnectionCallbacks, Googl
         }
     }
 
-    public GoogleLocator(Context context, EventListener e){
+    public GoogleLocator(Context context, EventHandler e){
         this(context);
-        this.mListener = e;
+        this.mHandler = e;
     }
 
     public Location getCurrentLocation(){
         if (mGoogleApiClient.isConnected())
             return this.mCurrentLocation;
         else{
-            Log.e(TAG, "could not connect to Google Play Services " + mGoogleApiClient.isConnecting());
+            Log.e(TAG, "could not connect to Google Play Services ");
+            return null;
+        }
+    }
+    public Address getCurrentAddress(){
+        if (mGoogleApiClient.isConnected())
+            return this.mCurrentAddress;
+        else{
+            Log.e(TAG, "could not connect to Google Play Services ");
             return null;
         }
     }
@@ -74,8 +86,25 @@ public class GoogleLocator implements GoogleApiClient.ConnectionCallbacks, Googl
     }
 
     private void getLocation() {
+        Geocoder geocoder = new Geocoder(this.mContext, Locale.ENGLISH);
+        List<Address> addressList = null;
+
+
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        Log.e(TAG, mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude());
+
+        if (mCurrentLocation != null){
+            try{
+                addressList = geocoder.getFromLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), 1);
+            }
+            catch (IOException e){
+                Log.e(TAG, "error retrieving address for " + mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude());
+                e.printStackTrace();
+            }
+        }
+
+        if (addressList != null) mCurrentAddress = addressList.get(0);
+
+        Log.e(TAG, mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude() + " " + mCurrentAddress.toString());
     }
 
 
@@ -89,9 +118,9 @@ public class GoogleLocator implements GoogleApiClient.ConnectionCallbacks, Googl
     public void onConnected(Bundle arg0) {
         // Once connected with google api, get the location
         getLocation();
-        if(mListener != null){
-            Log.d(TAG, "calling cont");
-            mListener.onReceive_cont();
+        if(mHandler != null){
+            Log.d(TAG, "calling sendLocationInfo()");
+            mHandler.sendLocationInfo();
         }
     }
 
