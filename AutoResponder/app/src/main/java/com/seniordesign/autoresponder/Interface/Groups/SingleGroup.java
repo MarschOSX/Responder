@@ -23,7 +23,6 @@ import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
 import com.seniordesign.autoresponder.Interface.Contacts.SingleContact;
-import com.seniordesign.autoresponder.Interface.Main;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -202,7 +201,7 @@ public class SingleGroup extends AppCompatActivity {
                 }
                 db.removeGroup(singleGroup.getGroupName());
                 dialog.dismiss();
-                Intent intentBack = new Intent(getApplicationContext(), ManageGroups.class);
+                Intent intentBack = new Intent(getApplicationContext(), GroupList.class);
                 intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intentBack);
                 finish();

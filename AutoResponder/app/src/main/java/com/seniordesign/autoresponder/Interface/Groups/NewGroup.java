@@ -135,7 +135,7 @@ public class NewGroup extends AppCompatActivity {
         }
 
         //group was added!
-        Intent intentBack = new Intent(getApplicationContext(), ManageGroups.class);
+        Intent intentBack = new Intent(getApplicationContext(), GroupList.class);
         intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (contactNumber != null) {
             intentBack.putExtra("CONTACT_NUMBER", contactNumber);

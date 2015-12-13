@@ -51,7 +51,7 @@
             android:label="@string/title_activity_set_contact_group" >
         </activity>
         <activity
-            android:name=".Interface.Groups.ManageGroups"
+            android:name=".Interface.Groups.GroupList"
             android:label="@string/title_activity_manage_groups" >
         </activity>
         <activity

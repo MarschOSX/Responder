@@ -87,7 +87,8 @@
         android:layout_marginLeft="30dp"
         android:onClick="changeSingleGroupName"
         android:layout_alignTop="@+id/singleGroupName"
-        android:layout_alignEnd="@+id/singleGroupResponseText" />
+        android:layout_alignEnd="@+id/singleGroupResponseText"
+        android:visibility="gone" />
 
     <Button
         style="?android:attr/buttonStyleSmall"

@@ -21,7 +21,7 @@ import com.seniordesign.autoresponder.R;
 
 import java.util.ArrayList;
 
-public class ManageGroups extends AppCompatActivity {
+public class GroupList extends AppCompatActivity {
 
     private DBInstance db;
     String contactNumber = null;

@@ -74,28 +74,14 @@ public class EventHandler extends ListActivity{
                     if(!db.getActivityToggle()){
                         activityPermission = false;
                     }
-                    
-                    /*if (locationPermission && activityPermission) {//if they are both true
-                        String locMessage = sendLocationInfo(messageRecieved);
-                        String actMessage = getActivityInfo(messageRecieved);
-                        //if both requested, send two texts as long as they are not null
-                        if(locMessage !=  null) {
-                            sendSMS(locMessage, messageRecieved, phoneNumber, new Date(timeRecieved));
-                        }
-                        if(actMessage != null) {
-                            sendSMS(actMessage, messageRecieved, phoneNumber, new Date(timeRecieved));
-                        }
-                        //if both are null send normal response
-                        if(locMessage == null && actMessage == null){
-                            sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
 
-                        }
-                    }*/
                     if(locationPermission) {//if just Location permission is true
                         if (this.messageReceived.toLowerCase().contains("where are you") ||
                                 this.messageReceived.toLowerCase().contains("where r you") ||
                                 this.messageReceived.toLowerCase().contains("where are u") ||
-                                this.messageReceived.toLowerCase().contains("where r u")) locator = new GoogleLocator(context, this);
+                                this.messageReceived.toLowerCase().contains("where r u"))
+                            //create locator and pass a reference of this object
+                            locator = new GoogleLocator(context, this);
                     }
                     if (activityPermission) {//if just Activity permission is true
                         String actMessage = getActivityInfo(messageRecieved);
@@ -140,16 +126,19 @@ public class EventHandler extends ListActivity{
         String link;
         String message;
 
+        //once called by the locator, retrieve the raw location and human friendly address
         Location currentLocation = locator.getCurrentLocation();
         Address currentAddress = locator.getCurrentAddress();
 
+        //locator is no longer needed, close it.
         locator.close();
 
+        //build the location message w/ address and URL to google maps
         addressText = currentAddress.getAddressLine(0) + " " + currentAddress.getAddressLine(1) + " " + currentAddress.getAddressLine(2);
         link = "http://maps.google.com/?q=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-
         message = "I am at: \n" + addressText + "\n\n" + link;
 
+        //send the message
         sendSMS(message, this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
     }
 

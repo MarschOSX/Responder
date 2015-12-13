@@ -41,17 +41,17 @@ public interface DBInstance {
     ////////////////////////////////
     void addToResponseLog(ResponseLog newLog);
 
-    ResponseLog getFirstResponse();
+    //ResponseLog getFirstResponse();
 
-    ResponseLog getLastResponse();
+    //ResponseLog getLastResponse();
 
-    ResponseLog getResponse(int index);
+    //ResponseLog getResponse(int index);
 
     ResponseLog getLastResponseByNum(String phoneNum);
 
-    ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end);
+    //ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end);
 
-    ArrayList<ResponseLog> getResponseRange(int start, int end);
+    //ArrayList<ResponseLog> getResponseRange(int start, int end);
 
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//

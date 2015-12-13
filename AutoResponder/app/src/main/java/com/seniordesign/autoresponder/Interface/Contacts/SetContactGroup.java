@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.seniordesign.autoresponder.DataStructures.Group;
-import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
+import com.seniordesign.autoresponder.Interface.Groups.GroupList;
 import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
@@ -68,7 +68,7 @@ public class SetContactGroup extends AppCompatActivity {
     }
 
     public void addToGroup(View view) {
-        Intent intent = new Intent(getApplicationContext(), ManageGroups.class);
+        Intent intent = new Intent(getApplicationContext(), GroupList.class);
         intent.putExtra("CONTACT_NUMBER", phoneNumber);
         intent.putExtra("FROM_SINGLE_GROUP", singleGroupName);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);

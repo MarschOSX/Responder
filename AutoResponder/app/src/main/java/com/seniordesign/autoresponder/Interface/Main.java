@@ -1,22 +1,19 @@
 package com.seniordesign.autoresponder.Interface;
 
 import android.content.Intent;
-import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
-import android.util.Log;
 
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
-import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
+import com.seniordesign.autoresponder.Interface.Groups.GroupList;
 import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
-import com.seniordesign.autoresponder.Receiver.GoogleLocator;
 
 
 public class Main extends AppCompatActivity {
@@ -143,7 +140,7 @@ public class Main extends AppCompatActivity {
 
     public void gotoManageGroups(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, ManageGroups.class);
+        Intent intent = new Intent(this, GroupList.class);
         startActivity(intent);
     }
 
