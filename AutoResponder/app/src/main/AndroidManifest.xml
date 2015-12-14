@@ -43,7 +43,7 @@
             android:label="@string/title_activity_contacts_list" >
         </activity>
         <activity
-            android:name=".Interface.Contacts.SingleContact"
+            android:name=".Interface.Contacts.ContactInfo"
             android:label="@string/title_activity_single_contact" >
         </activity>
         <activity
@@ -59,7 +59,7 @@
             android:label="@string/title_activity_new_group" >
         </activity>
         <activity
-            android:name=".Interface.Groups.SingleGroup"
+            android:name=".Interface.Groups.GroupInfo"
             android:label="@string/title_activity_single_group" >
         </activity>
         <activity

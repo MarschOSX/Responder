@@ -3,7 +3,6 @@ package com.seniordesign.autoresponder.Interface.Contacts;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,13 +16,12 @@ import android.widget.TextView;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
-import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
-import com.seniordesign.autoresponder.Interface.Main;
+import com.seniordesign.autoresponder.Interface.Groups.GroupInfo;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 
-public class SingleContact extends AppCompatActivity {
+public class ContactInfo extends AppCompatActivity {
 
     private DBInstance db;
     Button setTextButton;
@@ -147,10 +145,10 @@ public class SingleContact extends AppCompatActivity {
         TextView contactsGroup = (TextView) findViewById(R.id.contactGroupName);
         Log.v("Single Contact:", "Group Name is: " + singleContact.getGroupName());
         if(!singleContact.getGroupName().matches(Group.DEFAULT_GROUP)){
-            Log.v("SingleContact", "reached");
+            Log.v("ContactInfo", "reached");
             contactsGroup.setHint(singleContact.getGroupName());
         }else{
-            Log.v("SingleContact", "default reached");
+            Log.v("ContactInfo", "default reached");
             contactsGroup.setHint("Default");
         }
 
@@ -207,7 +205,7 @@ public class SingleContact extends AppCompatActivity {
     }
 
     public void deleteSingleContact(View view) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(SingleContact.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(ContactInfo.this);
         alert.setTitle("Delete Contact: "+singleContact.getName());
         alert.setMessage("Are you sure you want to delete this contact?");
         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -219,7 +217,7 @@ public class SingleContact extends AppCompatActivity {
                 db.removeContact(singleContact.getPhoneNumber());
                 dialog.dismiss();
                 if (fromSingleGroup != null) {
-                    Intent intentBack = new Intent(getApplicationContext(), SingleGroup.class);
+                    Intent intentBack = new Intent(getApplicationContext(), GroupInfo.class);
                     intentBack.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intentBack.putExtra("GROUP_NAME", fromSingleGroup);
                     startActivity(intentBack);

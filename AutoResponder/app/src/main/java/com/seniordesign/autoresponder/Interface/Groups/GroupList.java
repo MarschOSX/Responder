@@ -1,6 +1,5 @@
 package com.seniordesign.autoresponder.Interface.Groups;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.seniordesign.autoresponder.DataStructures.Group;
-import com.seniordesign.autoresponder.Interface.Contacts.SingleContact;
+import com.seniordesign.autoresponder.Interface.Contacts.ContactInfo;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -101,20 +100,20 @@ public class GroupList extends AppCompatActivity {
 
                 if(contactNumber != null && singleGroupName == null){
                     db.setContactGroup(contactNumber, groupName);
-                    Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                    Intent intent = new Intent(getApplicationContext(), ContactInfo.class);
                     intent.putExtra("SINGLE_CONTACT_NUMBER", contactNumber);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 }else{
                     if(singleGroupName == null) {//from the contacts
-                        Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                        Intent intent = new Intent(getApplicationContext(), GroupInfo.class);
                         intent.putExtra("GROUP_NAME", groupName);
                         Log.v("GroupName Selected: ", groupName);
                         startActivity(intent);
                     }else{//from a single group, into a single contact, to change the group
                         db.setContactGroup(contactNumber, groupName);
-                        Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                        Intent intent = new Intent(getApplicationContext(), GroupInfo.class);
                         intent.putExtra("GROUP_NAME", groupName);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         Log.v("GroupName Selected: ", groupName);

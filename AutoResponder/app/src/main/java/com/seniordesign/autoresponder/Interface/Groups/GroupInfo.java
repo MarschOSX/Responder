@@ -21,8 +21,8 @@ import android.widget.Toast;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
+import com.seniordesign.autoresponder.Interface.Contacts.ContactInfo;
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
-import com.seniordesign.autoresponder.Interface.Contacts.SingleContact;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -30,7 +30,7 @@ import com.seniordesign.autoresponder.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SingleGroup extends AppCompatActivity {
+public class GroupInfo extends AppCompatActivity {
 
     private DBInstance db;
     Button setTextButton;
@@ -132,7 +132,7 @@ public class SingleGroup extends AppCompatActivity {
         for(int i = 0; i < numberOfContactsInGroup; i++){
             contactNames[i] = contactsInGroup.get(i).getName();//this is for the ListView
             Log.v("ContactNames: ", contactsInGroup.get(i).getName());
-            contactInfo.put(contactsInGroup.get(i).getName(), contactsInGroup.get(i).getPhoneNumber());//This is for SingleContact activity
+            contactInfo.put(contactsInGroup.get(i).getName(), contactsInGroup.get(i).getPhoneNumber());//This is for ContactInfo activity
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactNames);
         final ListView contactsList = (ListView)findViewById(R.id.singleGroupsList);
@@ -141,7 +141,7 @@ public class SingleGroup extends AppCompatActivity {
         contactsList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String nameSelectedFromList = (String) contactsList.getItemAtPosition(position);
-                Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                Intent intent = new Intent(getApplicationContext(), ContactInfo.class);
                 //Based on selection from list view, open new activity based on that contact
                 if(contactInfo.containsKey(nameSelectedFromList)){
                     String number = contactInfo.get(nameSelectedFromList);
@@ -173,7 +173,7 @@ public class SingleGroup extends AppCompatActivity {
     }
 
     public void deleteSingleGroup(View view) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(SingleGroup.this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(GroupInfo.this);
         alert.setTitle("Delete Group: "+singleGroup.getGroupName());
         alert.setMessage("Are you sure you want to delete this group?");
         alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -234,7 +234,7 @@ public class SingleGroup extends AppCompatActivity {
         int duration = Toast.LENGTH_LONG;
         CharSequence toastText;
         Toast toast;
-        Log.v("SingleGroup", "Feature Coming Soon!");
+        Log.v("GroupInfo", "Feature Coming Soon!");
         toastText = "Feature Coming Soon!";
         toast = Toast.makeText(context, toastText, duration);
         toast.show();
