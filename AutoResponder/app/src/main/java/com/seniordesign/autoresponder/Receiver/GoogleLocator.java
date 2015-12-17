@@ -87,7 +87,7 @@ public class GoogleLocator implements GoogleApiClient.ConnectionCallbacks, Googl
 
     private void getLocation() {
         Geocoder geocoder = new Geocoder(this.mContext, Locale.ENGLISH);
-        List<Address> addressList = null;
+        List<Address> addressList;
 
 
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -95,16 +95,15 @@ public class GoogleLocator implements GoogleApiClient.ConnectionCallbacks, Googl
         if (mCurrentLocation != null){
             try{
                 addressList = geocoder.getFromLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude(), 1);
+                if (addressList != null) mCurrentAddress = addressList.get(0);
+                Log.e(TAG, mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude() + " " + mCurrentAddress.toString());
             }
             catch (IOException e){
                 Log.e(TAG, "error retrieving address for " + mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude());
                 e.printStackTrace();
             }
+
         }
-
-        if (addressList != null) mCurrentAddress = addressList.get(0);
-
-        Log.e(TAG, mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude() + " " + mCurrentAddress.toString());
     }
 
 
