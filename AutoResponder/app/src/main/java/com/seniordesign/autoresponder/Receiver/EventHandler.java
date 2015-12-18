@@ -121,7 +121,7 @@ public class EventHandler extends ListActivity{
         db.addToResponseLog(updateLog);
     }
 
-    public void sendLocationInfo(){
+    public void sendLocationInfo() {
         String addressText;
         String link;
         String message;
@@ -133,13 +133,18 @@ public class EventHandler extends ListActivity{
         //locator is no longer needed, close it.
         locator.close();
 
-        //build the location message w/ address and URL to google maps
-        addressText = currentAddress.getAddressLine(0) + " " + currentAddress.getAddressLine(1) + " " + currentAddress.getAddressLine(2);
-        link = "http://maps.google.com/?q=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude();
-        message = "I am at: \n" + addressText + "\n\n" + link;
+        if (currentLocation == null) {
+            sendSMS("my location cannot be determined at this time", this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
+        } else {
 
-        //send the message
-        sendSMS(message, this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
+            //build the location message w/ address and URL to google maps
+            addressText = currentAddress.getAddressLine(0) + " " + currentAddress.getAddressLine(1) + " " + currentAddress.getAddressLine(2);
+            link = "http://maps.google.com/?q=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+            message = "I am at: \n" + addressText + "\n\n" + link;
+
+            //send the message
+            sendSMS(message, this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
+        }
     }
 
 
