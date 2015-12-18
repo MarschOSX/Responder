@@ -64,6 +64,7 @@ public class GoogleLocator implements GoogleApiClient.ConnectionCallbacks, Googl
     }
 
     public void close(){
+        Log.d(TAG, "shutting down");
         mGoogleApiClient.disconnect();
     }
 
