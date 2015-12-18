@@ -26,10 +26,10 @@ public class MainTest extends ActivityInstrumentationTestCase2<Main> {
         final Switch onOffToggle = (Switch) activity.findViewById(R.id.autoRespond_switch);
         assertNotNull(onOffToggle);
         onOffToggle.setChecked(true);
-        activity.switchChecker(onOffToggle);
+        //activity.switchChecker(onOffToggle);
         assertTrue(onOffToggle.isChecked());
         onOffToggle.setChecked(false);
-        activity.switchChecker(onOffToggle);
+        //activity.switchChecker(onOffToggle);
         assertFalse(onOffToggle.isChecked());
     }
 

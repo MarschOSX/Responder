@@ -20,8 +20,6 @@ public class Main extends AppCompatActivity {
     private Switch mLocationToggle;
     private Switch mCalenderToggle;
     private Switch mResponseToggle;
-    //private Location currentLocation;
-    //GoogleLocator locator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,18 +73,6 @@ public class Main extends AppCompatActivity {
             }
         });
     }
-
-   /* private void getLocation(){
-        //GoogleLocator locator = new GoogleLocator(getApplicationContext());
-        this.currentLocation = locator.getCurrentLocation();
-        printLocation();
-        //locator.close();
-    }
-
-    private void printLocation(){
-        if (this.currentLocation != null) Log.d("TEST", this.currentLocation.getLatitude() + " " + this.currentLocation.getLongitude());
-        else Log.e("TEST", "no location returned");
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,30 +129,4 @@ public class Main extends AppCompatActivity {
         Intent intent = new Intent(this, GroupList.class);
         startActivity(intent);
     }
-
-
-    /*public void switchChecker(View view) {
-        // Is the button now checked?
-        boolean switchOffOn = ((Switch) view).isChecked();
-        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.autoRespond_switch:
-                    Log.v("AutoResponder Active? ", java.lang.Boolean.toString(switchOffOn));
-                    //push Toggle on/off to DB
-                    db.setResponseToggle(switchOffOn);
-                break;
-            case R.id.calendar_switch:
-                    Log.v("Calendar Active? ", java.lang.Boolean.toString(switchOffOn));
-                    //push Toggle on/off to DB
-                    db.setActivityToggle(switchOffOn);
-                break;
-            case R.id.location_switch:
-                    Log.v("Location Active? ", java.lang.Boolean.toString(switchOffOn));
-                    //push Toggle on/off to DB
-                    db.setLocationToggle(switchOffOn);
-                break;
-        }
-    }*/
-
 }
