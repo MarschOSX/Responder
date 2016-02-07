@@ -174,7 +174,7 @@ public class EventHandler extends ListActivity{
         //goes through a list of possible location responses
         for (String possibleRequest : possibleRequests) {
             //if there was a match
-            if (message.contains(possibleRequest)) {
+            if (message.toLowerCase().contains(possibleRequest)) {
                 //then we want to give that person your calendar info
                 try {//attempt to access calendar information
                     ContentResolver contentResolver = getContext.getContentResolver();

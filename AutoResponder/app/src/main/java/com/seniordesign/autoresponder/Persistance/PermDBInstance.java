@@ -13,6 +13,7 @@ import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 
@@ -949,6 +950,7 @@ public class PermDBInstance implements DBInstance {
 
     private int update(String table, String matchColumn, String matchValue, String updateColumn, int updateValue){
         myDB.beginTransaction();
+
         try {
             //set criteria for selecting row
             String filter = matchColumn + "=" + "\"" + matchValue + "\"";
