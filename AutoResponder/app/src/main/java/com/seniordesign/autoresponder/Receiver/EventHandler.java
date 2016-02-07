@@ -111,7 +111,7 @@ public class EventHandler extends ListActivity{
 
     //Sends out an SMS from the device and records it in the ResponseLog
     public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Date timeRecieved){
-        //Send the GeneralResponse Message
+        //Send the UniversalReply Message
         SmsManager sms = SmsManager.getDefault();
         android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
         sms.sendTextMessage(phoneNumber, null, messageSent, null, null);

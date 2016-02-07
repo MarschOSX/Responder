@@ -1,7 +1,5 @@
 package com.seniordesign.autoresponder.Interface;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +15,7 @@ import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 
-import java.lang.reflect.InvocationTargetException;
-
-public class GeneralResponse extends AppCompatActivity {
+public class UniversalReply extends AppCompatActivity {
 
     private DBInstance db;
     Button setTextButton;
@@ -27,14 +23,14 @@ public class GeneralResponse extends AppCompatActivity {
     EditText setDelayNum;
     int responseDelay = 20;
 
-    /*public GeneralResponse(DBInstance db) {
+    /*public UniversalReply(DBInstance db) {
         this.db = db;
     }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_general_response);
+        setContentView(R.layout.activity_universal_reply);
         setEditText();
         setTimeRadioButton();
         this.db = DBProvider.getInstance(false, getApplicationContext());
@@ -94,7 +90,7 @@ public class GeneralResponse extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_general_response, menu);
+        getMenuInflater().inflate(R.menu.menu_universal_reply, menu);
         return true;
     }
 

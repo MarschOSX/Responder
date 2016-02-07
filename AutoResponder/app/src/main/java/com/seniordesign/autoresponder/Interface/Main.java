@@ -106,9 +106,9 @@ public class Main extends AppCompatActivity {
 
 
     /** Called when the user clicks the General Response Button*/
-    public void gotoGeneralResponse(View view) {
+    public void gotoUniversalReply(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, GeneralResponse.class);
+        Intent intent = new Intent(this, UniversalReply.class);
         startActivity(intent);
     }
 

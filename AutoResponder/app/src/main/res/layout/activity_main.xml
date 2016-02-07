@@ -55,14 +55,6 @@
         <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="General Reply"
-                    android:id="@+id/generalReply_button"
-                    android:onClick="gotoGeneralResponse"
-            android:visibility="gone" />
-
-        <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:text="Contacts"
                     android:id="@+id/contacts_button"
                     android:onClick="gotoContactsList"/>
@@ -74,6 +66,13 @@
                     android:id="@+id/manageGroups"
                     android:onClick="gotoManageGroups"
                     android:layout_gravity="center_horizontal" />
+
+        <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Universal Reply"
+                    android:id="@+id/generalReply_button"
+                    android:onClick="gotoUniversalReply" />
 
         <Button
                     android:layout_width="match_parent"

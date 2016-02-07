@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Interface.GeneralResponse"
+            android:name=".Interface.UniversalReply"
             android:label="@string/title_activity_general_response" >
         </activity>
 

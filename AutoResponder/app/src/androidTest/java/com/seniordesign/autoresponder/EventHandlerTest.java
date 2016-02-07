@@ -20,7 +20,7 @@ public class EventHandlerTest extends InstrumentationTestCase {
     private DBInstance dbi;
 
     public void testRespondToText() throws Exception {
-        dbi = new DBInstance() {
+       /* dbi = new DBInstance() {
             @Override
             public void setReplyAll(String reply) {
 
@@ -163,7 +163,7 @@ public class EventHandlerTest extends InstrumentationTestCase {
             //assertSame(ev.respondToText("123z135", "", 0L, true), -1);
             //assertSame(ev.respondToText("85683273201111", "", 0L, true), -1);
             assertSame(ev.respondToText("+14104176404", "", -1L), -1);
-            assertSame(ev.respondToText("+14104176404", "", 0L), 0);
+            assertSame(ev.respondToText("+14104176404", "", 0L), 0);*/
 
     }
 }
