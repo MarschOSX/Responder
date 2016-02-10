@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
@@ -13,6 +14,7 @@ import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 
@@ -42,14 +44,24 @@ public class PermDBInstance implements DBInstance {
 
     public void setReplyAll(String reply){
         Log.d(TAG, "setting replyAll to " + reply + "....");
-        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.REPLY_ALL, DBHelper.SETTING_VALUE[0], reply);
+        this.setGroupResponse(Group.DEFAULT_GROUP, reply);
     }
 
     public String getReplyAll(){
+        return this.getGroupInfo(Group.DEFAULT_GROUP).getResponse();
+    }
+
+    public void setUniversalReply(String reply){
+        Log.d(TAG, "setting universalReply to " + reply + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.UNIVERSAL_REPLY, DBHelper.SETTING_VALUE[0], reply);
+        //this.setGroupResponse(Group.DEFAULT_GROUP, reply);
+    }
+
+    public String getUniversalReply(){
         final String query =
                 "SELECT " + DBHelper.SETTING_VALUE[0] +
                  " FROM " + DBHelper.TABLE_SETTINGS +
-                 " WHERE " + DBHelper.SETTING_NAME[0] + "=" + "\"" + Setting.REPLY_ALL + "\"";
+                 " WHERE " + DBHelper.SETTING_NAME[0] + "=" + "\"" + Setting.UNIVERSAL_REPLY + "\"";
 
         //query db and ensure object was returned
         Cursor result = myDB.rawQuery(query, null);
@@ -62,7 +74,7 @@ public class PermDBInstance implements DBInstance {
             result.close();
 
             //return the query result
-            Log.d(TAG, getMethodName(0) + ": replyAll is " + response);
+            Log.d(TAG, getMethodName(0) + ": universal reply is " + response);
             return response;
         }
         else {
@@ -78,28 +90,7 @@ public class PermDBInstance implements DBInstance {
 
     //will return -1 if no result returned
     public int getDelay(){
-        final String query =
-                "SELECT " + DBHelper.SETTING_VALUE[0] +
-                 " FROM " + DBHelper.TABLE_SETTINGS +
-                 " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.TIME_DELAY + "\"";
-
-        //query db and ensure cursor object returned is valid
-        Cursor result = myDB.rawQuery(query, null);
-        int delay;
-        String value;
-        if ((result != null) && (result.moveToFirst())){
-
-            //retrieve and return setting value
-            value = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
-            delay = Integer.parseInt(value);
-            result.close();
-            Log.d(TAG, getMethodName(0) + ": delay is " + delay);
-            return delay;
-        }
-        else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
-            return -1;
-        }
+        return getSetting_int(Setting.TIME_DELAY);
     }
 
     public void setResponseToggle(boolean responseToggle){
@@ -117,11 +108,28 @@ public class PermDBInstance implements DBInstance {
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.LOCATION_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
     }
 
+    public void setUniversalToggle(boolean responseToggle){
+        Log.d(TAG, "setting  universal toggle to " + responseToggle + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.UNIVERSAL_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
+    }
+
     public boolean getResponseToggle(){
+        return getSetting_bool(Setting.RESPONSE_TOGGLE);
+    }
+
+    public boolean getActivityToggle(){
+        return getSetting_bool(Setting.ACTIVITY_TOGGLE);
+    }
+
+    public boolean getLocationToggle(){
+        return getSetting_bool(Setting.LOCATION_TOGGLE);
+    }
+
+    public boolean getUniversalToggle(){
         final String query =
                 "SELECT " + DBHelper.SETTING_VALUE[0] +
-                 " FROM " + DBHelper.TABLE_SETTINGS +
-                 " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.RESPONSE_TOGGLE + "\"";
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.UNIVERSAL_TOGGLE + "\"";
 
         //query database and ensure cursor returned is valid
         Cursor result = myDB.rawQuery(query, null);
@@ -150,7 +158,6 @@ public class PermDBInstance implements DBInstance {
         Log.d(TAG, getMethodName(0) + ": toggle is " + toggle);
         return toggle;
     }
-
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
     ////////////////////////////////
@@ -182,118 +189,24 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
-    //TODO TEST THIS FUNCTION
-    public ResponseLog getFirstResponse(){
-        final String query =
-                "SELECT MIN(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + "), * " +
-                 " FROM " + DBHelper.TABLE_RESPONSELOG;
-
-        Cursor result = myDB.rawQuery(query, null);
-
-        //fields to be returned
-        Date timeStamp;
-        String senderNumber;
-        String messageRecv;
-        String messageSent;
-
-        if ((result != null) && (result.moveToFirst())){
-
-            //retrieve and return setting value
-            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
-            senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
-            messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
-            messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
-            result.close();
-
-            return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
-        }
-        else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
-            return null;
-        }
-    }
-
-
-    //TODO TEST THIS FUNCTION
-    public ResponseLog getLastResponse(){
-        final String query =
-                "SELECT MAX(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + "), * " +
-                        " FROM " + DBHelper.TABLE_RESPONSELOG;
-
-        Cursor result = myDB.rawQuery(query, null);
-
-        //fields to be returned
-        Date timeStamp;
-        String senderNumber;
-        String messageRecv;
-        String messageSent;
-
-        if ((result != null) && (result.moveToFirst())){
-
-            //retrieve and return setting value
-            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
-            senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
-            messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
-            messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
-            result.close();
-
-            return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
-        }
-        else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
-            return null;
-        }
-    }
-
-    //TODO TEST THIS FUNCTION
-    public ResponseLog getResponse(int index){
-        final String query =
-                "SELECT * " +
-                " FROM " + DBHelper.TABLE_RESPONSELOG +
-                " WHERE ROWID = \"" + index + "\"";
-
-        Cursor result = myDB.rawQuery(query, null);
-
-        //fields to be returned
-        Date timeStamp;
-        String senderNumber;
-        String messageRecv;
-        String messageSent;
-
-        if ((result != null) && (result.moveToFirst())){
-
-            //retrieve and return setting value
-            timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
-            senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
-            messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
-            messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
-            result.close();
-
-            return new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp);
-        }
-        else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
-            return null;
-        }
-    }
-
     public ResponseLog getLastResponseByNum(String phoneNum){
-        final String query =
-                "SELECT MAX(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + "), " + DBHelper.RESPONSELOG_SENDERNUM[0] + ", " + DBHelper.RESPONSELOG_MESSAGERCV[0] + ", " + DBHelper.RESPONSELOG_MESSAGESNT[0] +
-                        " FROM " + DBHelper.TABLE_RESPONSELOG +
-                        " WHERE "+ DBHelper.RESPONSELOG_SENDERNUM[0] + " = \"" + phoneNum + "\"";
-
-        final String query_2 = "SELECT *" +
-            " FROM " + DBHelper.TABLE_RESPONSELOG +
-            " WHERE " + DBHelper.RESPONSELOG_SENDERNUM[0] + "=\"" + phoneNum + "\" ORDER BY " + DBHelper.RESPONSELOG_TIMESTAMP[0];
 
         String senderNum = phoneNum;
         String msgRcv = "hi";
         String msgSnt = "hi";
         Date date = new Date(0);
 
+        String table = DBHelper.TABLE_RESPONSELOG;
+        String columns[] = {"MAX(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + ")",
+                DBHelper.RESPONSELOG_SENDERNUM[0],
+                DBHelper.RESPONSELOG_MESSAGERCV[0],
+                DBHelper.RESPONSELOG_MESSAGESNT[0]};
+        String selection = DBHelper.RESPONSELOG_SENDERNUM[0] + "=?";
+        String selectionArgs[] = {phoneNum};
+
+
         try {
-            Cursor result = myDB.rawQuery(query, null);
+            Cursor result = this.myDB.query(table, columns, selection, selectionArgs, null, null, null);
             if (result != null) {
                 //check and see how many rows were returned
                 int numRows = result.getCount();
@@ -317,7 +230,7 @@ public class PermDBInstance implements DBInstance {
 
                 return new ResponseLog(msgSnt, msgRcv, senderNum, date);
             } else {
-                Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object" );
                 return null;
             }
         }
@@ -327,83 +240,7 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
-    //TODO TEST THIS FUNCTION
-    public ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end){
-        final String query =
-                "SELECT * " +
-                " FROM " + DBHelper.TABLE_RESPONSELOG +
-                " WHERE " + DBHelper.RESPONSELOG_TIMESTAMP[0] + " BETWEEN \"" + start.getTime() + "\" AND \"" + end.getTime() + "\"";
 
-        Cursor result = myDB.rawQuery(query, null);
-
-        ArrayList<ResponseLog> range = new ArrayList<>();
-        Date timeStamp;
-        String senderNumber;
-        String messageRecv;
-        String messageSent;
-
-        if ((result != null) && (result.moveToFirst())){
-
-            for (int i = 0; i < result.getCount(); i++){
-                timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
-                senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
-                messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
-                messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
-
-                range.add(new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp));
-
-                result.moveToNext();
-            }
-            //retrieve and return setting value
-
-            result.close();
-
-            return range;
-        }
-        else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
-            return null;
-        }
-    }
-
-    //TODO TEST THIS FUNCTION
-    public ArrayList<ResponseLog> getResponseRange(int start, int end){
-        final String query =
-                "SELECT * " +
-                " FROM " + DBHelper.TABLE_RESPONSELOG +
-                " WHERE ROWID BETWEEN \"" + start + "\" AND \"" + end + "\" ORDER BY("+ DBHelper.RESPONSELOG_TIMESTAMP[0] +") ASC";
-
-        Cursor result = myDB.rawQuery(query, null);
-
-        ArrayList<ResponseLog> range = new ArrayList<>();
-        Date timeStamp;
-        String senderNumber;
-        String messageRecv;
-        String messageSent;
-
-        if ((result != null) && (result.moveToFirst())){
-
-            for (int i = 0; i < result.getCount(); i++){
-                timeStamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
-                senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
-                messageRecv = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
-                messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
-
-                range.add(new ResponseLog(messageSent, messageRecv, senderNumber, timeStamp));
-
-                result.moveToNext();
-            }
-            //retrieve and return setting value
-
-            result.close();
-
-            return range;
-        }
-        else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
-            return null;
-        }
-    }
 
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//
@@ -491,12 +328,12 @@ public class PermDBInstance implements DBInstance {
     }
 
     public Contact getContactInfo(String phoneNum){
-        final String query =
-                "SELECT * " +
-                " FROM " + DBHelper.TABLE_CONTACT +
-                " WHERE " + DBHelper.CONTACT_PHONENUM[0] + "=" + "\"" + phoneNum + "\"";
 
-        Cursor result = myDB.rawQuery(query, null);
+        String table = DBHelper.TABLE_CONTACT;
+        String selection = DBHelper.CONTACT_PHONENUM[0] + "=?";
+        String selectionArgs[] = {phoneNum};
+
+        Cursor result = this.myDB.query(table, null, selection, selectionArgs, null, null, null);
 
         Contact c;
 
@@ -534,19 +371,18 @@ public class PermDBInstance implements DBInstance {
             return c;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": no rows returned from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": no rows returned ");
             return null;
         }
     }
 
     //returns sorted A - Z by name
     public ArrayList<Contact> getContactList(){
-        final String query =
-                "SELECT * " +
-                " FROM " + DBHelper.TABLE_CONTACT +
-                " ORDER BY (" + DBHelper.CONTACT_NAME[0] + ") ASC";
 
-        Cursor result = myDB.rawQuery(query, null);
+        String table = DBHelper.TABLE_CONTACT;
+        String orderBy = "(" + DBHelper.CONTACT_NAME[0] + ") ASC";
+
+        Cursor result = this.myDB.query(table, null, null, null, null, null, orderBy);
 
         ArrayList<Contact> range = new ArrayList<>();
         String name;
@@ -589,19 +425,19 @@ public class PermDBInstance implements DBInstance {
             return range;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object");
             return null;
         }
     }
 
     public ArrayList<Contact> getGroup(String group){
-        final String query =
-                "SELECT * " +
-                " FROM " + DBHelper.TABLE_CONTACT +
-                " WHERE " + DBHelper.CONTACT_GROUP[0] + " = \"" + group + "\"" +
-                " ORDER BY (" + DBHelper.CONTACT_NAME[0] + ") ASC";
 
-        Cursor result = myDB.rawQuery(query, null);
+        String table = DBHelper.TABLE_CONTACT;
+        String selection = DBHelper.CONTACT_GROUP[0] + "=?";
+        String selectionArgs[] = {group};
+        String orderBy = "(" + DBHelper.CONTACT_NAME[0] + ") ASC";
+
+        Cursor result = this.myDB.query(table, null, selection, selectionArgs, null, null, orderBy);
 
         ArrayList<Contact> range = new ArrayList<>();
         String name;
@@ -645,7 +481,7 @@ public class PermDBInstance implements DBInstance {
             return range;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object");
             return null;
         }
     }
@@ -716,12 +552,13 @@ public class PermDBInstance implements DBInstance {
     }
 
     public Group getGroupInfo(String groupName){
-        final String query =
-                "SELECT * " +
-                " FROM " + DBHelper.TABLE_GROUP +
-                " WHERE " + DBHelper.GROUP_NAME[0] + "=" + "\"" + groupName + "\"";
 
-        Cursor result = myDB.rawQuery(query, null);
+        String table = DBHelper.TABLE_GROUP;
+        String selection = DBHelper.GROUP_NAME[0] + "=?";
+        String selectionArgs[] = {groupName};
+
+        Cursor result = this.myDB.query(table, null, selection, selectionArgs, null, null, null);
+
 
         Group c;
 
@@ -747,19 +584,18 @@ public class PermDBInstance implements DBInstance {
             return c;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object ");
             return null;
         }
     }
 
     //returns sorted A-Z by group name
     public ArrayList<Group> getGroupList(){
-        final String query =
-                "SELECT * " +
-                " FROM " + DBHelper.TABLE_GROUP +
-                " ORDER BY (" + DBHelper.GROUP_NAME[0] + ") ASC";
 
-        Cursor result = myDB.rawQuery(query, null);
+        String table = DBHelper.TABLE_GROUP;
+        String orderBy = "(" + DBHelper.GROUP_NAME[0] + ") ASC";
+
+        Cursor result = this.myDB.query(table, null, null, null, null, null, orderBy);
 
         ArrayList<Group> range = new ArrayList<>();
         String name;
@@ -789,7 +625,7 @@ public class PermDBInstance implements DBInstance {
             return range;
         }
         else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object");
             return null;
         }
     }
@@ -798,28 +634,28 @@ public class PermDBInstance implements DBInstance {
     //DEVELOPER LOG TABLE FUNCTIONS//
     /////////////////////////////////
 
-    //TODO IMPLEMENT
+   /*
     public void addDevLog(Date timeStamp, String entry){
 
     }
 
-    //TODO IMPLEMENT
     public DeveloperLog getDevLog(int index){
         return null;
     }
 
-    //TODO IMPLEMENT
     public ArrayList<DeveloperLog> getDevLogRange(int first, int last){
         return null;
     }
 
-    //TODO IMPLEMENT
     public ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end){
         return null;
     }
+    */
+    /////////////////////////
+    //convenience functions//
+    /////////////////////////
 
 
-    //convenience functions
     private static String getMethodName(int level) {
         return Thread.currentThread().getStackTrace()[3 + level].getMethodName();
     }
@@ -879,6 +715,7 @@ public class PermDBInstance implements DBInstance {
 
     private int update(String table, String matchColumn, String matchValue, String updateColumn, int updateValue){
         myDB.beginTransaction();
+
         try {
             //set criteria for selecting row
             String filter = matchColumn + "=" + "\"" + matchValue + "\"";
@@ -926,5 +763,62 @@ public class PermDBInstance implements DBInstance {
 
     private boolean convertToBool(String b){
         return b.compareTo("true") == 0;
+    }
+
+    private String getSetting_str(String name){
+        SQLiteStatement query;
+
+        final String form =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = ?";
+
+        query = this.myDB.compileStatement(form);
+        query.bindString(1, name);
+
+        //query db and return the results
+        String value =  query.simpleQueryForString();
+        Log.d(TAG, getMethodName(1) + ": " + name + " is " + value);
+        return value;
+    }
+
+    private boolean getSetting_bool(String name){
+        SQLiteStatement query;
+
+        final String form =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = ?";
+
+        query = this.myDB.compileStatement(form);
+        query.bindString(1, name);
+
+        //query db and return the results
+        boolean value = convertToBool(query.simpleQueryForString());
+        Log.d(TAG, getMethodName(1) + ": " + name + " is " + value);
+        return value;
+    }
+
+    private int getSetting_int(String name){
+        SQLiteStatement query;
+
+        final String form =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = ?";
+
+        query = this.myDB.compileStatement(form);
+        query.bindString(1, name);
+
+        //query db and return the results
+        try{
+            int value = Integer.parseInt(query.simpleQueryForString());
+            Log.d(TAG, getMethodName(1) + ": " + name + " is " + value);
+            return value;
+        }
+        catch (NumberFormatException e){ //if there is an error report it and return -1
+            Log.e(TAG, getMethodName(0) + ": setting value is not a number");
+            return -1;
+        }
     }
 }
