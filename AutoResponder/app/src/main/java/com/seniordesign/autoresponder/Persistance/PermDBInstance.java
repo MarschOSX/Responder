@@ -75,6 +75,38 @@ public class PermDBInstance implements DBInstance {
         return this.getGroupInfo(Group.DEFAULT_GROUP).getResponse();
     }
 
+    public void setUniversalReply(String reply){
+        Log.d(TAG, "setting universalReply to " + reply + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.UNIVERSAL_REPLY, DBHelper.SETTING_VALUE[0], reply);
+        //this.setGroupResponse(Group.DEFAULT_GROUP, reply);
+    }
+
+    public String getUniversalReply(){
+        final String query =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                 " FROM " + DBHelper.TABLE_SETTINGS +
+                 " WHERE " + DBHelper.SETTING_NAME[0] + "=" + "\"" + Setting.UNIVERSAL_REPLY + "\"";
+
+        //query db and ensure object was returned
+        Cursor result = myDB.rawQuery(query, null);
+        String response;
+        if ((result != null) && (result.moveToFirst())){ // move pointer to first row
+            //load setting value into string
+            response = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
+
+            //close the cursor
+            result.close();
+
+            //return the query result
+            Log.d(TAG, getMethodName(0) + ": universal reply is " + response);
+            return response;
+        }
+        else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object from: " + query);
+            return null;
+        }
+    }
+
     public void setDelay(int minutes){
         Log.d(TAG, "setting delay to "+ minutes +"....");
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.TIME_DELAY, DBHelper.SETTING_VALUE[0], minutes);
@@ -119,6 +151,11 @@ public class PermDBInstance implements DBInstance {
     public void setLocationToggle(boolean responseToggle){
         Log.d(TAG, "setting  locationToggle to " + responseToggle + "....");
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.LOCATION_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
+    }
+
+    public void setUniversalToggle(boolean responseToggle){
+        Log.d(TAG, "setting  universal toggle to " + responseToggle + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.UNIVERSAL_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
     }
 
     public boolean getResponseToggle(){
@@ -194,6 +231,40 @@ public class PermDBInstance implements DBInstance {
                 "SELECT " + DBHelper.SETTING_VALUE[0] +
                         " FROM " + DBHelper.TABLE_SETTINGS +
                         " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.LOCATION_TOGGLE + "\"";
+
+        //query database and ensure cursor returned is valid
+        Cursor result = myDB.rawQuery(query, null);
+        boolean toggle;
+        if ((result != null) && (result.moveToFirst())){
+
+            //retrieve setting value
+            String response = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
+
+            //determine if value is true or false and returns as translates into a boolean
+            if( response.compareTo("true") == 0){
+                toggle = true;
+            }
+            else if ( response.compareTo("false") == 0){
+                toggle = false;
+            }
+            else{
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": found " + response + " when a value of true or false was expected from: " + query);
+                throw new InputMismatchException();
+            }
+            result.close();
+        } else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not get/access cursor object from: " + query);
+            throw new NullPointerException();
+        }
+        Log.d(TAG, getMethodName(0) + ": toggle is " + toggle);
+        return toggle;
+    }
+
+    public boolean getUniversalToggle(){
+        final String query =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.UNIVERSAL_TOGGLE + "\"";
 
         //query database and ensure cursor returned is valid
         Cursor result = myDB.rawQuery(query, null);

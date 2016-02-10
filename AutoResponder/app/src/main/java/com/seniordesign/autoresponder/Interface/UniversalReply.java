@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.EditText;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.seniordesign.autoresponder.Persistance.DBInstance;
@@ -20,39 +21,33 @@ public class UniversalReply extends AppCompatActivity {
     private DBInstance db;
     Button setTextButton;
     EditText setTextEdit;
-    EditText setDelayNum;
-    int responseDelay = 20;
+    Switch universalReplyToggle;
 
-    /*public UniversalReply(DBInstance db) {
-        this.db = db;
-    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_universal_reply);
         setEditText();
-        setTimeRadioButton();
+        buildSwitches();
         this.db = DBProvider.getInstance(false, getApplicationContext());
 
-        setTextButton = (Button)findViewById(R.id.setTextButton);
-        setTextEdit   = (EditText)findViewById(R.id.generalResponse_text);
-        setDelayNum   = (EditText)findViewById(R.id.customMin);
-        setDelayNum.requestFocus();
+        setTextButton = (Button)findViewById(R.id.setUniversalReplyEditText);
+        setTextEdit   = (EditText)findViewById(R.id.universalReply_editText);
 
 
-        //This sends the General Response editText field into a string
+        //This sends the Universal Response editText field into a string
         setTextButton.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
-                        String generalReply = setTextEdit.getText().toString();
-                        Log.v("General Reply:", generalReply);
+                        String universalReply = setTextEdit.getText().toString();
+                        Log.v("Universal Reply:", universalReply);
 
-                        if(generalReply == null || generalReply.matches("")){//Its blank, get default hint
-                            generalReply = setTextEdit.getHint().toString();
+                        if (universalReply.matches("")) {//Its blank, get default hint
+                            universalReply = setTextEdit.getHint().toString();
                         }
-                        //push generalReply to DB
-                        db.setReplyAll(generalReply);
+                        //push universalReply to DB
+                        db.setUniversalReply(universalReply);
 
                     }
                 });
@@ -60,32 +55,12 @@ public class UniversalReply extends AppCompatActivity {
 
     private void setEditText(){
         DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        String replyAll = db.getReplyAll();
-        TextView generalResponse = (TextView) findViewById(R.id.generalResponse_text);
-        generalResponse.setHint(replyAll);
+        String universalReply = db.getUniversalReply();
+        TextView universalResponse = (TextView) findViewById(R.id.universalReply_editText);
+        universalResponse.setHint(universalReply);
     }
 
-    private void setTimeRadioButton(){
-        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        RadioButton timeDelayRB;
-        Integer timeDelay = db.getDelay();
-        if(timeDelay == 5){
-            timeDelayRB = (RadioButton) findViewById(R.id.fiveMin_radioButton);
-            timeDelayRB.setChecked(true);
-        }else if(timeDelay == 20){
-            timeDelayRB = (RadioButton) findViewById(R.id.twentyMin_radioButton);
-            timeDelayRB.setChecked(true);
-        }else if(timeDelay == 60){
-            timeDelayRB = (RadioButton) findViewById(R.id.oneHour_radioButton);
-            timeDelayRB.setChecked(true);
-        }else{
-            timeDelayRB = (RadioButton) findViewById(R.id.custom_option);
-            timeDelayRB.setChecked(true);
-            EditText customMinText = (EditText) findViewById(R.id.customMin);
-            customMinText.setHint(timeDelay.toString());
-        }
 
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,45 +81,23 @@ public class UniversalReply extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    // Called when the user selects a time delay radio button
-    public void radioButtonDelaySet(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
+    //build the switches and add the listeners
+    private void buildSwitches(){
+        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
 
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.fiveMin_radioButton:
-                if (checked)
-                    responseDelay = 5;
-                    break;
-            case R.id.twentyMin_radioButton:
-                if (checked)
-                    responseDelay = 20;
-                    break;
-            case R.id.oneHour_radioButton:
-                if (checked)
-                    responseDelay = 60;
-                    break;
-            case R.id.custom_option:
-                if (checked)
-                   try{
-                       responseDelay = Integer.parseInt(setDelayNum.getText().toString());
-                   }catch(NumberFormatException e){
-                       responseDelay = Integer.parseInt(setDelayNum.getHint().toString());
-                   }
-            break;
-        }
-        Log.v("Time Delay:", Integer.toString(responseDelay));
-        //Default is 20 and the RadioButton is set to this
-        //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        db.setDelay(responseDelay);
-    }
-    public int checkResponseDelay(){
-        return  responseDelay;
+        universalReplyToggle = (Switch)findViewById(R.id.universalReplyToggle);
+        universalReplyToggle.setChecked(db.getUniversalToggle());
+        universalReplyToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                db.setUniversalToggle(universalReplyToggle.isChecked());
+            }
+        });
+
     }
 
 }

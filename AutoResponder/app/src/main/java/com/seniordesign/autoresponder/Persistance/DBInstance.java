@@ -20,6 +20,10 @@ public interface DBInstance {
 
     String getReplyAll();
 
+    void setUniversalReply(String universalReply);
+
+    String getUniversalReply();
+
     void setDelay(int minutes);
 
     int getDelay();
@@ -30,11 +34,15 @@ public interface DBInstance {
 
     void setLocationToggle(boolean toggle);
 
+    void setUniversalToggle(boolean toggle);
+
     boolean getResponseToggle();
     
     boolean getLocationToggle();
 
     boolean getActivityToggle();
+
+    boolean getUniversalToggle();
 
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//

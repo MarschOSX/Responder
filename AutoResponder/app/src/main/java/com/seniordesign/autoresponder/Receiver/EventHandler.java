@@ -65,6 +65,11 @@ public class EventHandler extends ListActivity{
                 if (lastRecieved == 0 || lastRecieved + delaySet < timeRecieved) {
                     //get response from Database and set as message
                     String contactResponse = contact.getResponse();
+                    //If universal reply is true, have that as normal message instead of contact preset one
+                    if(db.getUniversalToggle()){
+                        contactResponse = db.getUniversalReply();
+                    }
+
                     Boolean locationPermission = contact.isLocationPermission();
                     Boolean activityPermission = contact.isActivityPermission();
 

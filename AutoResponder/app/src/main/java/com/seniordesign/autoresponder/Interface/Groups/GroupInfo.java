@@ -55,6 +55,7 @@ public class GroupInfo extends AppCompatActivity {
 
         setTextButton = (Button)findViewById(R.id.setSingleGroupResponseTextButton);
         setTextEdit   = (EditText)findViewById(R.id.singleGroupResponseText);
+        //setTextEdit.setFocusable(false);
 
         setTextButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -65,6 +66,9 @@ public class GroupInfo extends AppCompatActivity {
                         if (groupReply.matches("")) {//Its blank, get default hint
                             groupReply = setTextEdit.getHint().toString();
                         }
+                        //setTextEdit.setText(null);
+                        //setTextEdit.setFocusable(false);
+
                         //push generalReply to DB
                         db.setGroupResponse(groupName, groupReply);
 
@@ -104,6 +108,7 @@ public class GroupInfo extends AppCompatActivity {
         //Set Single Group Response
         EditText groupResponse = (EditText) findViewById(R.id.singleGroupResponseText);
         groupResponse.setHint(singleGroup.getResponse());
+        groupResponse.setFocusable(false);
 
         //Permission Switches
         Switch location = (Switch)findViewById(R.id.singleGroupLocationToggle);

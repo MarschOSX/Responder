@@ -53,6 +53,14 @@ public class TestDBInstance implements DBInstance {
        return this.settings.get(Setting.REPLY_ALL);
     }
 
+    public void setUniversalReply(String reply){
+        this.settings.put(Setting.UNIVERSAL_REPLY, reply);
+    }
+
+    public String getUniversalReply(){
+        return this.settings.get(Setting.UNIVERSAL_REPLY);
+    }
+
     public void setDelay(int minutes){
         this.settings.put(Setting.TIME_DELAY, Integer.toString(minutes));
     }
@@ -92,6 +100,31 @@ public class TestDBInstance implements DBInstance {
             responseToggleText = "false";
         }
         this.settings.put(Setting.LOCATION_TOGGLE, responseToggleText);
+    }
+
+    public void setUniversalToggle(boolean responseToggle){
+        String responseToggleText;
+        if(responseToggle){
+            responseToggleText = "true";
+        }
+        else{
+            responseToggleText = "false";
+        }
+        this.settings.put(Setting.UNIVERSAL_TOGGLE, responseToggleText);
+    }
+
+    public boolean getUniversalToggle(){
+        String value = this.settings.get(Setting.UNIVERSAL_TOGGLE);
+        if(value.compareTo("true") == 0){
+            return true;
+        }
+        else if(value.compareTo("false") == 0){
+            return false;
+        }
+        else{
+            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.UNIVERSAL_TOGGLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
     }
 
     public boolean getResponseToggle(){
