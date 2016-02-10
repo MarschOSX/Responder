@@ -176,7 +176,7 @@ public class TestDBInstance implements DBInstance {
         this.responseLog.add(newLog);
     }
 
-    public ResponseLog getFirstResponse(){
+    /*public ResponseLog getFirstResponse(){
         return this.responseLog.get(0);
     }
 
@@ -192,7 +192,7 @@ public class TestDBInstance implements DBInstance {
             Log.e(TAG, "ERROR: getResponse(): attempted to access index out of bounds: " + index);
             throw new ArrayIndexOutOfBoundsException();
         }
-    }
+    }*/
 
     public ResponseLog getLastResponseByNum(String phoneNum){
         for (int i = this.responseLog.size() - 1; i >= 0; i--){
@@ -205,7 +205,7 @@ public class TestDBInstance implements DBInstance {
     }
 
     //TODO: MAKE SEARCH FOR BEGINNING AND END BINARY SEARCH FOR BETTER RUNTIME, currently O(x)
-    public ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end){
+    /*public ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end){
         ArrayList<ResponseLog> range = new ArrayList<>();
 
         //ERROR CHECKING
@@ -241,7 +241,7 @@ public class TestDBInstance implements DBInstance {
         }
 
         return range;
-    }
+    }*/
 
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//
