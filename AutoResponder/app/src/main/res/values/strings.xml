@@ -9,6 +9,7 @@
     <string name="twentyMinutes_option">20 Minutes</string>
     <string name="fiveMinutes_option">5 Minutes</string>
     <string name="generalResponse_title">General Response:</string>
+    <string name="universalResponse_title">Universal Reply</string>
     <string name="timingDelay_title">Timing Delay:</string>
     <string name="title_activity_contacts_list">Contacts List</string>
     <string name="title_activity_single_contact">Contact Information:</string>

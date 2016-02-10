@@ -12,8 +12,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.seniordesign.autoresponder.DataStructures.Group;
-import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
-import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
+import com.seniordesign.autoresponder.Interface.Groups.GroupInfo;
+import com.seniordesign.autoresponder.Interface.Groups.GroupList;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -68,7 +68,7 @@ public class SetContactGroup extends AppCompatActivity {
     }
 
     public void addToGroup(View view) {
-        Intent intent = new Intent(getApplicationContext(), ManageGroups.class);
+        Intent intent = new Intent(getApplicationContext(), GroupList.class);
         intent.putExtra("CONTACT_NUMBER", phoneNumber);
         intent.putExtra("FROM_SINGLE_GROUP", singleGroupName);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -90,13 +90,13 @@ public class SetContactGroup extends AppCompatActivity {
                 /*TextView groupNameTextView = (TextView)findViewById(R.id.currentGroupName);
                 groupNameTextView.setText(db.getContactInfo(phoneNumber).getGroupName());*/
                 if (singleGroupName == null) {
-                    Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                    Intent intent = new Intent(getApplicationContext(), ContactInfo.class);
                     intent.putExtra("SINGLE_CONTACT_NUMBER", phoneNumber);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 } else {
-                    Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                    Intent intent = new Intent(getApplicationContext(), GroupInfo.class);
                     intent.putExtra("GROUP_NAME", singleGroupName);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     Log.v("GroupName Selected: ", singleGroupName);

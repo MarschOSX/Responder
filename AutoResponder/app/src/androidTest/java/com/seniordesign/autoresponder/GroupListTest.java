@@ -6,23 +6,22 @@ import android.test.UiThreadTest;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
-import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
+import com.seniordesign.autoresponder.Interface.Groups.GroupList;
 
-public class ManageGroupsTest extends ActivityInstrumentationTestCase2<ManageGroups> {
-    public ManageGroupsTest() {
-        super(ManageGroups.class);
+public class GroupListTest extends ActivityInstrumentationTestCase2<GroupList> {
+    public GroupListTest() {
+        super(GroupList.class);
     }
 
     public void testActivityExists() {
-        ManageGroups activity = getActivity();
+        GroupList activity = getActivity();
         assertNotNull(activity);
     }
 
 
     @UiThreadTest
     public void testGroupListView() {
-        ManageGroups activity = getActivity();
+        GroupList activity = getActivity();
 
         //Populate the List
         ListView contactList = (ListView)activity.findViewById(R.id.groupsList);
@@ -42,7 +41,7 @@ public class ManageGroupsTest extends ActivityInstrumentationTestCase2<ManageGro
 
     @UiThreadTest
     public void testIntent() {
-        ManageGroups activity = getActivity();
+        GroupList activity = getActivity();
         Intent intent = activity.getIntent();
         String groupName = intent.getStringExtra("CONTACT_NUMBER");
         assertNull(groupName);

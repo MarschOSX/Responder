@@ -53,6 +53,14 @@ public class TestDBInstance implements DBInstance {
        return this.settings.get(Setting.REPLY_ALL);
     }
 
+    public void setUniversalReply(String reply){
+        this.settings.put(Setting.UNIVERSAL_REPLY, reply);
+    }
+
+    public String getUniversalReply(){
+        return this.settings.get(Setting.UNIVERSAL_REPLY);
+    }
+
     public void setDelay(int minutes){
         this.settings.put(Setting.TIME_DELAY, Integer.toString(minutes));
     }
@@ -94,6 +102,31 @@ public class TestDBInstance implements DBInstance {
         this.settings.put(Setting.LOCATION_TOGGLE, responseToggleText);
     }
 
+    public void setUniversalToggle(boolean responseToggle){
+        String responseToggleText;
+        if(responseToggle){
+            responseToggleText = "true";
+        }
+        else{
+            responseToggleText = "false";
+        }
+        this.settings.put(Setting.UNIVERSAL_TOGGLE, responseToggleText);
+    }
+
+    public boolean getUniversalToggle(){
+        String value = this.settings.get(Setting.UNIVERSAL_TOGGLE);
+        if(value.compareTo("true") == 0){
+            return true;
+        }
+        else if(value.compareTo("false") == 0){
+            return false;
+        }
+        else{
+            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.UNIVERSAL_TOGGLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
+    }
+
     public boolean getResponseToggle(){
         String value = this.settings.get(Setting.RESPONSE_TOGGLE);
         if(value.compareTo("true") == 0){
@@ -104,6 +137,34 @@ public class TestDBInstance implements DBInstance {
         }
         else{
             Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.RESPONSE_TOGGLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
+    }
+
+    public boolean getActivityToggle(){
+        String value = this.settings.get(Setting.ACTIVITY_TOGGLE);
+        if(value.compareTo("true") == 0){
+            return true;
+        }
+        else if(value.compareTo("false") == 0){
+            return false;
+        }
+        else{
+            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.ACTIVITY_TOGGLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
+    }
+
+    public boolean getLocationToggle(){
+        String value = this.settings.get(Setting.LOCATION_TOGGLE);
+        if(value.compareTo("true") == 0){
+            return true;
+        }
+        else if(value.compareTo("false") == 0){
+            return false;
+        }
+        else{
+            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.LOCATION_TOGGLE + " set to " + value + " when true/false was expected");
             throw new InputMismatchException();
         }
     }

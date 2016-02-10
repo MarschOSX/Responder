@@ -26,7 +26,6 @@
                 android:layout_height="60dp"
                 android:text="Auto Response"
                 android:id="@+id/autoRespond_switch"
-                android:onClick="switchChecker"
                 android:textSize="32sp" />
 
             <LinearLayout
@@ -56,13 +55,6 @@
         <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="General Reply"
-                    android:id="@+id/generalReply_button"
-                    android:onClick="gotoGeneralResponse"/>
-
-        <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:text="Contacts"
                     android:id="@+id/contacts_button"
                     android:onClick="gotoContactsList"/>
@@ -78,6 +70,13 @@
         <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="Universal Reply"
+                    android:id="@+id/generalReply_button"
+                    android:onClick="gotoUniversalReply" />
+
+        <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="Settings"
                     android:id="@+id/settings_button"
                     android:onClick="gotoSettings"
@@ -89,7 +88,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="GarMar© 2015"
+        android:text="GarMar 2015"
         android:id="@+id/textView2"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/linearLayout" />
@@ -98,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Version 0.5"
+                android:text="Version 1.0"
                 android:id="@+id/textView"
         android:layout_alignBaseline="@+id/textView2"
         android:layout_alignBottom="@+id/textView2"

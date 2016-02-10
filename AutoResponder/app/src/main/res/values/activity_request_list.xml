@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="activity_requests_list">
+        <item>are you busy</item>
+        <item>are you free</item>
+        <item>are you occupied</item>
+        <item>you doing anything</item>
+        <item>what are you up to</item>
+    </string-array>
+</resources>

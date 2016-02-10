@@ -1,6 +1,5 @@
 package com.seniordesign.autoresponder;
 
-import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.widget.ArrayAdapter;
@@ -9,23 +8,21 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
-import com.seniordesign.autoresponder.Interface.Contacts.SingleContact;
-import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
+import com.seniordesign.autoresponder.Interface.Groups.GroupInfo;
 
-public class SingleGroupTest extends ActivityInstrumentationTestCase2<SingleGroup> {
-    public SingleGroupTest() {
-        super(SingleGroup.class);
+public class GroupInfoTest extends ActivityInstrumentationTestCase2<GroupInfo> {
+    public GroupInfoTest() {
+        super(GroupInfo.class);
     }
 
     public void testActivityExists() {
-        SingleGroup activity = getActivity();
+        GroupInfo activity = getActivity();
         assertNotNull(activity);
     }
 
     @UiThreadTest
     public void testHeaders(){
-        SingleGroup activity = getActivity();
+        GroupInfo activity = getActivity();
         assertNotNull(activity);
         //activity.setContentView(R.layout.activity_single_contact);
 
@@ -43,7 +40,7 @@ public class SingleGroupTest extends ActivityInstrumentationTestCase2<SingleGrou
     @UiThreadTest
     public void testOnOffToggle() {
         //Test Switches
-        SingleGroup activity = getActivity();
+        GroupInfo activity = getActivity();
         Switch location = (Switch)activity.findViewById(R.id.singleGroupLocationToggle);
         assertNotNull(location);
         location.setChecked(true);
@@ -61,7 +58,7 @@ public class SingleGroupTest extends ActivityInstrumentationTestCase2<SingleGrou
 
     @UiThreadTest
     public void testContactListView() {
-        SingleGroup activity = getActivity();
+        GroupInfo activity = getActivity();
 
         //Populate the List
         ListView contactList = (ListView)activity.findViewById(R.id.singleGroupsList);

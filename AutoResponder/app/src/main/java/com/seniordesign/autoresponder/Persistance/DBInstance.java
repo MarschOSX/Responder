@@ -20,6 +20,10 @@ public interface DBInstance {
 
     String getReplyAll();
 
+    void setUniversalReply(String universalReply);
+
+    String getUniversalReply();
+
     void setDelay(int minutes);
 
     int getDelay();
@@ -30,24 +34,23 @@ public interface DBInstance {
 
     void setLocationToggle(boolean toggle);
 
+    void setUniversalToggle(boolean toggle);
+
     boolean getResponseToggle();
+    
+    boolean getLocationToggle();
+
+    boolean getActivityToggle();
+
+    boolean getUniversalToggle();
 
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
     ////////////////////////////////
+
     void addToResponseLog(ResponseLog newLog);
 
-    ResponseLog getFirstResponse();
-
-    ResponseLog getLastResponse();
-
-    ResponseLog getResponse(int index);
-
     ResponseLog getLastResponseByNum(String phoneNum);
-
-    ArrayList<ResponseLog> getResponseByDateRange(Date start, Date end);
-
-    ArrayList<ResponseLog> getResponseRange(int start, int end);
 
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//
@@ -166,20 +169,20 @@ public interface DBInstance {
 
     /*adds new entry to the developer log
   * @param Date timeStamp, String entry*/
-    void addDevLog(Date timeStamp, String entry);
+    //void addDevLog(Date timeStamp, String entry);
 
     /*returns log at that index
   * @param int index
   * @return log if found, null if not found or there was an error*/
-    DeveloperLog getDevLog(int index);
+    //DeveloperLog getDevLog(int index);
 
     /*returns all logs between first and last index
      * @param int first, int last
      * @return log range if found, null if not found or there was an error*/
-    ArrayList<DeveloperLog> getDevLogRange(int first, int last);
+    //ArrayList<DeveloperLog> getDevLogRange(int first, int last);
 
     /*returns all logs between first and last date
   * @param Date start, Date end
   * @return log range if found, null if not found or there was an error*/
-    ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end);
+    //ArrayList<DeveloperLog> getDevLogRangeByDate(Date start, Date end);
 }

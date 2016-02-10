@@ -1,16 +1,21 @@
 package com.seniordesign.autoresponder.Interface;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
-import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
+import com.seniordesign.autoresponder.Interface.Groups.GroupList;
 import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
@@ -18,24 +23,102 @@ import com.seniordesign.autoresponder.R;
 
 
 public class Main extends AppCompatActivity {
+    private Switch mLocationToggle;
+    private Switch mCalenderToggle;
+    private Switch mResponseToggle;
+    int CALENDAR_PERMISSIONS = 0;
+    int LOACTION_PERMISSIONS = 0;
+    int SEND_SMS_PERMISSIONS = 0;
+    int RECEIVE_SMS_PERMISSIONS = 0;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        setToggleSwitch();
+
+        //Get Receive SMS Permissions at startup
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.RECEIVE_SMS}, RECEIVE_SMS_PERMISSIONS);
+        }else{
+            RECEIVE_SMS_PERMISSIONS = 1;
+        }
+
+        //Get Send SMS Permissions at startup
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSIONS);
+        }else{
+            SEND_SMS_PERMISSIONS = 1;
+        }
+
+        //build the all the toggles
+        buildSwitches();
     }
 
-    //checks DB for the current toggle on/off setting
-    private void setToggleSwitch(){
+    //build the switches and add the listeners
+    private void buildSwitches(){
         DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        boolean isActive = db.getResponseToggle();
-        Switch toggleButton = (Switch)findViewById(R.id.autoRespond_switch);
-        toggleButton.setChecked(isActive);
-        //Add other switches here when implemented....
+
+        mResponseToggle = (Switch)findViewById(R.id.autoRespond_switch);
+        mResponseToggle.setChecked(db.getResponseToggle());
+        mResponseToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                db.setResponseToggle(mResponseToggle.isChecked());
+            }
+        });
+
+        mCalenderToggle = (Switch)findViewById(R.id.calendar_switch);
+        mCalenderToggle.setChecked(db.getActivityToggle());
+        mCalenderToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Get Calendar Permissions
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSIONS);
+                }
+
+                //Check Again
+                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                    db.setActivityToggle(mCalenderToggle.isChecked());
+                }else{
+                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                    db.setActivityToggle(false);
+                    mCalenderToggle.setChecked(false);
+                }
+            }
+        });
+
+
+        mLocationToggle = (Switch)findViewById(R.id.location_switch);
+        mLocationToggle.setChecked(db.getLocationToggle());
+        mLocationToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Get Location Permissions
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOACTION_PERMISSIONS);
+                }
+
+                //Check Again
+                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                    db.setLocationToggle(mLocationToggle.isChecked());
+                }else{
+                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                    db.setLocationToggle(false);
+                    mLocationToggle.setChecked(false);
+                }
+            }
+        });
     }
 
     @Override
@@ -70,9 +153,9 @@ public class Main extends AppCompatActivity {
 
 
     /** Called when the user clicks the General Response Button*/
-    public void gotoGeneralResponse(View view) {
+    public void gotoUniversalReply(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, GeneralResponse.class);
+        Intent intent = new Intent(this, UniversalReply.class);
         startActivity(intent);
     }
 
@@ -90,22 +173,7 @@ public class Main extends AppCompatActivity {
 
     public void gotoManageGroups(View view) {
         // Do something in response to button
-        Intent intent = new Intent(this, ManageGroups.class);
+        Intent intent = new Intent(this, GroupList.class);
         startActivity(intent);
-    }
-
-    // Called when the user selects a time delay radio button
-    public void switchChecker(View view) {
-        // Is the button now checked?
-        boolean autoRespondOffOn = ((Switch) view).isChecked();
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.autoRespond_switch:
-                    Log.v("AutoResponder Active? ", java.lang.Boolean.toString(autoRespondOffOn));
-                    //push Toggle on/off to DB
-                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-                    db.setResponseToggle(autoRespondOffOn);
-                break;
-        }
     }
 }

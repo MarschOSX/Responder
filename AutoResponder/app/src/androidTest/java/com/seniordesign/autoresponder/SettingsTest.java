@@ -1,12 +1,8 @@
 package com.seniordesign.autoresponder;
 
-import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import com.seniordesign.autoresponder.Interface.Groups.ManageGroups;
 import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 
 //TODO WHAT IS THIS FOR?

@@ -3,17 +3,25 @@ package com.seniordesign.autoresponder.Receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.ArrayMap;
+import android.util.Log;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class EventListener extends BroadcastReceiver{
+    public static final String TAG = "EventListener";
+    private GoogleLocator locator;
+    private Context context;
+    private Intent intent;
     //for more information about incoming SMS, set to true
    // boolean debug = false;
 
@@ -21,8 +29,6 @@ public class EventListener extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        //EventListener passes info to EventHandler
-
         android.util.Log.v("EventListener,", "Intent received: " + intent.getAction());
         String phoneNumber = null;
         String message = "";
@@ -58,10 +64,23 @@ public class EventListener extends BroadcastReceiver{
         //pass information to EventHandler.respondToText()
         if(phoneNumber != null) {
             EventHandler ev= new EventHandler(DBProvider.getInstance(false, context));
-            ev.respondToText(phoneNumber, message, timeRecieved);
+            ev.respondToText(phoneNumber, message, timeRecieved, context);
         }else{
             android.util.Log.v("EventHandler,", "Invalid Phone Number");
             throw new IllegalArgumentException("Invalid Phone Number in EventListener");
+        }
+    }
+
+    private void pauseHere(int i, int max){
+        try{
+            if (i <= max) {
+                TimeUnit.MILLISECONDS.sleep(500);
+                Log.d(TAG, "waiting...");
+                pauseHere(i + 1, max);
+            }
+        }
+        catch (InterruptedException e){
+            Log.e(TAG, "wait interrupted");
         }
     }
 }

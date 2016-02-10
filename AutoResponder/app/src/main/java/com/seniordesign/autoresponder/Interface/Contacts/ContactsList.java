@@ -1,14 +1,17 @@
 package com.seniordesign.autoresponder.Interface.Contacts;
 
+import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -18,14 +21,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.widget.Toast;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
-import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
+import com.seniordesign.autoresponder.Interface.Groups.GroupInfo;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -48,9 +49,7 @@ public class ContactsList extends AppCompatActivity {
     private static final int CONTACT_PICKER_RESULT = 1001;
     boolean pickerFlag = false;
     String groupName = null;
-    int duration = Toast.LENGTH_LONG;
-    CharSequence toastText;
-    Toast toast;
+    int CONTACT_PERMISSIONS = 0;
 
 
     @Override
@@ -58,6 +57,10 @@ public class ContactsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_list);
         this.db = DBProvider.getInstance(false, getApplicationContext());
+        //Get Contact Permissions
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CONTACT_PERMISSIONS);
+        }
         updateContactListView();
         Intent intent = getIntent();
         groupName = intent.getStringExtra("ADD_CONTACT_TO_SINGLE_GROUP");
@@ -92,9 +95,8 @@ public class ContactsList extends AppCompatActivity {
 
     public void doLaunchContactPicker(View view) {
         // Do something in response to button
-            Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
-                    Contacts.CONTENT_URI);
-            startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
+        Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,Contacts.CONTENT_URI);
+        startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);
     }
 
     public void updateContactListView() {
@@ -111,7 +113,7 @@ public class ContactsList extends AppCompatActivity {
 
         for(int i = 0; i < numberOfContacts; i++){
             contactsNames[i] = rawContacts.get(i).getName();//this is for the ListView
-            contactInfo.put(rawContacts.get(i).getName(), rawContacts.get(i).getPhoneNumber());//This is for SingleContact activity
+            contactInfo.put(rawContacts.get(i).getName(), rawContacts.get(i).getPhoneNumber());//This is for ContactInfo activity
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contactsNames);
         final ListView contactList = (ListView)findViewById(R.id.contactList);
@@ -121,7 +123,7 @@ public class ContactsList extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String nameSelectedFromList = (String) contactList.getItemAtPosition(position);
                 if(pickerFlag){
-                    final Intent intent = new Intent(getApplicationContext(), SingleGroup.class);
+                    final Intent intent = new Intent(getApplicationContext(), GroupInfo.class);
                     if(contactInfo.containsKey(nameSelectedFromList)) {
                         final String number = contactInfo.get(nameSelectedFromList);
 
@@ -162,7 +164,7 @@ public class ContactsList extends AppCompatActivity {
                         }
                     }
                 }else{
-                    Intent intent = new Intent(getApplicationContext(), SingleContact.class);
+                    Intent intent = new Intent(getApplicationContext(), ContactInfo.class);
                     //Based on selection from list view, open new activity based on that contact
                     if(contactInfo.containsKey(nameSelectedFromList)){
                         String number = contactInfo.get(nameSelectedFromList);
@@ -188,6 +190,7 @@ public class ContactsList extends AppCompatActivity {
             int duration = Toast.LENGTH_LONG;
             CharSequence toastText;
             Toast toast;
+            int permissionschecker = 1;
             String id = "";
             String name = "";
             String phoneNumber = "";
@@ -205,7 +208,7 @@ public class ContactsList extends AppCompatActivity {
                     idx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                     name = cursor.getString(idx);
 
-                    //Get Phone Number of Contact with Contact ID
+
                     idx = cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER);
                     if(cursor.getString(idx).matches("1")) {
                         cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + id, null, null);
@@ -220,17 +223,22 @@ public class ContactsList extends AppCompatActivity {
                 Log.v("ContactList PhoneNumber", phoneNumber);
             }catch (Exception e){
                 Log.v("ContactList", "Failed to get Contact Info");
+                permissionschecker = 0;
             }finally {
                 if (cursor != null) {
                     cursor.close();
                 }
-
                 if (name == null || name.matches("")) {//name is blank or empty
                     Log.v("ContactList", "Contact has bad name!");
                     toastText = "This Contact has an empty Name!";
                     toast = Toast.makeText(context, toastText, duration);
                     toast.show();
-                }else if(phoneNumber == null || phoneNumber.matches("")){//TODO we might need to check exact phone number validity???
+                }else if (permissionschecker == 0){
+                    Log.v("ContactList", "Not allowed to access contacts!");
+                    toastText = "Failed to get info! Permissions may not be set!";
+                    toast = Toast.makeText(context, toastText, duration);
+                    toast.show();
+                }else if(phoneNumber == null || phoneNumber.matches("")){
                     Log.v("ContactList", "Contact has a Bad Phone Number");
                     toastText = "This Contact has a bad Phone Number!";
                     toast = Toast.makeText(context, toastText, duration);

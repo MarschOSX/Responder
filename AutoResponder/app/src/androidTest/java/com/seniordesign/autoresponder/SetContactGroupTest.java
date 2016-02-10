@@ -2,14 +2,9 @@ package com.seniordesign.autoresponder;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.seniordesign.autoresponder.Interface.Contacts.SetContactGroup;
-import com.seniordesign.autoresponder.Interface.Groups.SingleGroup;
 
 public class SetContactGroupTest extends ActivityInstrumentationTestCase2<SetContactGroup> {
     public SetContactGroupTest() {
