@@ -243,6 +243,10 @@ public class TestDBInstance implements DBInstance {
         return range;
     }
 
+    public ArrayList<ResponseLog> getResponseLogList(){
+        return  responseLog;
+    }
+
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//
     ///////////////////////////

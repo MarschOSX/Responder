@@ -26,7 +26,7 @@ import java.util.Calendar;
 public class EventHandler extends ListActivity{
     private static final String TAG = "EventHandler";
     private DBInstance db;
-    private Context context;
+    Context context;
     private GoogleLocator locator;
     private String phoneNumber;
     private String messageReceived;
@@ -43,21 +43,27 @@ public class EventHandler extends ListActivity{
         this.phoneNumber = phoneNumber;
         this.messageReceived = messageRecieved;
         this.timeReceived = timeRecieved;
-
         getContext = context;
         android.util.Log.v("EventHandler,", "EventHandler is active!");
+
+        //Check if Phone Number is Not Null
         if (phoneNumber == null){
             android.util.Log.v("EventHandler,", "Invalid PhoneNumber Recieved");
             return -1;
         }
+
+        //Get Contact info based on the phoneNumber
         Contact contact = db.getContactInfo(phoneNumber);
         if (db.getResponseToggle() && contact != null) {
-            //get lastRecieved from database
+            //if the contact is in the database, get the last response from it
             ResponseLog lastLog = db.getLastResponseByNum(phoneNumber);
+
+            //check to make sure responseLog is not null
             if (lastLog == null) {
                 android.util.Log.v("EventHandler,", "Invalid, UpdateLog is NULL");
                 return -1;
             }
+
             Long lastRecieved = lastLog.getTimeStamp().getTime();
             //get delaySet from database
             Long delaySet = 60000 * (long) db.getDelay();//convert minutes to milliseconds

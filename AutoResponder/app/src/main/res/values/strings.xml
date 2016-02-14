@@ -33,4 +33,5 @@
     <string name="title_activity_time_delay">Time Delay</string>
     <string name="title_activity_default_contact_response">Default Contact Response</string>
     <string name="title_activity_default_contact_response_descr">Response for contacts with no individual settings</string>
+    <string name="title_activity_response_log_list">ResponseLogList</string>
 </resources>

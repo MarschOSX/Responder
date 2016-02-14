@@ -241,6 +241,45 @@ public class PermDBInstance implements DBInstance {
     }
 
 
+    //returns sorted responseLogs by timeStamp
+    public ArrayList<ResponseLog> getResponseLogList(){
+
+        String table = DBHelper.TABLE_RESPONSELOG;
+        String orderBy = "(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + ") ASC";
+
+        Cursor result = this.myDB.query(table, null, null, null, null, null, orderBy);
+
+        ArrayList<ResponseLog> range = new ArrayList<>();
+        String messageSent;
+        String messageRecieved;
+        String senderNumber;
+        Date timestamp;
+
+        if ((result != null) && (result.moveToFirst())){
+
+            for (int i = 0; i < result.getCount(); i++){
+                messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
+                messageRecieved = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
+                senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
+                timestamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
+
+                ResponseLog responseLog = new ResponseLog(messageSent,messageRecieved,senderNumber,timestamp);
+                Log.d(TAG, getMethodName(0) + ": " + responseLog.toString());
+                range.add(responseLog);
+                result.moveToNext();
+            }
+
+            result.close();
+            Log.d(TAG, getMethodName(0) + "Successfully Returned ResponseLog as an Array");
+            return range;
+        }
+        else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object");
+            return null;
+        }
+    }
+
+
 
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//
