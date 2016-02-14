@@ -16,6 +16,12 @@ import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.ExpandableListView.OnGroupCollapseListener;
+import android.widget.ExpandableListView.OnGroupExpandListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +91,7 @@ public class ResponseLogList extends AppCompatActivity {
 
 
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.ResponseLogListView);
-        //listAdapter = new BaseExpandableListAdapter (this, listDataHeader, listDataChild);
-        //expListView.setAdapter(listAdapter);*/
+        listAdapter = new com.seniordesign.autoresponder.Interface.Settings.ExpandableListAdapter(this, listDataHeader, listDataChild);
+        expListView.setAdapter(listAdapter);*/
     }
 }
