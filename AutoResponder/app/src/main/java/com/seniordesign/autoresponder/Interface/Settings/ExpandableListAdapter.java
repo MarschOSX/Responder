@@ -2,6 +2,8 @@ package com.seniordesign.autoresponder.Interface.Settings;
 
 /**
  * Created by MarschOSX on 2/14/2016.
+ *
+ * Code from: http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
  */
 import java.util.HashMap;
 import java.util.List;

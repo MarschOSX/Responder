@@ -168,10 +168,13 @@ public class PermDBInstance implements DBInstance {
         try {
             //load columns in args
             ContentValues args = new ContentValues();
-            args.put(DBHelper.RESPONSELOG_TIMESTAMP[0], newLog.getTimeStamp().getTime());
+            args.put(DBHelper.RESPONSELOG_TIMERECEIVED[0], newLog.getTimeReceived().getTime());
+            args.put(DBHelper.RESPONSELOG_TIMESENT[0], newLog.getTimeSent().getTime());
             args.put(DBHelper.RESPONSELOG_SENDERNUM[0], newLog.getSenderNumber());
             args.put(DBHelper.RESPONSELOG_MESSAGERCV[0], newLog.getMessageReceived());
             args.put(DBHelper.RESPONSELOG_MESSAGESNT[0], newLog.getMessageSent());
+            args.put(DBHelper.RESPONSELOG_LOCATIONSHARED[0], newLog.getLocationShared());
+            args.put(DBHelper.RESPONSELOG_ACTIVITYSHARED[0], newLog.getActivityShared());
 
             //add the row to the table and checks if insert was succesfull
             long insert = myDB.insertOrThrow(DBHelper.TABLE_RESPONSELOG, null, args);
@@ -194,13 +197,19 @@ public class PermDBInstance implements DBInstance {
         String senderNum = phoneNum;
         String msgRcv = "hi";
         String msgSnt = "hi";
-        Date date = new Date(0);
+        Date dateRecieved = new Date(0);
+        Date dateSent = new Date(0);
+        Boolean locShared = false;
+        Boolean actShared = false;
 
         String table = DBHelper.TABLE_RESPONSELOG;
-        String columns[] = {"MAX(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + ")",
+        String columns[] = {"MAX(" + DBHelper.RESPONSELOG_TIMERECEIVED[0] + ")",
+                DBHelper.RESPONSELOG_TIMESENT[0],
                 DBHelper.RESPONSELOG_SENDERNUM[0],
                 DBHelper.RESPONSELOG_MESSAGERCV[0],
-                DBHelper.RESPONSELOG_MESSAGESNT[0]};
+                DBHelper.RESPONSELOG_MESSAGESNT[0],
+                DBHelper.RESPONSELOG_LOCATIONSHARED[0],
+                DBHelper.RESPONSELOG_ACTIVITYSHARED[0]};
         String selection = DBHelper.RESPONSELOG_SENDERNUM[0] + "=?";
         String selectionArgs[] = {phoneNum};
 
@@ -210,25 +219,41 @@ public class PermDBInstance implements DBInstance {
             if (result != null) {
                 //check and see how many rows were returned
                 int numRows = result.getCount();
-                if (numRows == 0) {
-                    Log.d(TAG, "ResponseLogRetrieved: "+ date + ", " + senderNum + ", " + msgSnt + ", " + msgRcv);
-                    return new ResponseLog(msgSnt, msgRcv, senderNum, date); //returns a false record from the beginning of time if no record found
+                Log.d(TAG, getMethodName(0) + ": number of rows found is " + numRows);
+                if (numRows ==  0) {
+                    Log.d(TAG, "ResponseLogRetrieved: "+ dateRecieved + ", " + dateSent +", " + senderNum + ", " + msgSnt + ", " + msgRcv +", " + locShared +", " + actShared);
+                    return new ResponseLog(msgSnt, msgRcv, senderNum, dateRecieved, dateSent, locShared, actShared); //returns a false record from the beginning of time if no record found
                 }
                 else{
                     result.moveToFirst();
                 }
 
-                //load query results
-                date = new Date(result.getLong(0));
-                senderNum = result.getString(1);
-                msgRcv = result.getString(2);
-                msgSnt = result.getString(3);
+                if (result.getLong(0) == 0L) {
+                    Log.d(TAG, "ResponseLogRetrieved: " + dateRecieved + ", " + dateSent + ", " + senderNum + ", " + msgSnt + ", " + msgRcv + ", " + locShared + ", " + actShared);
+                    return new ResponseLog(msgSnt, msgRcv, senderNum, dateRecieved, dateSent, locShared, actShared); //returns a false record from the beginning of time if no record found
+                }
 
-                Log.d(TAG, "ResponseLogRetrieved:("+ numRows +") "+ date + ", " + senderNum + ", " + msgSnt + ", " + msgRcv);
+                //load query result
+                Log.e(TAG, new Date(result.getLong(0)).toString());
+                Log.e(TAG, new Date(result.getLong(1)).toString());
+                Log.e(TAG, result.getString(2));
+                Log.e(TAG, result.getString(3));
+                Log.e(TAG, result.getString(4));
+                Log.e(TAG, result.getString(5));
+                Log.e(TAG, result.getString(6));
+                dateRecieved = new Date(result.getLong(0));
+                dateSent = new Date(result.getLong(1));
+                senderNum = result.getString(2);
+                msgRcv = result.getString(3);
+                msgSnt = result.getString(4);
+                locShared = convertToBool(result.getString(5));
+                actShared = convertToBool(result.getString(6));
+
+                Log.d(TAG, "ResponseLogRetrieved:("+ numRows +") "+ dateRecieved + ", " + dateSent +", " + senderNum + ", " + msgSnt + ", " + msgRcv +", " + locShared +", " + actShared);
 
                 result.close();
 
-                return new ResponseLog(msgSnt, msgRcv, senderNum, date);
+                return new ResponseLog(msgSnt, msgRcv, senderNum, dateRecieved, dateSent, locShared, actShared);
             } else {
                 Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object" );
                 return null;
@@ -245,7 +270,7 @@ public class PermDBInstance implements DBInstance {
     public ArrayList<ResponseLog> getResponseLogList(){
 
         String table = DBHelper.TABLE_RESPONSELOG;
-        String orderBy = "(" + DBHelper.RESPONSELOG_TIMESTAMP[0] + ") ASC";
+        String orderBy = "(" + DBHelper.RESPONSELOG_TIMERECEIVED[0] + ") ASC";
 
         Cursor result = this.myDB.query(table, null, null, null, null, null, orderBy);
 
@@ -253,7 +278,10 @@ public class PermDBInstance implements DBInstance {
         String messageSent;
         String messageRecieved;
         String senderNumber;
-        Date timestamp;
+        Date timeRecieved;
+        Date timeSent;
+        Boolean locShared;
+        Boolean actShared;
 
         if ((result != null) && (result.moveToFirst())){
 
@@ -261,9 +289,13 @@ public class PermDBInstance implements DBInstance {
                 messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
                 messageRecieved = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
                 senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
-                timestamp = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESTAMP[0])));
+                timeRecieved = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMERECEIVED[0])));
+                timeSent = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESENT[0])));
+                locShared = convertToBool(result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_LOCATIONSHARED[0])));
+                actShared = convertToBool(result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_ACTIVITYSHARED[0])));
 
-                ResponseLog responseLog = new ResponseLog(messageSent,messageRecieved,senderNumber,timestamp);
+
+                ResponseLog responseLog = new ResponseLog(messageSent,messageRecieved,senderNumber,timeRecieved,timeSent,locShared,actShared);
                 Log.d(TAG, getMethodName(0) + ": " + responseLog.toString());
                 range.add(responseLog);
                 result.moveToNext();

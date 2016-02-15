@@ -16,11 +16,6 @@ import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ExpandableListView.OnGroupClickListener;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
-import android.widget.ExpandableListView.OnGroupExpandListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +31,6 @@ public class ResponseLogList extends AppCompatActivity {
         setContentView(R.layout.activity_response_log_list);
         this.db = DBProvider.getInstance(false, getApplicationContext());
         updateResponseLogListView();
-
-
     }
 
     @Override
@@ -63,14 +56,14 @@ public class ResponseLogList extends AppCompatActivity {
     }
 
     public void updateResponseLogListView() {
-        /*int numberOfResponses = 0;
+        int numberOfResponses = 0;
         ExpandableListAdapter listAdapter;
         ArrayList<ResponseLog> rawResponseLogs = db.getResponseLogList();
         if(rawResponseLogs != null){
             numberOfResponses = rawResponseLogs.size();
         }
-        List<String> listDataHeader = new ArrayList<String>();
-        HashMap<String, List<String>> listDataChild = new HashMap<String, List<String>>();
+        List<String> listDataHeader = new ArrayList<>();
+        HashMap<String, List<String>> listDataChild = new HashMap<>();
 
         for(int i = 0; i < numberOfResponses; i++){
             ResponseLog responseLog = rawResponseLogs.get(i);
@@ -81,17 +74,26 @@ public class ResponseLogList extends AppCompatActivity {
 
             //get the children information
             // Adding child data
-            List<String> moreInfo = new ArrayList<String>();
-            moreInfo.add("hello");
+            List<String> moreInfo = new ArrayList<>();
+            moreInfo.add("Phone Number: " + responseLog.getSenderNumber());
+            moreInfo.add("Message Recieved: " + responseLog.getMessageReceived());
+            moreInfo.add("Message Recieved At: " + responseLog.getTimeReceived().toString());
+            moreInfo.add("Message Sent: " + responseLog.getMessageSent());
+            moreInfo.add("Message Sent At: " + responseLog.getTimeSent().toString());
+            moreInfo.add("Location Shared: " + responseLog.getLocationShared());
+            moreInfo.add("Calendar Event Shared: " + responseLog.getActivityShared());
 
 
+
+
+            //add child data
             listDataChild.put(listDataHeader.get(i), moreInfo);
         }
 
-
-
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.ResponseLogListView);
         listAdapter = new com.seniordesign.autoresponder.Interface.Settings.ExpandableListAdapter(this, listDataHeader, listDataChild);
-        expListView.setAdapter(listAdapter);*/
+        expListView.setAdapter(listAdapter);
     }
+
+
 }

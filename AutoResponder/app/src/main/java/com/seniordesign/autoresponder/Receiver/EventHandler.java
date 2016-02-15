@@ -13,6 +13,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
+import com.seniordesign.autoresponder.Interface.Settings.ResponseLogList;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -64,7 +65,9 @@ public class EventHandler extends ListActivity{
                 return -1;
             }
 
-            Long lastRecieved = lastLog.getTimeStamp().getTime();
+
+
+            Long lastRecieved = lastLog.getTimeReceived().getTime();
             //get delaySet from database
             Long delaySet = 60000 * (long) db.getDelay();//convert minutes to milliseconds
             if (timeRecieved != null && timeRecieved >= 0L) {
@@ -97,13 +100,13 @@ public class EventHandler extends ListActivity{
                     if (activityPermission) {//if just Activity permission is true
                         String actMessage = getActivityInfo(messageRecieved);
                         if(actMessage != null){
-                            sendSMS(actMessage, messageRecieved, phoneNumber, new Date(timeRecieved));
+                            sendSMS(actMessage, messageRecieved, phoneNumber, new Date(timeRecieved), false, true);
                         }else{
-                            sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
+                            sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved), false, false);
                         }
                     }
                     if (!locationPermission && !activityPermission){//both permissions are false, go to normal response
-                        sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
+                        sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved), locationPermission, activityPermission);
                     }
                     android.util.Log.v("EventHandler,", "Finished EventHandler");
                     return 0;
@@ -121,14 +124,16 @@ public class EventHandler extends ListActivity{
     }
 
     //Sends out an SMS from the device and records it in the ResponseLog
-    public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Date timeRecieved){
+    public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Date timeRecieved, Boolean locShared, Boolean actShared){
         //Send the UniversalReply Message
         SmsManager sms = SmsManager.getDefault();
         android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
         sms.sendTextMessage(phoneNumber, null, messageSent, null, null);
 
+        Date timeSent = new Date(System.currentTimeMillis());
+
         //Update Response Log
-        ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeRecieved);
+        ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeRecieved, timeSent, locShared, actShared);
         db.addToResponseLog(updateLog);
     }
 
@@ -145,7 +150,7 @@ public class EventHandler extends ListActivity{
         locator.close();
 
         if (currentLocation == null) {
-            sendSMS("my location cannot be determined at this time", this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
+            sendSMS("my location cannot be determined at this time", this.messageReceived, this.phoneNumber, new Date(this.timeReceived), false, false);
         } else {
 
             //build the location message w/ address and URL to google maps
@@ -154,7 +159,7 @@ public class EventHandler extends ListActivity{
             message = "I am at: \n" + addressText + "\n\n" + link;
 
             //send the message
-            sendSMS(message, this.messageReceived, this.phoneNumber, new Date(this.timeReceived));
+            sendSMS(message, this.messageReceived, this.phoneNumber, new Date(this.timeReceived), true, false);
         }
     }
 

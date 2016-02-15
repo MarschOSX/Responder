@@ -39,15 +39,22 @@ public class DBHelper extends SQLiteOpenHelper{
             DEVLOG_ENTRY[0]+ " " + DEVLOG_ENTRY[1] + ");";
 
     public static final String TABLE_RESPONSELOG = "response_log";
-    public static final String[] RESPONSELOG_TIMESTAMP = {"time_stamp" , "DATE"};
-    public static final String[] RESPONSELOG_SENDERNUM = {"sender_phoneNumber", "VARCHAR(16)"};
-    public static final String[] RESPONSELOG_MESSAGERCV = {"message_received", "VARCHAR(144)"};
-    public static final String[] RESPONSELOG_MESSAGESNT = {"message_sent", "VARCHAR(144)"};
+    public static final String[] RESPONSELOG_TIMERECEIVED = {"time_received" , "DATE NOT NULL"};
+    public static final String[] RESPONSELOG_SENDERNUM = {"sender_phoneNumber", "VARCHAR(16) NOT NULL"};
+    public static final String[] RESPONSELOG_MESSAGERCV = {"message_received", "VARCHAR(144) NOT NULL"};
+    public static final String[] RESPONSELOG_MESSAGESNT = {"message_sent", "VARCHAR(144) NOT NULL"};
+    public static final String[] RESPONSELOG_TIMESENT = {"time_sent" , "DATE NOT NULL"};
+    public static final String[] RESPONSELOG_LOCATIONSHARED = {"location_shared", "BOOLEAN NOT NULL"};
+    public static final String[] RESPONSELOG_ACTIVITYSHARED = {"activity_shared", "BOOLEAN NOT NULL"};
+
     private static final String CREATE_RESPONSELOG = "CREATE TABLE " + TABLE_RESPONSELOG +
-            "(" + RESPONSELOG_TIMESTAMP[0] + " " + RESPONSELOG_TIMESTAMP[1] + ", " +
+            "(" + RESPONSELOG_TIMERECEIVED[0] + " " + RESPONSELOG_TIMERECEIVED[1] + ", " +
+            RESPONSELOG_TIMESENT[0]+ " " + RESPONSELOG_TIMESENT[1] + ", " +
             RESPONSELOG_SENDERNUM[0]+ " " + RESPONSELOG_SENDERNUM[1] + ", " +
             RESPONSELOG_MESSAGERCV[0] + " " + RESPONSELOG_MESSAGERCV[1] + ", " +
-            RESPONSELOG_MESSAGESNT[0]+ " " + RESPONSELOG_MESSAGESNT[1] + ");";
+            RESPONSELOG_MESSAGESNT[0]+ " " + RESPONSELOG_MESSAGESNT[1] + ", " +
+            RESPONSELOG_LOCATIONSHARED[0]+ " " + RESPONSELOG_LOCATIONSHARED[1] + ", " +
+            RESPONSELOG_ACTIVITYSHARED[0] + " " + RESPONSELOG_ACTIVITYSHARED[1] + ");";
 
     public static final String TABLE_CONTACT = "contact_table";
     public static final String[] CONTACT_NAME = {"name", "TEXT NOT NULL"};
