@@ -23,7 +23,7 @@ import java.util.Calendar;
  */
 
 
-public class EventHandler extends ListActivity{
+public class EventHandler implements Runnable{
     private static final String TAG = "EventHandler";
     private DBInstance db;
     private Context context;
@@ -31,38 +31,57 @@ public class EventHandler extends ListActivity{
     private String phoneNumber;
     private String messageReceived;
     private Long timeReceived;
-    Context getContext;
 
-    public EventHandler(DBInstance db) {
+    public EventHandler(DBInstance db, Context context, String phoneNumber, String messageReceived, Long timeReceived) {
         this.db = db;
-    }
-
-    public int respondToText(String phoneNumber, String messageRecieved, Long timeRecieved, Context context) {
-        //EventListener passes info to EventHandler
         this.context = context;
         this.phoneNumber = phoneNumber;
-        this.messageReceived = messageRecieved;
-        this.timeReceived = timeRecieved;
+        this.messageReceived = messageReceived;
+        this.timeReceived = timeReceived;
+    }
 
-        getContext = context;
-        android.util.Log.v("EventHandler,", "EventHandler is active!");
+    //runs as a new thread
+    public void run(){
+        respondToText();
+    }
+
+    public int respondToText() {
+
+        //output that thread has started to run
+        android.util.Log.d(TAG, "EventHandler is active!");
+
+        //if the phone number is not present the the function terminates
         if (phoneNumber == null){
-            android.util.Log.v("EventHandler,", "Invalid PhoneNumber Recieved");
+            android.util.Log.e("EventHandler,", "No PhoneNumber found");
             return -1;
         }
+
+        //try to retrieve information for that phone number fromm the database
         Contact contact = db.getContactInfo(phoneNumber);
+
+        //The function will only continue if the user has set the response toggle to on
+        // and the phone number has a corresponding contact stored in the database
         if (db.getResponseToggle() && contact != null) {
-            //get lastRecieved from database
+
+            //get last message received for that contact from the database
             ResponseLog lastLog = db.getLastResponseByNum(phoneNumber);
             if (lastLog == null) {
-                android.util.Log.v("EventHandler,", "Invalid, UpdateLog is NULL");
+                android.util.Log.e("EventHandler,", "No response log returned for " + phoneNumber);
                 return -1;
             }
-            Long lastRecieved = lastLog.getTimeStamp().getTime();
-            //get delaySet from database
-            Long delaySet = 60000 * (long) db.getDelay();//convert minutes to milliseconds
-            if (timeRecieved != null && timeRecieved >= 0L) {
-                if (lastRecieved == 0 || lastRecieved + delaySet < timeRecieved) {
+
+            //retrieve the time that the last message (that was responded to) was received
+            Long lastTimeReceived = lastLog.getTimeStamp().getTime();
+
+
+            //get gets the delay (in minutes) as specified in the Settings section of the database and converts it to ms
+            Long delaySet = 60000 * (long) db.getDelay();
+
+            //verify that a timestamp was attached to the incoming mesaage
+            if (timeReceived != null && timeReceived >= 0L) {
+
+
+                if (lastTimeReceived == 0 || lastTimeReceived + delaySet < timeReceived) {
                     //get response from Database and set as message
                     String contactResponse = contact.getResponse();
                     //If universal reply is true, have that as normal message instead of contact preset one
@@ -89,15 +108,15 @@ public class EventHandler extends ListActivity{
                             locator = new GoogleLocator(context, this);
                     }
                     if (activityPermission) {//if just Activity permission is true
-                        String actMessage = getActivityInfo(messageRecieved);
+                        String actMessage = getActivityInfo(messageReceived);
                         if(actMessage != null){
-                            sendSMS(actMessage, messageRecieved, phoneNumber, new Date(timeRecieved));
+                            sendSMS(actMessage, messageReceived, phoneNumber, new Date(timeReceived));
                         }else{
-                            sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
+                            sendSMS(contactResponse, messageReceived, phoneNumber, new Date(timeReceived));
                         }
                     }
                     if (!locationPermission && !activityPermission){//both permissions are false, go to normal response
-                        sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved));
+                        sendSMS(contactResponse, messageReceived, phoneNumber, new Date(timeReceived));
                     }
                     android.util.Log.v("EventHandler,", "Finished EventHandler");
                     return 0;
@@ -106,7 +125,7 @@ public class EventHandler extends ListActivity{
                     return -1;
                 }
             } else {
-                android.util.Log.v("EventHandler,", "Invalid Time Recieved");
+                android.util.Log.v("EventHandler,", "Invalid Time Received");
                 return -1;
             }
         }
@@ -115,14 +134,14 @@ public class EventHandler extends ListActivity{
     }
 
     //Sends out an SMS from the device and records it in the ResponseLog
-    public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Date timeRecieved){
+    public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Date timeReceived){
         //Send the UniversalReply Message
         SmsManager sms = SmsManager.getDefault();
         android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
         sms.sendTextMessage(phoneNumber, null, messageSent, null, null);
 
         //Update Response Log
-        ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeRecieved);
+        ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeReceived);
         db.addToResponseLog(updateLog);
     }
 
@@ -131,7 +150,7 @@ public class EventHandler extends ListActivity{
         String link;
         String message;
 
-        //once called by the locator, retrieve the raw location and human friendly address
+        //once called by the locator, retrieve the raw locationgetContext and human friendly address
         Location currentLocation = locator.getCurrentLocation();
         Address currentAddress = locator.getCurrentAddress();
 
@@ -182,7 +201,7 @@ public class EventHandler extends ListActivity{
             if (message.toLowerCase().contains(possibleRequest)) {
                 //then we want to give that person your calendar info
                 try {//attempt to access calendar information
-                    ContentResolver contentResolver = getContext.getContentResolver();
+                    ContentResolver contentResolver = context.getContentResolver();
                     android.util.Log.v("EventHandler,", "Created Cal Info Getters");
 
                     //look at currentTime
