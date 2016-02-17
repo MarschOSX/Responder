@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder.Receiver;
 
 import android.app.ListActivity;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -9,12 +10,15 @@ import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.provider.CalendarContract;
+import android.support.v7.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Interface.Settings.ResponseLogList;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.DBProvider;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -135,6 +139,17 @@ public class EventHandler extends ListActivity{
         //Update Response Log
         ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeRecieved, timeSent, locShared, actShared);
         db.addToResponseLog(updateLog);
+
+        /*Get Contact Info
+        Contact contact = db.getContactInfo(phoneNumber);
+        String name = phoneNumber;
+        if(contact.getName() != null){
+            name = contact.getName();
+        }
+
+        //Send Notification to User
+        Notifications sendNotification = new Notifications();
+        sendNotification.Notify("Responded To " + name, "Sent at " + timeSent);*/
     }
 
     public void sendLocationInfo() {
@@ -303,6 +318,7 @@ public class EventHandler extends ListActivity{
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());
     }
+
 
 }
 

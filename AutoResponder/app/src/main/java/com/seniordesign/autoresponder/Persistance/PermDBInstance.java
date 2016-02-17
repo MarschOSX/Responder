@@ -272,42 +272,70 @@ public class PermDBInstance implements DBInstance {
         String table = DBHelper.TABLE_RESPONSELOG;
         String orderBy = "(" + DBHelper.RESPONSELOG_TIMERECEIVED[0] + ") ASC";
 
-        Cursor result = this.myDB.query(table, null, null, null, null, null, orderBy);
+        try {
+            Cursor result = this.myDB.query(table, null, null, null, null, null, orderBy);
 
-        ArrayList<ResponseLog> range = new ArrayList<>();
-        String messageSent;
-        String messageRecieved;
-        String senderNumber;
-        Date timeRecieved;
-        Date timeSent;
-        Boolean locShared;
-        Boolean actShared;
+            ArrayList<ResponseLog> range = new ArrayList<>();
+            Date timeRecieved;
+            Date timeSent;
+            String senderNumber;
+            String messageRecieved;
+            String messageSent;
+            Boolean locShared;
+            Boolean actShared;
 
-        if ((result != null) && (result.moveToFirst())){
+            if (result != null) {
 
-            for (int i = 0; i < result.getCount(); i++){
-                messageSent = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGESNT[0]));
-                messageRecieved = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_MESSAGERCV[0]));
-                senderNumber = result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_SENDERNUM[0]));
-                timeRecieved = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMERECEIVED[0])));
-                timeSent = new Date(result.getLong(result.getColumnIndex(DBHelper.RESPONSELOG_TIMESENT[0])));
-                locShared = convertToBool(result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_LOCATIONSHARED[0])));
-                actShared = convertToBool(result.getString(result.getColumnIndex(DBHelper.RESPONSELOG_ACTIVITYSHARED[0])));
+                //Checks for Cursor 0, Issue #77
+                int numRows = result.getCount();
+                Log.d(TAG, getMethodName(0) + ": number of rows found is " + numRows);
+                if (numRows ==  0) {
+                    Log.d(TAG, getMethodName(0) + "No ResponseLogs Found! Returning Empty Array");
+                    return range;
+                }
+                else{
+                    result.moveToFirst();
+                }
+                if (result.getLong(0) == 0L) {
+                    Log.d(TAG, getMethodName(0) + "First ResponseLog is Empty! Returning Empty Array");
+                    return range;
+                }
 
+                for (int i = 0; i < numRows; i++) {
+                    //load query result
+                    //Log.e(TAG,  new Date(result.getLong(0)).toString()+" "+ new Date(result.getLong(1)).toString() +" "+ result.getString(2)+
+                     //       " "+ result.getString(3)+ " "+ result.getString(4)+" "+ result.getString(5)+" "+ result.getString(6));
+                    timeRecieved = new Date(result.getLong(0));
+                    timeSent = new Date(result.getLong(1));
+                    senderNumber = result.getString(2);
+                    messageRecieved = result.getString(3);
+                    messageSent = result.getString(4);
+                    locShared = convertToBool(result.getString(5));
+                    actShared = convertToBool(result.getString(6));
 
-                ResponseLog responseLog = new ResponseLog(messageSent,messageRecieved,senderNumber,timeRecieved,timeSent,locShared,actShared);
-                Log.d(TAG, getMethodName(0) + ": " + responseLog.toString());
-                range.add(responseLog);
-                result.moveToNext();
+                    //Generate Response Log
+                    ResponseLog responseLog = new ResponseLog(messageSent, messageRecieved, senderNumber, timeRecieved, timeSent, locShared, actShared);
+                    Log.d(TAG, getMethodName(0) + ": " + responseLog.toString());
+                    range.add(responseLog);
+                    result.moveToNext();
+                }
+                result.close();
+
+                Log.d(TAG, getMethodName(0) + "Range Size is " + range.size());
+                Log.d(TAG, getMethodName(0) + "Returning Range of Response Logs-->");
+
+                for(ResponseLog log : range){
+                    Log.e(TAG, log.toString());
+                }
+
+                return range;
+            } else {
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object");
+                return null;
             }
-
-            result.close();
-            Log.d(TAG, getMethodName(0) + "Successfully Returned ResponseLog as an Array");
-            return range;
-        }
-        else {
-            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object");
-            return null;
+        }catch(Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " could not retrieve Response Logs");
+            throw e;
         }
     }
 

@@ -84,6 +84,6 @@ public class ResponseLog {
 
     @Override
     public String toString(){
-        return this.timeReceived.toString() + ", " + this.senderNumber + ", " + this.messageReceived + ", " + this.messageSent;
+        return this.timeReceived.toString() +", "+ this.timeSent +", " + this.senderNumber + ", " + this.messageReceived + ", " + this.messageSent +", " + this.locationShared +", "+this.activityShared;
     }
 }

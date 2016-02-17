@@ -2,6 +2,7 @@ package com.seniordesign.autoresponder.Interface.Settings;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -23,6 +24,7 @@ import java.util.List;
 
 public class ResponseLogList extends AppCompatActivity {
     private DBInstance db;
+    public static final String TAG = "ResponseLogList";
 
 
     @Override
@@ -63,9 +65,13 @@ public class ResponseLogList extends AppCompatActivity {
             numberOfResponses = rawResponseLogs.size();
         }
         List<String> listDataHeader = new ArrayList<>();
-        HashMap<String, List<String>> listDataChild = new HashMap<>();
+        HashMap<String, ArrayList<String>> listDataChild = new HashMap<>();
 
-        for(int i = 0; i < numberOfResponses; i++){
+        for(ResponseLog log : rawResponseLogs){
+            Log.e(TAG, log.toString());
+        }
+
+        for(int i = 0; i < numberOfResponses - 1; i++){
             ResponseLog responseLog = rawResponseLogs.get(i);
 
             //get the name of the contact for the header
@@ -83,11 +89,10 @@ public class ResponseLogList extends AppCompatActivity {
             moreInfo.add("Location Shared: " + responseLog.getLocationShared());
             moreInfo.add("Calendar Event Shared: " + responseLog.getActivityShared());
 
-
-
-
             //add child data
-            listDataChild.put(listDataHeader.get(i), moreInfo);
+            listDataChild.put(listDataHeader.get(i), new ArrayList<String>());
+
+
         }
 
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.ResponseLogListView);

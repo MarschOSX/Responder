@@ -5,6 +5,7 @@ package com.seniordesign.autoresponder.Interface.Settings;
  *
  * Code from: http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
  */
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private List<String> _listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, List<String>> _listDataChild;
+    private HashMap<String, ArrayList<String>> _listDataChild;
 
     public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
+                                 HashMap<String, ArrayList<String>> listChildData) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
