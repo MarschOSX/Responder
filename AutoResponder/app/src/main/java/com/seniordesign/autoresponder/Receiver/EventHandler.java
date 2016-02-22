@@ -47,6 +47,20 @@ public class EventHandler implements Runnable{
 
     public int respondToText() {
 
+
+        /*Calendar c = Calendar.getInstance();
+        int start = c.get(Calendar.SECOND);
+        int last = start;
+        int current = start;
+        while(current < start + 8){
+            c = Calendar.getInstance();
+            current = c.get(Calendar.SECOND);
+            if(current > last) {
+                Log.d(TAG, (current - start) + "...");
+                last = current;
+            }
+        }
+        Log.d(TAG, "waiting END");*/
         //output that thread has started to run
         android.util.Log.d(TAG, "EventHandler is active!");
 
@@ -77,21 +91,28 @@ public class EventHandler implements Runnable{
             //get gets the delay (in minutes) as specified in the Settings section of the database and converts it to ms
             Long delaySet = 60000 * (long) db.getDelay();
 
-            //verify that a timestamp was attached to the incoming mesaage
+            //verify that a timestamp was attached to the incoming message
             if (timeReceived != null && timeReceived >= 0L) {
 
-
+                //checks to make sure that message received does not fall within the delay period
                 if (lastTimeReceived == 0 || lastTimeReceived + delaySet < timeReceived) {
+
                     //get response from Database and set as message
-                    String contactResponse = contact.getResponse();
+                    String contactResponse;
+
                     //If universal reply is true, have that as normal message instead of contact preset one
                     if(db.getUniversalToggle()){
                         contactResponse = db.getUniversalReply();
                     }
+                    else{ //otherwise use the response for that contact
+                        contactResponse = contact.getResponse();
+                    }
 
+                    //retrieve the contact's permissions
                     Boolean locationPermission = contact.isLocationPermission();
                     Boolean activityPermission = contact.isActivityPermission();
 
+                    //verify permissions can be used
                     if(!db.getLocationToggle()){
                         locationPermission = false;
                     }
@@ -99,7 +120,8 @@ public class EventHandler implements Runnable{
                         activityPermission = false;
                     }
 
-                    if(locationPermission) {//if just Location permission is true
+                    //if Location permission is true
+                    if(locationPermission) {
                         if (this.messageReceived.toLowerCase().contains("where are you") ||
                                 this.messageReceived.toLowerCase().contains("where r you") ||
                                 this.messageReceived.toLowerCase().contains("where are u") ||
@@ -107,7 +129,8 @@ public class EventHandler implements Runnable{
                             //create locator and pass a reference of this object
                             locator = new GoogleLocator(context, this);
                     }
-                    if (activityPermission) {//if just Activity permission is true
+                    //if Activity permission is true
+                    if (activityPermission) {
                         String actMessage = getActivityInfo(messageReceived);
                         if(actMessage != null){
                             sendSMS(actMessage, messageReceived, phoneNumber, new Date(timeReceived));
@@ -115,6 +138,8 @@ public class EventHandler implements Runnable{
                             sendSMS(contactResponse, messageReceived, phoneNumber, new Date(timeReceived));
                         }
                     }
+
+
                     if (!locationPermission && !activityPermission){//both permissions are false, go to normal response
                         sendSMS(contactResponse, messageReceived, phoneNumber, new Date(timeReceived));
                     }

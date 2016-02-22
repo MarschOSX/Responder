@@ -3,19 +3,13 @@ package com.seniordesign.autoresponder.Receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.util.ArrayMap;
 import android.util.Log;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.seniordesign.autoresponder.Persistance.DBProvider;
-
-import java.util.HashMap;
+import com.seniordesign.autoresponder.Persistance.PermDBInstance;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class EventListener extends BroadcastReceiver{
     public static final String TAG = "EventListener";
@@ -32,7 +26,7 @@ public class EventListener extends BroadcastReceiver{
         android.util.Log.v("EventListener,", "Intent received: " + intent.getAction());
         String phoneNumber = null;
         String message = "";
-        Long timeRecieved = null;
+        Long timeReceived = null;
         Bundle bundle = intent.getExtras();
 
         Object[] messages = (Object[]) bundle.get("pdus");
@@ -48,7 +42,7 @@ public class EventListener extends BroadcastReceiver{
                 //if(debug == false) {
                 phoneNumber = sms[n].getOriginatingAddress();
                 message = sms[n].getMessageBody();
-                timeRecieved = sms[n].getTimestampMillis();
+                timeReceived = sms[n].getTimestampMillis();
                 /*}else{
                     message += "OriginatingAddress:\n";
                     message += sms[n].getOriginatingAddress();
@@ -63,9 +57,11 @@ public class EventListener extends BroadcastReceiver{
 
         //pass information to EventHandler.respondToText()
         if(phoneNumber != null) {
-            Thread handler = new Thread();
+            Thread handler = new Thread(new EventHandler(new PermDBInstance(context), context, phoneNumber, message, timeReceived));
+            handler.setDaemon(true);
+            handler.start();
             //EventHandler ev= new EventHandler(DBProvider.getInstance(false, context));
-            //ev.respondToText(phoneNumber, message, timeRecieved, context);
+            //ev.respondToText(phoneNumber, message, timeReceived, context);
         }else{
             android.util.Log.v("EventHandler,", "Invalid Phone Number");
             throw new IllegalArgumentException("Invalid Phone Number in EventListener");
