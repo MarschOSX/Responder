@@ -2,24 +2,16 @@ package com.seniordesign.autoresponder.Interface.Settings;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
-
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
-
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ResponseLogList extends AppCompatActivity {
@@ -32,6 +24,8 @@ public class ResponseLogList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_response_log_list);
         this.db = DBProvider.getInstance(false, getApplicationContext());
+
+        //Update the ExpandableListView with ResponseLog information
         updateResponseLogListView();
     }
 
@@ -60,43 +54,42 @@ public class ResponseLogList extends AppCompatActivity {
     public void updateResponseLogListView() {
         int numberOfResponses = 0;
         ExpandableListAdapter listAdapter;
+
+        //Get List of Logs
         ArrayList<ResponseLog> rawResponseLogs = db.getResponseLogList();
         if(rawResponseLogs != null){
             numberOfResponses = rawResponseLogs.size();
         }
-        List<String> listDataHeader = new ArrayList<>();
-        HashMap<String, ArrayList<String>> listDataChild = new HashMap<>();
+        ArrayList<String> parentItems = new ArrayList<>();
+        ArrayList<Object> childItems = new ArrayList<>();
 
-        for(ResponseLog log : rawResponseLogs){
-            Log.e(TAG, log.toString());
-        }
-
-        for(int i = 0; i < numberOfResponses - 1; i++){
+        //Insert Parent Title Data, and Child Data relating to the parent
+        for(int i = 0; i < numberOfResponses; i++){
+            //Get each responseLog
             ResponseLog responseLog = rawResponseLogs.get(i);
 
             //get the name of the contact for the header
             Contact contact = db.getContactInfo(responseLog.getSenderNumber());
-            listDataHeader.add(contact.getName());
+            parentItems.add(contact.getName());
 
             //get the children information
-            // Adding child data
-            List<String> moreInfo = new ArrayList<>();
-            moreInfo.add("Phone Number: " + responseLog.getSenderNumber());
-            moreInfo.add("Message Recieved: " + responseLog.getMessageReceived());
-            moreInfo.add("Message Recieved At: " + responseLog.getTimeReceived().toString());
-            moreInfo.add("Message Sent: " + responseLog.getMessageSent());
-            moreInfo.add("Message Sent At: " + responseLog.getTimeSent().toString());
-            moreInfo.add("Location Shared: " + responseLog.getLocationShared());
-            moreInfo.add("Calendar Event Shared: " + responseLog.getActivityShared());
+            List<String> child = new ArrayList<>();
+            child.add("Phone Number: " + responseLog.getSenderNumber());
+            child.add("Message Recieved: " + responseLog.getMessageReceived());
+            child.add("Message Recieved At: " + responseLog.getTimeReceived().toString());
+            child.add("Message Sent: " + responseLog.getMessageSent());
+            child.add("Message Sent At: " + responseLog.getTimeSent().toString());
+            child.add("Location Shared: " + responseLog.getLocationShared());
+            child.add("Calendar Event Shared: " + responseLog.getActivityShared());
 
             //add child data
-            listDataChild.put(listDataHeader.get(i), new ArrayList<String>());
-
-
+            childItems.add(child);
+            android.util.Log.v(TAG, "Successfully Added a Log to the ELV");
         }
 
+        //Add information to ExpandableListView using the custom adapter
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.ResponseLogListView);
-        listAdapter = new com.seniordesign.autoresponder.Interface.Settings.ExpandableListAdapter(this, listDataHeader, listDataChild);
+        listAdapter = new com.seniordesign.autoresponder.Interface.Settings.ExpandableListAdapter(parentItems,childItems);
         expListView.setAdapter(listAdapter);
     }
 
