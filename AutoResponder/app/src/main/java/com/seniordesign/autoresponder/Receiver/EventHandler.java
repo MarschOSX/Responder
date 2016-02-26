@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v7.app.NotificationCompat;
 import android.telephony.SmsManager;
@@ -41,6 +42,13 @@ public class EventHandler extends ListActivity{
     public EventHandler(DBInstance db) {
         this.db = db;
     }
+
+    /*@Override
+    //will be used too fix the Notify problem
+    protected void onCreate(Bundle savedInstanceState) {
+        getContext = EventHandler.this;
+        super.onCreate(savedInstanceState);
+    }*/
 
     public int respondToText(String phoneNumber, String messageRecieved, Long timeRecieved, Context context) {
         //EventListener passes info to EventHandler

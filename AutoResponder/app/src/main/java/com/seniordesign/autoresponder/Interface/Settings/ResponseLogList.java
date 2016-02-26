@@ -1,13 +1,20 @@
 package com.seniordesign.autoresponder.Interface.Settings;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
+import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
+import com.seniordesign.autoresponder.Interface.Groups.GroupInfo;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -91,6 +98,31 @@ public class ResponseLogList extends AppCompatActivity {
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.ResponseLogListView);
         listAdapter = new com.seniordesign.autoresponder.Interface.Settings.ExpandableListAdapter(parentItems,childItems);
         expListView.setAdapter(listAdapter);
+    }
+
+
+    public void clearResponseLogs(View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(ResponseLogList.this);
+        alert.setTitle("Clear All Response Logs");
+        alert.setMessage("Are you sure you want to delete all history? This cannot be undone.");
+        alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.v(TAG, "YES clear History");
+                //TODO need a delete function from the database to clear all responseLogs!
+                    //Here
+                updateResponseLogListView();
+                dialog.dismiss();
+            }
+        });
+        alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.v(TAG, "NO do not clear history");
+                dialog.dismiss();
+            }
+        });
+        alert.show();
     }
 
 
