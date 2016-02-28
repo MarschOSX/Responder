@@ -52,6 +52,8 @@ public interface DBInstance {
 
     ResponseLog getLastResponseByNum(String phoneNum);
 
+    ArrayList<ResponseLog> getResponseLogList();
+
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//
     ///////////////////////////

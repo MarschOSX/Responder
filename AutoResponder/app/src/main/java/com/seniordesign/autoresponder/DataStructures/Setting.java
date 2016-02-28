@@ -38,7 +38,8 @@ public class Setting {
             "Default Contact Location Setting",
             "Default Contact Activity Setting",
             "Default Contact Response",
-            "Time Delay"
+            "Time Delay",
+            "Response Log"
     };
 
 

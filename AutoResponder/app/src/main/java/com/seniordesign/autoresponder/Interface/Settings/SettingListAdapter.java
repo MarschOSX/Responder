@@ -87,6 +87,20 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
+            case "Response Log": //default group time delay
+                toggle.setVisibility(View.GONE);
+                title.setText("Response Log");
+                description.setText("History of what has been sent");
+
+
+                rowView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(parentApp, ResponseLogList.class);
+                        parentApp.startActivity(intent);
+                    }
+                });
+                break;
             case "Default Contact Response":
                 toggle.setVisibility(View.GONE);
                 title.setText(R.string.defaultGroup_Response);

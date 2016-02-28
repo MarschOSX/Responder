@@ -215,7 +215,7 @@ public class TestDBInstance implements DBInstance {
         }
 
         for(int i = 0; i < this.responseLog.size(); i++){
-            if (this.responseLog.get(i).getTimeStamp().after(start) && this.responseLog.get(i).getTimeStamp().before(end)){
+            if (this.responseLog.get(i).getTimeReceived().after(start) && this.responseLog.get(i).getTimeReceived().before(end)){
                 range.add(this.responseLog.get(i));
             }
         }
@@ -242,6 +242,10 @@ public class TestDBInstance implements DBInstance {
 
         return range;
     }*/
+
+    public ArrayList<ResponseLog> getResponseLogList(){
+        return  responseLog;
+    }
 
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//
