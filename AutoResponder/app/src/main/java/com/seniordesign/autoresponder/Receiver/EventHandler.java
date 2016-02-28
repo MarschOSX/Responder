@@ -54,7 +54,6 @@ public class EventHandler implements Runnable{
     public int respondToText() {
         //EventListener passes info to EventHandler
 
-        getContext = context;
         android.util.Log.v("EventHandler,", "EventHandler is active!");
         if (phoneNumber == null){
             android.util.Log.e("EventHandler,", "No PhoneNumber found");
@@ -76,7 +75,7 @@ public class EventHandler implements Runnable{
             }
 
             //retrieve the time that the last message (that was responded to) was received
-            Long lastTimeReceived = lastLog.getTimeStamp().getTime();
+            Long lastTimeReceived = lastLog.getTimeReceived().getTime();
 
 
             //get gets the delay (in minutes) as specified in the Settings section of the database and converts it to ms
@@ -124,15 +123,15 @@ public class EventHandler implements Runnable{
                     if (activityPermission) {
                         String actMessage = getActivityInfo(messageReceived);
                         if(actMessage != null){
-                            sendSMS(actMessage, messageRecieved, phoneNumber, new Date(timeRecieved), false, true);
+                            sendSMS(actMessage, messageReceived, phoneNumber, new Date(timeReceived), false, true);
                         }else{
-                            sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved), false, false);
+                            sendSMS(contactResponse, messageReceived, phoneNumber, new Date(timeReceived), false, false);
                         }
                     }
 
 
                     if (!locationPermission && !activityPermission){//both permissions are false, go to normal response
-                        sendSMS(contactResponse, messageRecieved, phoneNumber, new Date(timeRecieved), locationPermission, activityPermission);
+                        sendSMS(contactResponse, messageReceived, phoneNumber, new Date(timeReceived), locationPermission, activityPermission);
                     }
                     android.util.Log.v("EventHandler,", "Finished EventHandler");
                     return 0;
