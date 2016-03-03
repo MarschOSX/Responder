@@ -10,7 +10,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="300dp"
-        android:layout_height="350dp"
+        android:layout_height="400dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/linearLayout">
@@ -81,6 +81,15 @@
                     android:id="@+id/settings_button"
                     android:onClick="gotoSettings"
                     android:layout_column="6" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Location Output"
+            android:id="@+id/button2"
+            android:onClick="goToLocationOutput"
+            android:layout_column="6"
+            android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>
 
