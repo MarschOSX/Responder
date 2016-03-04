@@ -1,18 +1,23 @@
 package com.seniordesign.autoresponder.Interface;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Services.DrivingDetection;
 
 public class LocationOutput extends Activity {
     private TextView latitudeTextView;
     private TextView longitudeTextView;
     private TextView speedTextView;
     private Switch serviceSwitch;
+    private Context context = getApplicationContext();
 
     private float latitude;
     private float longitude;
@@ -36,14 +41,10 @@ public class LocationOutput extends Activity {
             @Override
             public void onClick(View v) {
                 if (serviceSwitch.isChecked()){
-                    latitudeTextView.setText("1");
-                    longitudeTextView.setText("1");
-                    speedTextView.setText("1");
+                    context.startService(new Intent(context, DrivingDetection.class));
                 }
                 else{
-                    latitudeTextView.setText("0");
-                    longitudeTextView.setText("0");
-                    speedTextView.setText("0");
+
                 }
             }
         });
