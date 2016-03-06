@@ -1,23 +1,20 @@
 package com.seniordesign.autoresponder.Services;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.*;
 import android.util.Log;
 
-import com.seniordesign.autoresponder.Interface.LocationOutput;
-import com.seniordesign.autoresponder.R;
-
 /**
  * Created by Garlan on 2/28/2016.
  */
-public class DrivingDetection extends Service {
+public class DrivingDetectionService extends Service {
     private String TAG = "DrivingDetection";
     private final LocalBinder mBinder = new LocalBinder();
     private int value;
     private Context context;
+    private Integer[] array = {1, 2, 3};
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
@@ -49,7 +46,10 @@ public class DrivingDetection extends Service {
     }
 
     public Integer[] testing(){
-        Integer[] array = {1, 2, 3};
+        array[0]++;
+        array[1]++;
+        array[2]++;
+
         return array;
     }
 
@@ -59,9 +59,9 @@ public class DrivingDetection extends Service {
     }
 
     public class LocalBinder extends Binder {
-        public DrivingDetection getService() {
+        public DrivingDetectionService getService() {
             // Return this instance of DrivingDetection so clients can call public methods
-            return DrivingDetection.this;
+            return DrivingDetectionService.this;
         }
     }
 }
