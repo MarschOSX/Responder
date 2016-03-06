@@ -6,15 +6,15 @@ import java.sql.Date;
  * Created by Garlan on 10/8/2015.
  */
 public class ResponseLog {
-    private Date timeReceived;
-    private Date timeSent;
+    private String timeReceived;
+    private String timeSent;
     private String senderNumber;
     private String messageReceived;
     private String messageSent;
     boolean locationShared;
     boolean activityShared;
 
-    public ResponseLog(String messageSent, String messageReceived, String senderNumber, Date timeReceived, Date timeSent, boolean locationShared, boolean activityShared) {
+    public ResponseLog(String messageSent, String messageReceived, String senderNumber, String timeReceived, String timeSent, boolean locationShared, boolean activityShared) {
         this.messageSent = messageSent;
         this.messageReceived = messageReceived;
         this.senderNumber = senderNumber;
@@ -48,19 +48,19 @@ public class ResponseLog {
         this.senderNumber = senderNumber;
     }
 
-    public Date getTimeReceived() {
+    public String getTimeReceived() {
         return timeReceived;
     }
 
-    public void setTimeReceived(Date timeStamp) {
+    public void setTimeReceived(String timeStamp) {
         this.timeReceived = timeStamp;
     }
 
-    public Date getTimeSent() {
+    public String getTimeSent() {
         return timeSent;
     }
 
-    public void setTimeSent(Date timeStamp) {
+    public void setTimeSent(String timeStamp) {
         this.timeSent = timeStamp;
     }
 

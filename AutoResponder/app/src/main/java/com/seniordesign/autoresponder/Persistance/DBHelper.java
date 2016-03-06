@@ -47,7 +47,7 @@ public class DBHelper extends SQLiteOpenHelper{
     public static final String[] RESPONSELOG_LOCATIONSHARED = {"location_shared", "BOOLEAN NOT NULL"};
     public static final String[] RESPONSELOG_ACTIVITYSHARED = {"activity_shared", "BOOLEAN NOT NULL"};
 
-    private static final String CREATE_RESPONSELOG = "CREATE TABLE " + TABLE_RESPONSELOG +
+    public static final String CREATE_RESPONSELOG = "CREATE TABLE " + TABLE_RESPONSELOG +
             "(" + RESPONSELOG_TIMERECEIVED[0] + " " + RESPONSELOG_TIMERECEIVED[1] + ", " +
             RESPONSELOG_TIMESENT[0]+ " " + RESPONSELOG_TIMESENT[1] + ", " +
             RESPONSELOG_SENDERNUM[0]+ " " + RESPONSELOG_SENDERNUM[1] + ", " +
@@ -160,4 +160,5 @@ public class DBHelper extends SQLiteOpenHelper{
             db.execSQL("IF OBJECT_ID(\'" + table + "\', \'U\')IS NOT NULL DROP TABLE " + table);
         }
     }
+
 }

@@ -54,6 +54,7 @@ public interface DBInstance {
 
     ArrayList<ResponseLog> getResponseLogList();
 
+    void deleteResponseLogs();
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//
     ///////////////////////////

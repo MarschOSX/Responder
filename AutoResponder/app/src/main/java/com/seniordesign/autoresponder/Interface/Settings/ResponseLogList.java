@@ -1,11 +1,13 @@
 package com.seniordesign.autoresponder.Interface.Settings;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -77,17 +79,27 @@ public class ResponseLogList extends AppCompatActivity {
 
             //get the name of the contact for the header
             Contact contact = db.getContactInfo(responseLog.getSenderNumber());
-            parentItems.add(contact.getName());
+
+            //Both Location and Calendar Info are Shared
+            if(responseLog.getLocationShared() && responseLog.getActivityShared()){
+                parentItems.add(contact.getName() + ", Sent Location and Calendar Info");
+            }else if(responseLog.getLocationShared()){
+                parentItems.add(contact.getName() + ", Sent Location");
+            } else if(responseLog.getActivityShared()){
+                parentItems.add(contact.getName() + ", Sent Calendar Info");
+            }else{
+                parentItems.add(contact.getName() + ", Sent Message");
+            }
 
             //get the children information
             List<String> child = new ArrayList<>();
-            child.add("Phone Number: " + responseLog.getSenderNumber());
-            child.add("Message Recieved: " + responseLog.getMessageReceived());
-            child.add("Message Recieved At: " + responseLog.getTimeReceived().toString());
-            child.add("Message Sent: " + responseLog.getMessageSent());
-            child.add("Message Sent At: " + responseLog.getTimeSent().toString());
-            child.add("Location Shared: " + responseLog.getLocationShared());
-            child.add("Calendar Event Shared: " + responseLog.getActivityShared());
+            child.add("Phone Number:   " + responseLog.getSenderNumber());
+            child.add("Message Recieved:   " + responseLog.getMessageReceived());
+            child.add("Message Recieved At:   " + responseLog.getTimeReceived());
+            child.add("Message Sent:   " + responseLog.getMessageSent());
+            child.add("Message Sent At:   " + responseLog.getTimeSent());
+            child.add("Location Shared:   " + responseLog.getLocationShared());
+            child.add("Calendar Event Shared:   " + responseLog.getActivityShared());
 
             //add child data
             childItems.add(child);
@@ -96,7 +108,7 @@ public class ResponseLogList extends AppCompatActivity {
 
         //Add information to ExpandableListView using the custom adapter
         ExpandableListView expListView = (ExpandableListView) findViewById(R.id.ResponseLogListView);
-        listAdapter = new com.seniordesign.autoresponder.Interface.Settings.ExpandableListAdapter(parentItems,childItems);
+        listAdapter = new com.seniordesign.autoresponder.Interface.Settings.ExpandableListAdapter(parentItems,childItems, (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
         expListView.setAdapter(listAdapter);
     }
 
@@ -109,8 +121,7 @@ public class ResponseLogList extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Log.v(TAG, "YES clear History");
-                //TODO need a delete function from the database to clear all responseLogs!
-                    //Here
+                db.deleteResponseLogs();
                 updateResponseLogListView();
                 dialog.dismiss();
             }
