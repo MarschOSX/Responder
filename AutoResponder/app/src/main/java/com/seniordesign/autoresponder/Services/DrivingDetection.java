@@ -13,29 +13,25 @@ import com.seniordesign.autoresponder.R;
  * Created by Garlan on 2/28/2016.
  */
 public class DrivingDetection extends Service {
-    private DrivingDetectionHandler mServiceHandler;
+    private final LocalBinder mBinder = new LocalBinder();
+    private int value;
     private Context context = getApplicationContext();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
 
-        if(intent != null) { // May not have an Intent is the service was killed and restarted (See STICKY_SERVICE).
-            Message msg = mServiceHandler.obtainMessage();
-            //msg.arg1 = startId;
-            msg.obj = intent.getStringExtra("something");
-            mServiceHandler.sendMessage(msg);
-        }
+
         return START_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent){
-
-        return null;
+        return mBinder;
     }
 
     @Override
     public void onCreate(){
+        super.onCreate();
 
         //to start in foreground
        /* Notification notification = new Notification.Builder(context)
@@ -45,10 +41,8 @@ public class DrivingDetection extends Service {
                 .getNotification();
         startForeground(17, notification); // Because it can't be zero...*/
 
-        super.onCreate();
-        HandlerThread thread = new HandlerThread("DrivingDetectionService", android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
-        Looper serviceLooper = thread.getLooper();
+
+
     }
 
     @Override
@@ -56,19 +50,10 @@ public class DrivingDetection extends Service {
 
     }
 
-    public class DrivingDetectionHandler extends Handler{
-        public DrivingDetectionHandler (Looper looper){
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            int startId = msg.arg1;
-            Object message = msg.obj;
-            // Do some processing
-            boolean stopped = stopSelfResult(startId);
-            // stopped is true if the service is stopped
+    public class LocalBinder extends Binder {
+        DrivingDetection getService() {
+            // Return this instance of DrivingDetection so clients can call public methods
+            return DrivingDetection.this;
         }
     }
 }
