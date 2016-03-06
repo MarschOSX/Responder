@@ -86,9 +86,26 @@
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Detection Service"
+        android:text="Detection Service - On/Off"
         android:id="@+id/service_switch"
         android:layout_below="@+id/linearLayout2"
         android:layout_centerHorizontal="true"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Serivce Status Update"
+        android:id="@+id/service_status_button"
+        android:layout_below="@+id/bind_switch"
+        android:layout_centerHorizontal="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Detection Service - Bind"
+        android:id="@+id/bind_switch"
+        android:layout_below="@+id/service_switch"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
