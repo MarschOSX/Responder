@@ -71,17 +71,4 @@ public class EventListener extends BroadcastReceiver{
             android.util.Log.v(TAG, "Recieved unknown communication type");
         }
     }
-
-    private void pauseHere(int i, int max){
-        try{
-            if (i <= max) {
-                TimeUnit.MILLISECONDS.sleep(500);
-                Log.d(TAG, "waiting...");
-                pauseHere(i + 1, max);
-            }
-        }
-        catch (InterruptedException e){
-            Log.e(TAG, "wait interrupted");
-        }
-    }
 }
