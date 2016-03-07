@@ -109,10 +109,10 @@ public class Main extends AppCompatActivity {
                 }
 
                 //Check Again
-                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                     db.setLocationToggle(mLocationToggle.isChecked());
-                }else{
+                } else {
                     DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                     db.setLocationToggle(false);
                     mLocationToggle.setChecked(false);
@@ -156,6 +156,12 @@ public class Main extends AppCompatActivity {
     public void gotoUniversalReply(View view) {
         // Do something in response to button
         Intent intent = new Intent(this, UniversalReply.class);
+        startActivity(intent);
+    }
+
+    public void goToLocationOutput(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, LocationOutput.class);
         startActivity(intent);
     }
 
