@@ -17,6 +17,11 @@ public class EventListener extends BroadcastReceiver{
     private GoogleLocator locator;
     private Context context;
     private Intent intent;
+    private static final String ACTION_SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
+    private static final String ACTION_MMS_RECEIVED = "android.provider.Telephony.WAP_PUSH_RECEIVED";
+    private static final String MMS_DATA_TYPE = "application/vnd.wap.mms-message";
+
+
     //for more information about incoming SMS, set to true
    // boolean debug = false;
 
@@ -24,48 +29,46 @@ public class EventListener extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        android.util.Log.v("EventListener,", "Intent received: " + intent.getAction());
+        //Get if an SMS or MMS
+        String action  = intent.getAction();
+        String type = intent.getType();
+        android.util.Log.v(TAG, "Intent received: " + action);
+        android.util.Log.v(TAG, "Type of Intent received: " + type);
+
+        //Needed for the EventHandler
         String phoneNumber = null;
         String message = "";
         Long timeReceived = null;
-        Bundle bundle = intent.getExtras();
 
-        Object[] messages = (Object[]) bundle.get("pdus");
-
-        //@SuppressWarnings("unchecked")
-        //ArrayMap<String, Object>[] messages = new ArrayMap[20000];
-        //Object messages = new Object[]();
-
-        if (messages != null) {
-            SmsMessage[] sms = new SmsMessage[messages.length];
-            for (int n = 0; n < messages.length; n++) {
-                sms[n] = SmsMessage.createFromPdu((byte[]) messages[n]);
-                //if(debug == false) {
-                phoneNumber = sms[n].getOriginatingAddress();
-                message = sms[n].getMessageBody();
-                timeReceived = sms[n].getTimestampMillis();
-                /*}else{
-                    message += "OriginatingAddress:\n";
-                    message += sms[n].getOriginatingAddress();
+        //IF it's an SMS
+        if(action.equals(ACTION_SMS_RECEIVED)) {
+            android.util.Log.v(TAG, "Recieved an SMS");
+            Bundle bundle = intent.getExtras();
+            Object[] messages = (Object[]) bundle.get("pdus");
+            if (messages != null) {
+                SmsMessage[] sms = new SmsMessage[messages.length];
+                for (int n = 0; n < messages.length; n++) {
+                    sms[n] = SmsMessage.createFromPdu((byte[]) messages[n]);
                     phoneNumber = sms[n].getOriginatingAddress();
-                    message += "\nMessageBody:\n";
-                    message += sms[n].getMessageBody();
-                    message += "\nMilliseconds Timestamp:\n";
-                    message += String.valueOf(sms[n].getTimestampMillis());
-                }*/
+                    message = sms[n].getMessageBody();
+                    timeReceived = sms[n].getTimestampMillis();
+                }
             }
-        }
+            //pass information to EventHandler.respondToText()
+            if (phoneNumber != null) {
+                Thread handler = new Thread(new EventHandler(new PermDBInstance(context), context, phoneNumber, message, timeReceived));
+                handler.setDaemon(true);
+                handler.start();
+            } else {
+                android.util.Log.v("EventHandler,", "Invalid Phone Number");
+                throw new IllegalArgumentException("Invalid Phone Number in EventListener");
+            }
+        //IF it's an MMS
+        }else if(action.equals(ACTION_MMS_RECEIVED) && type.equals(MMS_DATA_TYPE)){
+            android.util.Log.v(TAG, "Recieved an MMS");
 
-        //pass information to EventHandler.respondToText()
-        if(phoneNumber != null) {
-            Thread handler = new Thread(new EventHandler(new PermDBInstance(context), context, phoneNumber, message, timeReceived));
-            handler.setDaemon(true);
-            handler.start();
-            //EventHandler ev= new EventHandler(DBProvider.getInstance(false, context));
-            //ev.respondToText(phoneNumber, message, timeReceived, context);
         }else{
-            android.util.Log.v("EventHandler,", "Invalid Phone Number");
-            throw new IllegalArgumentException("Invalid Phone Number in EventListener");
+            android.util.Log.v(TAG, "Recieved unknown communication type");
         }
     }
 
