@@ -168,13 +168,13 @@ public class PermDBInstance implements DBInstance {
         try {
             //load columns in args
             ContentValues args = new ContentValues();
-            args.put(DBHelper.RESPONSELOG_TIMERECEIVED[0], newLog.getTimeReceived().getTime());
-            args.put(DBHelper.RESPONSELOG_TIMESENT[0], newLog.getTimeSent().getTime());
+            args.put(DBHelper.RESPONSELOG_TIMERECEIVED[0], newLog.getTimeReceived());
+            args.put(DBHelper.RESPONSELOG_TIMESENT[0], newLog.getTimeSent());
             args.put(DBHelper.RESPONSELOG_SENDERNUM[0], newLog.getSenderNumber());
             args.put(DBHelper.RESPONSELOG_MESSAGERCV[0], newLog.getMessageReceived());
             args.put(DBHelper.RESPONSELOG_MESSAGESNT[0], newLog.getMessageSent());
-            args.put(DBHelper.RESPONSELOG_LOCATIONSHARED[0], newLog.getLocationShared());
-            args.put(DBHelper.RESPONSELOG_ACTIVITYSHARED[0], newLog.getActivityShared());
+            args.put(DBHelper.RESPONSELOG_LOCATIONSHARED[0], convertBool(newLog.getLocationShared()));
+            args.put(DBHelper.RESPONSELOG_ACTIVITYSHARED[0], convertBool(newLog.getActivityShared()));
 
             //add the row to the table and checks if insert was succesfull
             long insert = myDB.insertOrThrow(DBHelper.TABLE_RESPONSELOG, null, args);
@@ -197,8 +197,8 @@ public class PermDBInstance implements DBInstance {
         String senderNum = phoneNum;
         String msgRcv = "hi";
         String msgSnt = "hi";
-        Date dateRecieved = new Date(0);
-        Date dateSent = new Date(0);
+        String dateRecieved = "";
+        String dateSent = "";
         Boolean locShared = false;
         Boolean actShared = false;
 
@@ -234,15 +234,8 @@ public class PermDBInstance implements DBInstance {
                 }
 
                 //load query result
-                Log.e(TAG, new Date(result.getLong(0)).toString());
-                Log.e(TAG, new Date(result.getLong(1)).toString());
-                Log.e(TAG, result.getString(2));
-                Log.e(TAG, result.getString(3));
-                Log.e(TAG, result.getString(4));
-                Log.e(TAG, result.getString(5));
-                Log.e(TAG, result.getString(6));
-                dateRecieved = new Date(result.getLong(0));
-                dateSent = new Date(result.getLong(1));
+                dateRecieved = result.getString(0);
+                dateSent = result.getString(1);
                 senderNum = result.getString(2);
                 msgRcv = result.getString(3);
                 msgSnt = result.getString(4);
@@ -276,8 +269,8 @@ public class PermDBInstance implements DBInstance {
             Cursor result = this.myDB.query(table, null, null, null, null, null, orderBy);
 
             ArrayList<ResponseLog> range = new ArrayList<>();
-            Date timeRecieved;
-            Date timeSent;
+            String timeRecieved;
+            String timeSent;
             String senderNumber;
             String messageRecieved;
             String messageSent;
@@ -303,10 +296,8 @@ public class PermDBInstance implements DBInstance {
 
                 for (int i = 0; i < numRows; i++) {
                     //load query result
-                    //Log.e(TAG,  new Date(result.getLong(0)).toString()+" "+ new Date(result.getLong(1)).toString() +" "+ result.getString(2)+
-                     //       " "+ result.getString(3)+ " "+ result.getString(4)+" "+ result.getString(5)+" "+ result.getString(6));
-                    timeRecieved = new Date(result.getLong(0));
-                    timeSent = new Date(result.getLong(1));
+                    timeRecieved = result.getString(0);
+                    timeSent = result.getString(1);
                     senderNumber = result.getString(2);
                     messageRecieved = result.getString(3);
                     messageSent = result.getString(4);
@@ -337,6 +328,12 @@ public class PermDBInstance implements DBInstance {
             Log.e(TAG, "ERROR: " + getMethodName(0) + " could not retrieve Response Logs");
             throw e;
         }
+    }
+
+
+    @Override
+    public void deleteResponseLogs() {
+        myDB.execSQL("DELETE FROM " +  DBHelper.TABLE_RESPONSELOG );
     }
 
 

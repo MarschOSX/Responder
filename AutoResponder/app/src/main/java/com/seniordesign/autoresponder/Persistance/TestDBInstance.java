@@ -246,6 +246,9 @@ public class TestDBInstance implements DBInstance {
     public ArrayList<ResponseLog> getResponseLogList(){
         return  responseLog;
     }
+    @Override
+    public void deleteResponseLogs() {}
+
 
     ///////////////////////////
     //CONTACT TABLE FUNCTIONS//

@@ -26,15 +26,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private LayoutInflater inflater;
     private ArrayList<String> parentItems, child;
 
-    public ExpandableListAdapter(ArrayList<String> parents, ArrayList<Object> childern) {
+    public ExpandableListAdapter(ArrayList<String> parents, ArrayList<Object> childern, LayoutInflater inflater, Activity activity) {
         this.parentItems = parents;
         this.childtems = childern;
-    }
-
-    public void setInflater(LayoutInflater inflater, Activity activity) {
         this.inflater = inflater;
         this.activity = activity;
     }
+
+    /*public void setInflater(LayoutInflater inflater, Activity activity) {
+        this.inflater = inflater;
+        this.activity = activity;
+    }*/
 
     @Override
     public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
