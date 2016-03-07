@@ -70,7 +70,6 @@ public class LocationOutput extends Activity {
                                 context.startService(new Intent(context, DrivingDetectionService.class));
                             }
                         };
-
                         serviceThread.start();
                     }
 
@@ -122,7 +121,7 @@ public class LocationOutput extends Activity {
                 Toast.makeText(context, "Driving Detection is running = " + isMyServiceRunning(DrivingDetectionService.class), Toast.LENGTH_SHORT).show();
 
                 if (mService != null) {
-                    Integer[] array = mService.testing();
+                    Float[] array = mService.testing();
 
                     latitudeTextView.setText(array[0].toString());
                     longitudeTextView.setText(array[1].toString());
