@@ -55,7 +55,7 @@ public class EventHandler implements Runnable{
     }
 
     public int respondToText() {
-        //EventListener passes info to EventHandler
+        //SMSListener passes info to EventHandler
 
         android.util.Log.v("EventHandler,", "EventHandler is active!");
         if (phoneNumber == null){

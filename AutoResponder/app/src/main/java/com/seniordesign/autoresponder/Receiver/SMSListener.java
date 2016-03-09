@@ -12,24 +12,16 @@ import com.seniordesign.autoresponder.Persistance.PermDBInstance;
 import java.util.concurrent.TimeUnit;
 
 
-public class EventListener extends BroadcastReceiver{
-    public static final String TAG = "EventListener";
-    private GoogleLocator locator;
-    private Context context;
-    private Intent intent;
+public class SMSListener extends BroadcastReceiver{
+    public static final String TAG = "SMSListener";
     private static final String ACTION_SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
-    private static final String ACTION_MMS_RECEIVED = "android.provider.Telephony.WAP_PUSH_RECEIVED";
-    private static final String MMS_DATA_TYPE = "application/vnd.wap.mms-message";
-
-
-    //for more information about incoming SMS, set to true
-   // boolean debug = false;
-
     //Listener gets a message
     @Override
     public void onReceive(Context context, Intent intent)
     {
         //Get if an SMS or MMS
+        android.util.Log.v(TAG, "SMSListener Activated!");
+
         String action  = intent.getAction();
         String type = intent.getType();
         android.util.Log.v(TAG, "Intent received: " + action);
@@ -61,12 +53,8 @@ public class EventListener extends BroadcastReceiver{
                 handler.start();
             } else {
                 android.util.Log.v("EventHandler,", "Invalid Phone Number");
-                throw new IllegalArgumentException("Invalid Phone Number in EventListener");
+                throw new IllegalArgumentException("Invalid Phone Number in SMSListener");
             }
-        //IF it's an MMS
-        }else if(action.equals(ACTION_MMS_RECEIVED) && type.equals(MMS_DATA_TYPE)){
-            android.util.Log.v(TAG, "Recieved an MMS");
-
         }else{
             android.util.Log.v(TAG, "Recieved unknown communication type");
         }
