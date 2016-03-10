@@ -65,12 +65,7 @@ public class LocationOutput extends Activity {
 
                     //if service is not running create service and start on new thread
                     if (!isMyServiceRunning(DrivingDetectionService.class)) {
-                        Thread serviceThread = new Thread() {
-                            public void run() {
-                                context.startService(new Intent(context, DrivingDetectionService.class));
-                            }
-                        };
-                        serviceThread.start();
+                        context.startService(new Intent(context, DrivingDetectionService.class));
                     }
 
                 } else {
@@ -121,11 +116,11 @@ public class LocationOutput extends Activity {
                 Toast.makeText(context, "Driving Detection is running = " + isMyServiceRunning(DrivingDetectionService.class), Toast.LENGTH_SHORT).show();
 
                 if (mService != null) {
-                    Float[] array = mService.testing();
+                    float[] array = mService.testing();
 
-                    latitudeTextView.setText(array[0].toString());
-                    longitudeTextView.setText(array[1].toString());
-                    speedTextView.setText(array[2].toString());
+                    latitudeTextView.setText(Float.toString(array[0]));
+                    longitudeTextView.setText(Float.toString(array[1]));
+                    speedTextView.setText(Float.toString(array[2]));
                 } else {
                     Log.e(TAG, "serivce is null");
 
