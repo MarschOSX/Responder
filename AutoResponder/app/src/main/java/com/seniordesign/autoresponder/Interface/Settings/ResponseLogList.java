@@ -73,37 +73,41 @@ public class ResponseLogList extends AppCompatActivity {
         ArrayList<Object> childItems = new ArrayList<>();
 
         //Insert Parent Title Data, and Child Data relating to the parent
-        for(int i = 0; i < numberOfResponses; i++){
+        for(int i = numberOfResponses - 1; i >= 0; i--){
             //Get each responseLog
-            ResponseLog responseLog = rawResponseLogs.get(i);
+            try {
+                ResponseLog responseLog = rawResponseLogs.get(i);
 
-            //get the name of the contact for the header
-            Contact contact = db.getContactInfo(responseLog.getSenderNumber());
+                //get the name of the contact for the header
+                Contact contact = db.getContactInfo(responseLog.getSenderNumber());
 
-            //Both Location and Calendar Info are Shared
-            if(responseLog.getLocationShared() && responseLog.getActivityShared()){
-                parentItems.add(contact.getName() + ", Sent Location and Calendar Info");
-            }else if(responseLog.getLocationShared()){
-                parentItems.add(contact.getName() + ", Sent Location");
-            } else if(responseLog.getActivityShared()){
-                parentItems.add(contact.getName() + ", Sent Calendar Info");
-            }else{
-                parentItems.add(contact.getName() + ", Sent Message");
+                //Both Location and Calendar Info are Shared
+                if (responseLog.getLocationShared() && responseLog.getActivityShared()) {
+                    parentItems.add(contact.getName() + ", Sent Location and Calendar Info");
+                } else if (responseLog.getLocationShared()) {
+                    parentItems.add(contact.getName() + ", Sent Location");
+                } else if (responseLog.getActivityShared()) {
+                    parentItems.add(contact.getName() + ", Sent Calendar Info");
+                } else {
+                    parentItems.add(contact.getName() + ", Sent Message");
+                }
+
+                //get the children information
+                List<String> child = new ArrayList<>();
+                child.add("Phone Number:   " + responseLog.getSenderNumber());
+                child.add("Message Recieved:   " + responseLog.getMessageReceived());
+                child.add("Message Recieved At:   " + responseLog.getTimeReceived());
+                child.add("Message Sent:   " + responseLog.getMessageSent());
+                child.add("Message Sent At:   " + responseLog.getTimeSent());
+                child.add("Location Shared:   " + responseLog.getLocationShared());
+                child.add("Calendar Event Shared:   " + responseLog.getActivityShared());
+
+                //add child data
+                childItems.add(child);
+                android.util.Log.v(TAG, "Successfully Added a Log to the ELV");
+            }catch(NullPointerException e){
+                android.util.Log.v(TAG, "ResponseLog was null");
             }
-
-            //get the children information
-            List<String> child = new ArrayList<>();
-            child.add("Phone Number:   " + responseLog.getSenderNumber());
-            child.add("Message Recieved:   " + responseLog.getMessageReceived());
-            child.add("Message Recieved At:   " + responseLog.getTimeReceived());
-            child.add("Message Sent:   " + responseLog.getMessageSent());
-            child.add("Message Sent At:   " + responseLog.getTimeSent());
-            child.add("Location Shared:   " + responseLog.getLocationShared());
-            child.add("Calendar Event Shared:   " + responseLog.getActivityShared());
-
-            //add child data
-            childItems.add(child);
-            android.util.Log.v(TAG, "Successfully Added a Log to the ELV");
         }
 
         //Add information to ExpandableListView using the custom adapter

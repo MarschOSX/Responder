@@ -10,6 +10,9 @@ import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.CalendarContract;
 import android.support.v7.app.NotificationCompat;
 import android.telephony.SmsManager;
@@ -52,7 +55,7 @@ public class EventHandler implements Runnable{
     }
 
     public int respondToText() {
-        //EventListener passes info to EventHandler
+        //SMSListener passes info to EventHandler
 
         android.util.Log.v("EventHandler,", "EventHandler is active!");
         if (phoneNumber == null){
@@ -182,7 +185,7 @@ public class EventHandler implements Runnable{
 
         //Send Notification to User
         Notifications sendNotification = new Notifications();
-        sendNotification.Notify("Responded To " + name, "Sent at " + timeSent);*/
+        sendNotification.Notify("Responded To " + name, "Sent at " + timeSentReadable);*/
     }
 
     public void sendLocationInfo() {

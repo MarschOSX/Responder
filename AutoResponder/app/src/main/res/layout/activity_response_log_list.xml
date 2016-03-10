@@ -25,7 +25,8 @@
         android:id="@+id/ResponseLogListDescription"
         android:layout_below="@+id/responseLogListTitle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:textColor="#ffffff" />
 
     <ExpandableListView
         android:layout_width="wrap_content"
@@ -33,7 +34,7 @@
         android:id="@+id/ResponseLogListView"
         android:layout_below="@+id/ResponseLogListDescription"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="30dp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -44,5 +45,14 @@
         android:onClick="clearResponseLogs"
         android:layout_alignParentTop="true"
         android:layout_alignEnd="@+id/ResponseLogListDescription" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="From Most Recent:"
+        android:id="@+id/textView7"
+        android:layout_below="@+id/ResponseLogListDescription"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

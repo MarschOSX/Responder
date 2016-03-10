@@ -15,7 +15,7 @@ import android.test.AndroidTestCase;
  */
 
 
-public class EventListenerTest extends AndroidTestCase {
+public class SMSListenerTest extends AndroidTestCase {
 
     //Intent intent;
     //Context context;
@@ -29,7 +29,7 @@ public class EventListenerTest extends AndroidTestCase {
         assertNotNull(intent);
 
         /**This will simulate a recieved message and invoke the BroadcastReciever
-         * causing the onRecieve method in the EventListener to be called
+         * causing the onRecieve method in the SMSListener to be called
          * the Context and Intent (parameters of the function) are filled by the
          * lines below--->
          */
