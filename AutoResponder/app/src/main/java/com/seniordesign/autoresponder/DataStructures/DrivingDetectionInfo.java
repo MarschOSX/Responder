@@ -19,7 +19,7 @@ public class DrivingDetectionInfo {
     }
 
     public void addToHistory(LocationRecord newRecord) {
-        mLocationHistory.add(newRecord);
+        mLocationHistory.add(0, newRecord);
 
         if(mLocationHistory.size() > mLimit){
             mLocationHistory.remove(mLocationHistory.size()-1);
