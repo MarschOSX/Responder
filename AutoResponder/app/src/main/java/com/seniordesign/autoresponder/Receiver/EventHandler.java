@@ -17,11 +17,14 @@ import android.provider.CalendarContract;
 import android.support.v7.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Switch;
+
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Interface.Settings.ResponseLogList;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
+import com.seniordesign.autoresponder.R;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -65,6 +68,23 @@ public class EventHandler implements Runnable{
 
         //try to retrieve information for that phone number fromm the database
         Contact contact = db.getContactInfo(phoneNumber);
+
+        //See if the TimeLimit the app can run has expired
+        android.util.Log.e("EventHandler,", "TimeLimit is " + db.getTimeLimit());
+        if(db.getTimeLimit() != 100) { //If == 100, then it is assumed to be indefinite
+            long timeLimitInMilliseconds = Long.valueOf(db.getTimeLimit() * 3600000);
+            android.util.Log.e("EventHandler,", "TimeLimit in milliseconds is " + timeLimitInMilliseconds);
+            long currentTime = System.currentTimeMillis();
+            android.util.Log.e("EventHandler,", "CurrentTime in milliseconds is " + currentTime);
+            long timeToggleWasSet = db.getTimeResponseToggleSet();
+            android.util.Log.e("EventHandler,", "TimeToggleWasSet in milliseconds is " + timeToggleWasSet);
+            //if the current system time is greater than or equal to the time the app was activated + the time limit
+            //turn the app off
+            if(currentTime >= (timeToggleWasSet + timeLimitInMilliseconds)){
+                db.setResponseToggle(false);
+            }
+        }
+
 
         //The function will only continue if the user has set the response toggle to on
         // and the phone number has a corresponding contact stored in the database

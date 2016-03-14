@@ -69,6 +69,23 @@ public class TestDBInstance implements DBInstance {
         return Integer.parseInt(this.settings.get(Setting.TIME_DELAY));
     }
 
+    public void setTimeLimit(int hours){
+        this.settings.put(Setting.TIME_LIMIT, Integer.toString(hours));
+    }
+
+    public int getTimeLimit(){
+        return Integer.parseInt(this.settings.get(Setting.TIME_LIMIT));
+    }
+
+
+    public void setTimeResponseToggleSet(long milliseconds){
+        this.settings.put(Setting.RESPONSE_TOGGLE_TIME_SET, Long.toString(milliseconds));
+    }
+
+    public long getTimeResponseToggleSet(){
+        return Long.parseLong(this.settings.get(Setting.RESPONSE_TOGGLE_TIME_SET));
+    }
+
     public void setResponseToggle(boolean responseToggle){
         String responseToggleText;
         if(responseToggle){

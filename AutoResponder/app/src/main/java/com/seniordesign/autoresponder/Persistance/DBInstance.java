@@ -28,6 +28,14 @@ public interface DBInstance {
 
     int getDelay();
 
+    void setTimeLimit(int hours);
+
+    int getTimeLimit();
+
+    void setTimeResponseToggleSet(long milliseconds);
+
+    long getTimeResponseToggleSet();
+
     void setResponseToggle(boolean toggle);
 
     void setActivityToggle(boolean toggle);
