@@ -2,12 +2,15 @@ package com.seniordesign.autoresponder.Interface;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +18,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.seniordesign.autoresponder.DataStructures.LocationRecord;
 import com.seniordesign.autoresponder.R;
 import com.seniordesign.autoresponder.Services.DrivingDetectionService;
+import com.seniordesign.autoresponder.Services.DrivingDetectionWorker;
 
 public class LocationOutput extends Activity {
     private String TAG = "LocationOutput";
@@ -28,7 +33,9 @@ public class LocationOutput extends Activity {
     private Button serviceStatusButton;
     private Context context;
     private boolean isBound = false;
+    private boolean isRegistered = false;
     private DrivingDetectionService mService;
+    private LocationOutput me;
 
     private float latitude;
     private float longitude;
@@ -38,6 +45,8 @@ public class LocationOutput extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_output);
+
+        me = this;
 
         this.context = getApplicationContext();
         this.latitudeTextView = (TextView)findViewById(R.id.latitude_text);
@@ -88,6 +97,11 @@ public class LocationOutput extends Activity {
                     //context.startService(new Intent(context, DrivingDetection.class));
 
                     if (!isBound && isMyServiceRunning(DrivingDetectionService.class)) {
+                        //register service to receive broadcasts
+                        IntentFilter intentFilter = new IntentFilter();
+                        intentFilter.addAction(DrivingDetectionService.ACTION_DEBUG_UPDATE);
+                        LocalBroadcastManager.getInstance(me).registerReceiver(messageReceiver, intentFilter);
+
                         bindService(new Intent(context, DrivingDetectionService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
                         Log.d(TAG, "service is bound");
                     } else {
@@ -97,6 +111,7 @@ public class LocationOutput extends Activity {
                 } else {
 
                     if (isBound && isMyServiceRunning(DrivingDetectionService.class)) {
+                        LocalBroadcastManager.getInstance(context).unregisterReceiver(messageReceiver);
                         unbindService(mServiceConnection);
                         isBound = false;
                         mService = null;
@@ -114,19 +129,15 @@ public class LocationOutput extends Activity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context, "Driving Detection is running = " + isMyServiceRunning(DrivingDetectionService.class), Toast.LENGTH_SHORT).show();
-
-                if (mService != null) {
-                    float[] array = mService.testing();
-
-                    latitudeTextView.setText(Float.toString(array[0]));
-                    longitudeTextView.setText(Float.toString(array[1]));
-                    speedTextView.setText(Float.toString(array[2]));
-                } else {
-                    Log.e(TAG, "serivce is null");
-
-                }
             }
         });
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(messageReceiver);
+        if(isBound) unbindService(mServiceConnection);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -153,4 +164,26 @@ public class LocationOutput extends Activity {
         }
         return false;
     }
+
+    private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && mService != null){
+                switch (intent.getAction()){
+                    case DrivingDetectionService.ACTION_DEBUG_UPDATE:
+                        LocationRecord lr = mService.getCurrentLocation();
+                        if (lr != null){
+                            latitudeTextView.setText(lr.getLocation().getLatitude() + "");
+                            longitudeTextView.setText(lr.getLocation().getLongitude() + "");
+                            speedTextView.setText(lr.getLocation().getSpeed() + "");
+                        }
+                        else Log.e(TAG, "Driving Detection called for update when history is size 0");
+                        break;
+                    default:
+                        Log.d(TAG, "unknown broadcast received");
+                }
+            }
+            else Log.e(TAG, "broadcast with null intent received");
+        }
+    };
 }
