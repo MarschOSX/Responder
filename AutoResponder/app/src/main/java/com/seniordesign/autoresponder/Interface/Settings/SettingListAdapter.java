@@ -47,6 +47,19 @@ public class SettingListAdapter extends ArrayAdapter<String> {
         Switch toggle = (Switch) rowView.findViewById(R.id.toggle);
 
         switch (settingList[position]){
+            case "Time Limit": //default group time limit
+                toggle.setVisibility(View.GONE);
+                title.setText(R.string.setting_timeLimit);
+                description.setText(R.string.setting_timeLimit_descr);
+
+                rowView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(parentApp, TimeLimit.class);
+                        parentApp.startActivity(intent);
+                    }
+                });
+                break;
             case "Default Contact Location Setting": //default group location toggle
                 title.setText(R.string.defaultGroup_location_toggle);
 
@@ -76,8 +89,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
             case "Time Delay": //default group time delay
                 toggle.setVisibility(View.GONE);
                 title.setText(R.string.setting_timeDelay);
-                description.setVisibility(View.GONE);
-
+                description.setText(R.string.setting_timeDelay_descr);
 
                 rowView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -104,7 +116,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
             case "Default Contact Response":
                 toggle.setVisibility(View.GONE);
                 title.setText(R.string.defaultGroup_Response);
-                description.setVisibility(View.GONE);
+                description.setText("Specify the default response");
 
                 rowView.setOnClickListener(new View.OnClickListener() {
                     @Override

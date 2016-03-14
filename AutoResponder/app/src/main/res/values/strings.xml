@@ -30,6 +30,8 @@
     <string name="defaultGroup_location_toggle_descr">Specify the default location permission</string>
     <string name="defaultGroup_activity_toggle">Default Contact Activity Setting</string>
     <string name="defaultGroup_activity_toggle_descr">Specify the default activity permission</string>
+    <string name="setting_timeLimit">Time Limit</string>
+    <string name="setting_timeLimit_descr">Choose how long the responder will be active</string>
     <string name="setting_timeDelay">Time Delay</string>
     <string name="setting_timeDelay_descr">Choose how long the responder will wait before replying to the same contact</string>
     <string name="defaultGroup_Response">Default Contact Response</string>
@@ -38,4 +40,5 @@
     <string name="title_activity_default_contact_response_descr">Response for contacts with no individual settings</string>
     <string name="title_activity_response_log_list">ResponseLogList</string>
     <string name="title_activity_location_status">LocationStatusActivity</string>
+    <string name="title_activity_time_limit">Time Limit</string>
 </resources>

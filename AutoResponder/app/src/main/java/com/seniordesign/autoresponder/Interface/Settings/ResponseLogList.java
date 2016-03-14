@@ -73,6 +73,7 @@ public class ResponseLogList extends AppCompatActivity {
         ArrayList<Object> childItems = new ArrayList<>();
 
         //Insert Parent Title Data, and Child Data relating to the parent
+        //From most recent down...
         for(int i = numberOfResponses - 1; i >= 0; i--){
             //Get each responseLog
             try {

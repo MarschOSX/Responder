@@ -72,6 +72,7 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
                 DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                 db.setResponseToggle(mResponseToggle.isChecked());
+                db.setTimeResponseToggleSet(System.currentTimeMillis());
             }
         });
 
