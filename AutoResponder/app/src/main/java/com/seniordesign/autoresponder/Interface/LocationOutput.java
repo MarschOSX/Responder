@@ -37,10 +37,6 @@ public class LocationOutput extends Activity {
     private DrivingDetectionService mService;
     private LocationOutput me;
 
-    private float latitude;
-    private float longitude;
-    private float speed;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
