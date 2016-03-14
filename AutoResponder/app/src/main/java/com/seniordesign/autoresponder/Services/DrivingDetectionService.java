@@ -181,6 +181,6 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         ArrayList<LocationRecord> history = this.info.getLocationHistory();
 
         if(history.size() == 0) return null;
-        else return history.get(history.size()-1);
+        else return history.get(0);
     }
 }
