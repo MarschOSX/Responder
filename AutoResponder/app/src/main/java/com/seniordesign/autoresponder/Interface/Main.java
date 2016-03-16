@@ -20,6 +20,7 @@ import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Services.TimeLimitChecker;
 
 
 public class Main extends AppCompatActivity {
@@ -30,6 +31,8 @@ public class Main extends AppCompatActivity {
     int LOACTION_PERMISSIONS = 0;
     int SEND_SMS_PERMISSIONS = 0;
     int RECEIVE_SMS_PERMISSIONS = 0;
+    public static final String TAG = "Main";
+
 
 
 
@@ -57,8 +60,12 @@ public class Main extends AppCompatActivity {
             SEND_SMS_PERMISSIONS = 1;
         }
 
+
+
         //build the all the toggles
         buildSwitches();
+
+
     }
 
     //build the switches and add the listeners
@@ -72,7 +79,14 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
                 DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                 db.setResponseToggle(mResponseToggle.isChecked());
-                db.setTimeResponseToggleSet(System.currentTimeMillis());
+                if(mResponseToggle.isChecked()){
+                    //start TimeLimitChecker Thread
+                    db.setTimeResponseToggleSet(System.currentTimeMillis());
+                    Thread timeLimitChecker = new Thread(new TimeLimitChecker(getApplicationContext()));
+                    timeLimitChecker.setDaemon(true);
+                    timeLimitChecker.start();
+                    android.util.Log.i(TAG, "TimeLimit Thread started!");
+                }
             }
         });
 
