@@ -42,10 +42,11 @@ public class Setting {
 
     public static final String[] settingUIList = {
             "Time Limit",
+            "Time Delay",
             "Default Contact Location Setting",
             "Default Contact Activity Setting",
             "Default Contact Response",
-            "Time Delay",
+            "Parental Controls",
             "Response Log"
     };
 

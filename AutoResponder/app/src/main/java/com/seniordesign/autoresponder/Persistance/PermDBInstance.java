@@ -6,17 +6,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
+import android.widget.Switch;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
+import com.seniordesign.autoresponder.R;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Garlan on 9/28/2015.
@@ -136,6 +139,36 @@ public class PermDBInstance implements DBInstance {
     }
 
     public boolean getResponseToggle(){
+        Log.d(TAG, "Getting Response Toggle");
+        if(getSetting_bool(Setting.RESPONSE_TOGGLE)) {
+            if (this.getTimeLimit() != 100) { //If == 100, then it is assumed to be indefinite
+                //android.util.Log.v(TAG, "Time Limit is not indefinite!");
+                long timeLimitInMilliseconds = Long.valueOf(this.getTimeLimit() * 3600000);
+                //android.util.Log.e(TAG, "The set TimeLimit in milliseconds is " + timeLimitInMilliseconds);
+                long currentTime = System.currentTimeMillis();
+                //android.util.Log.e(TAG, "The CurrentTime of the system in milliseconds is " + currentTime);
+                long timeToggleWasSet = this.getTimeResponseToggleSet();
+                //android.util.Log.e(TAG, "TimeToggleWasSet in milliseconds is " + timeToggleWasSet);
+                //if the current system time is greater than or equal to the time the app was activated + the time limit
+                //turn the app off
+                if (currentTime >= (timeToggleWasSet + timeLimitInMilliseconds)) {
+                    this.setResponseToggle(false);
+                    android.util.Log.i(TAG, "TimeLimit has expired! Turning off AutoResponder");
+                } else {
+                    long timeRemainingLong = (timeToggleWasSet + timeLimitInMilliseconds) - currentTime;
+                    String timeRemainingString = String.format("%d min, %d sec",
+                            TimeUnit.MILLISECONDS.toMinutes(timeRemainingLong),
+                            TimeUnit.MILLISECONDS.toSeconds(timeRemainingLong) -
+                                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeRemainingLong))
+                    );
+                    android.util.Log.i(TAG, "TimeLimit is not indefinite! AutoResponder still running for: " + timeRemainingString);
+                }
+            } else {
+                android.util.Log.i(TAG, "Time Limit is indefinite!");
+            }
+        }else{
+            android.util.Log.i(TAG, "AutoResponder Toggle is inactive");
+        }
         return getSetting_bool(Setting.RESPONSE_TOGGLE);
     }
 

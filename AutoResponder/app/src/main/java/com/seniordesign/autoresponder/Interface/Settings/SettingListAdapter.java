@@ -126,6 +126,19 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
+            case "Parental Controls":
+                toggle.setVisibility(View.GONE);
+                title.setText("Parental Controls");
+                description.setText("SMS alerts to parents if user is texting while driving");
+
+                rowView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(parentApp, ParentalControlsSetUp.class);
+                        parentApp.startActivity(intent);
+                    }
+                });
+                break;
             default:
                 Log.e(TAG, "this setting has not been configured!!!!");
         }

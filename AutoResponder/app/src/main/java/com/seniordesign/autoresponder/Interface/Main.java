@@ -34,7 +34,14 @@ public class Main extends AppCompatActivity {
     public static final String TAG = "Main";
 
 
-
+    @Override
+    protected void onResume(){
+        super.onResume();
+        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+        mLocationToggle.setChecked(db.getLocationToggle());
+        mCalenderToggle.setChecked(db.getActivityToggle());
+        mResponseToggle.setChecked(db.getResponseToggle());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +67,6 @@ public class Main extends AppCompatActivity {
             SEND_SMS_PERMISSIONS = 1;
         }
 
-
-
         //build the all the toggles
         buildSwitches();
 
@@ -79,14 +84,8 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
                 DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                 db.setResponseToggle(mResponseToggle.isChecked());
-                if(mResponseToggle.isChecked()){
-                    //start TimeLimitChecker Thread
-                    db.setTimeResponseToggleSet(System.currentTimeMillis());
-                    Thread timeLimitChecker = new Thread(new TimeLimitChecker(getApplicationContext()));
-                    timeLimitChecker.setDaemon(true);
-                    timeLimitChecker.start();
-                    android.util.Log.i(TAG, "TimeLimit Thread started!");
-                }
+                db.setTimeResponseToggleSet(System.currentTimeMillis());
+                db.getResponseToggle();//to see if timeLimit is se;
             }
         });
 

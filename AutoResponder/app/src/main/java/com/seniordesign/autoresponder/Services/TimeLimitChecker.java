@@ -2,18 +2,23 @@ package com.seniordesign.autoresponder.Services;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Switch;
-
-import com.seniordesign.autoresponder.Interface.Main;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
-
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by MarschOSX on 3/16/2016.
+ */
+
+
+/*
+
+  //Thread timeLimitChecker = new Thread(new TimeLimitChecker(getApplicationContext()));
+                    //timeLimitChecker.setDaemon(true);
+                    //timeLimitChecker.start();
+                    //android.util.Log.i(TAG, "TimeLimit Thread started!");
  */
 public class TimeLimitChecker extends AppCompatActivity implements Runnable{
     private DBInstance db;

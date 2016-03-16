@@ -41,4 +41,5 @@
     <string name="title_activity_response_log_list">ResponseLogList</string>
     <string name="title_activity_location_status">LocationStatusActivity</string>
     <string name="title_activity_time_limit">Time Limit</string>
+    <string name="title_activity_parental_controls_set_up">Parental Controls</string>
 </resources>
