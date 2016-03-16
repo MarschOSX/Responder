@@ -97,6 +97,10 @@
             android:name=".Interface.Settings.TimeLimit"
             android:label="@string/title_activity_time_limit" >
         </activity>
+        <activity
+            android:name=".Interface.Settings.ParentalControlsSetUp"
+            android:label="@string/title_activity_parental_controls_set_up" >
+        </activity>
     </application>
 
 </manifest>

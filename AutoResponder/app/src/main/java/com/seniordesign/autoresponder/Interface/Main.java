@@ -20,6 +20,7 @@ import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Services.TimeLimitChecker;
 
 
 public class Main extends AppCompatActivity {
@@ -30,8 +31,17 @@ public class Main extends AppCompatActivity {
     int LOACTION_PERMISSIONS = 0;
     int SEND_SMS_PERMISSIONS = 0;
     int RECEIVE_SMS_PERMISSIONS = 0;
+    public static final String TAG = "Main";
 
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+        mLocationToggle.setChecked(db.getLocationToggle());
+        mCalenderToggle.setChecked(db.getActivityToggle());
+        mResponseToggle.setChecked(db.getResponseToggle());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +69,8 @@ public class Main extends AppCompatActivity {
 
         //build the all the toggles
         buildSwitches();
+
+
     }
 
     //build the switches and add the listeners
@@ -73,6 +85,7 @@ public class Main extends AppCompatActivity {
                 DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                 db.setResponseToggle(mResponseToggle.isChecked());
                 db.setTimeResponseToggleSet(System.currentTimeMillis());
+                db.getResponseToggle();//to see if timeLimit is se;
             }
         });
 

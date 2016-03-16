@@ -69,7 +69,7 @@ public class EventHandler implements Runnable{
         //try to retrieve information for that phone number fromm the database
         Contact contact = db.getContactInfo(phoneNumber);
 
-        //See if the TimeLimit the app can run has expired
+        /*See if the TimeLimit the app can run has expired
         android.util.Log.e("EventHandler,", "TimeLimit is " + db.getTimeLimit());
         if(db.getTimeLimit() != 100) { //If == 100, then it is assumed to be indefinite
             long timeLimitInMilliseconds = Long.valueOf(db.getTimeLimit() * 3600000);
@@ -83,7 +83,7 @@ public class EventHandler implements Runnable{
             if(currentTime >= (timeToggleWasSet + timeLimitInMilliseconds)){
                 db.setResponseToggle(false);
             }
-        }
+        }*/
 
 
         //The function will only continue if the user has set the response toggle to on

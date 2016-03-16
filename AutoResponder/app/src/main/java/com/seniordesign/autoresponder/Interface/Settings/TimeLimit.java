@@ -138,6 +138,8 @@ public class TimeLimit extends AppCompatActivity {
         }
         Log.v(TAG, "setting time limit to (in hours): " + Integer.toString(activeTime));
         db.setTimeLimit(activeTime);
+        db.setTimeResponseToggleSet(System.currentTimeMillis());
+        db.getResponseToggle();
     }
 
 }
