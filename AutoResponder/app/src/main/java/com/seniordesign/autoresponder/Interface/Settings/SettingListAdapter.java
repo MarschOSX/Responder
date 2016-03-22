@@ -46,7 +46,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
 
         TextView title = (TextView) rowView.findViewById(R.id.title);
         TextView description = (TextView) rowView.findViewById(R.id.description);
-        Switch toggle = (Switch) rowView.findViewById(R.id.toggle);
+        final Switch toggle = (Switch) rowView.findViewById(R.id.toggle);
 
         switch (settingList[position]){
             case "Time Limit": //default group time limit
@@ -142,15 +142,29 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                 });
                 break;
             case "Driving Detection":
-                title.setText(R.string.defaultGroup_location_toggle);
+                title.setText(R.string.drivingDetection_toggle);
 
-                description.setText(R.string.defaultGroup_location_toggle_descr);
+                description.setText(R.string.drivingDetection_toggle_descr);
 
                 toggle.setChecked(DrivingDetectionService.isRunning(context));
                 toggle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (toggle.isChecked()) {
+                            //context.startService(new Intent(context, DrivingDetection.class));
 
+                            //if service is not running create service and start on new thread
+                            if (!DrivingDetectionService.isRunning(context)) {
+                                context.startService(new Intent(context, DrivingDetectionService.class));
+                            }
+
+                        } else {
+
+                            //disable service
+                            if (DrivingDetectionService.isRunning(context)) {
+                                context.stopService(new Intent(context, DrivingDetectionService.class));
+                            }
+                        }
                     }
                 });
                 break;

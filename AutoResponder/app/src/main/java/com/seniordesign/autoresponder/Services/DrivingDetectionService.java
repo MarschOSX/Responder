@@ -202,7 +202,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         return distance / time;
     }
 
-    //returns wether or not this serivce is running
+    /** @return wether or not this service is running*/
     public static boolean isRunning(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {

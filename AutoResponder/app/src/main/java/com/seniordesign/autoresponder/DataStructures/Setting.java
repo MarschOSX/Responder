@@ -51,7 +51,7 @@ public class Setting {
             "Default Contact Activity Setting",
             "Default Contact Response",
             "Parental Controls",
-            "Response Log"
+            "Response Log",
             "Time Delay",
             "Response Log",
             "Driving Detection Power Settings"
