@@ -4,24 +4,21 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.telephony.SmsMessage;
-import android.util.Log;
 
 import com.seniordesign.autoresponder.Persistance.PermDBInstance;
-import java.util.concurrent.TimeUnit;
 
 
 public class SMSListener extends BroadcastReceiver{
     public static final String TAG = "SMSListener";
     private static final String ACTION_SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
+
     //Listener gets a message
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        //Get if an SMS or MMS
+        //Get an SMS
         android.util.Log.v(TAG, "SMSListener Activated!");
-
         String action  = intent.getAction();
         String type = intent.getType();
         android.util.Log.v(TAG, "Intent received: " + action);

@@ -6,17 +6,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
+import android.widget.Switch;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
+import com.seniordesign.autoresponder.R;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Garlan on 9/28/2015.
@@ -93,6 +96,28 @@ public class PermDBInstance implements DBInstance {
         return getSetting_int(Setting.TIME_DELAY);
     }
 
+
+    public void setTimeLimit(int hours){
+        Log.d(TAG, "setting delay to "+ hours +"....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.TIME_LIMIT, DBHelper.SETTING_VALUE[0], hours);
+    }
+
+    //will return -1 if no result returned
+    public int getTimeLimit(){
+        return getSetting_int(Setting.TIME_LIMIT);
+    }
+
+
+    public void setTimeResponseToggleSet(long milliseconds){
+        Log.d(TAG, "setting TimeResponseToggleSet to "+ milliseconds +" milliseconds....");
+        updateForLong(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.RESPONSE_TOGGLE_TIME_SET, DBHelper.SETTING_VALUE[0], milliseconds);
+    }
+
+    //will return -1 if no result returned
+    public long getTimeResponseToggleSet(){
+        return getSetting_long(Setting.RESPONSE_TOGGLE_TIME_SET);
+    }
+
     public void setDrivingDetectionPeriod(int minutes){
         Log.d(TAG, "setting delay to "+ minutes +"....");
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.DRIVING_DETECTION_PERIOD, DBHelper.SETTING_VALUE[0], minutes);
@@ -124,6 +149,36 @@ public class PermDBInstance implements DBInstance {
     }
 
     public boolean getResponseToggle(){
+        Log.d(TAG, "Getting Response Toggle");
+        if(getSetting_bool(Setting.RESPONSE_TOGGLE)) {
+            if (this.getTimeLimit() != 100) { //If == 100, then it is assumed to be indefinite
+                //android.util.Log.v(TAG, "Time Limit is not indefinite!");
+                long timeLimitInMilliseconds = Long.valueOf(this.getTimeLimit() * 3600000);
+                //android.util.Log.e(TAG, "The set TimeLimit in milliseconds is " + timeLimitInMilliseconds);
+                long currentTime = System.currentTimeMillis();
+                //android.util.Log.e(TAG, "The CurrentTime of the system in milliseconds is " + currentTime);
+                long timeToggleWasSet = this.getTimeResponseToggleSet();
+                //android.util.Log.e(TAG, "TimeToggleWasSet in milliseconds is " + timeToggleWasSet);
+                //if the current system time is greater than or equal to the time the app was activated + the time limit
+                //turn the app off
+                if (currentTime >= (timeToggleWasSet + timeLimitInMilliseconds)) {
+                    this.setResponseToggle(false);
+                    android.util.Log.i(TAG, "TimeLimit has expired! Turning off AutoResponder");
+                } else {
+                    long timeRemainingLong = (timeToggleWasSet + timeLimitInMilliseconds) - currentTime;
+                    String timeRemainingString = String.format("%d min, %d sec",
+                            TimeUnit.MILLISECONDS.toMinutes(timeRemainingLong),
+                            TimeUnit.MILLISECONDS.toSeconds(timeRemainingLong) -
+                                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeRemainingLong))
+                    );
+                    android.util.Log.i(TAG, "TimeLimit is not indefinite! AutoResponder still running for: " + timeRemainingString);
+                }
+            } else {
+                android.util.Log.i(TAG, "Time Limit is indefinite!");
+            }
+        }else{
+            android.util.Log.i(TAG, "AutoResponder Toggle is inactive");
+        }
         return getSetting_bool(Setting.RESPONSE_TOGGLE);
     }
 
@@ -844,6 +899,31 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
+    private int updateForLong(String table, String matchColumn, String matchValue, String updateColumn, long updateValue){
+        myDB.beginTransaction();
+
+        try {
+            //set criteria for selecting row
+            String filter = matchColumn + "=" + "\"" + matchValue + "\"";
+
+            //set new value for column to be updated
+            ContentValues args = new ContentValues();
+            args.put(updateColumn, Long.toString(updateValue));
+
+            //update column and check to make sure only 1 row was updated
+            myDB.setTransactionSuccessful();
+            Log.d(TAG, getMethodName(1) + ": update succeeded");
+            return  myDB.update(table, args, filter, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(1) + " failed");
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
+    }
+
     private int remove(String table, String whereClause){
         myDB.beginTransaction();
         try {
@@ -919,6 +999,29 @@ public class PermDBInstance implements DBInstance {
         //query db and return the results
         try{
             int value = Integer.parseInt(query.simpleQueryForString());
+            Log.d(TAG, getMethodName(1) + ": " + name + " is " + value);
+            return value;
+        }
+        catch (NumberFormatException e){ //if there is an error report it and return -1
+            Log.e(TAG, getMethodName(0) + ": setting value is not a number");
+            return -1;
+        }
+    }
+
+    private long getSetting_long(String name){
+        SQLiteStatement query;
+
+        final String form =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = ?";
+
+        query = this.myDB.compileStatement(form);
+        query.bindString(1, name);
+
+        //query db and return the results
+        try{
+            long value = Long.parseLong(query.simpleQueryForString());
             Log.d(TAG, getMethodName(1) + ": " + name + " is " + value);
             return value;
         }

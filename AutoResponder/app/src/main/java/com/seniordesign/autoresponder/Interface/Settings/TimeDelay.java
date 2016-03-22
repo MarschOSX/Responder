@@ -45,24 +45,6 @@ public class TimeDelay extends AppCompatActivity {
 
         //set listener to be called when text is changed
         setDelayNum   = (EditText)findViewById(R.id.customVal);
-        /*setDelayNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (actionId == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
-
-                    try{
-                        responseDelay = Integer.parseInt(setDelayNum.getText().toString());
-                    }catch(NumberFormatException e){
-                        responseDelay = Integer.parseInt(setDelayNum.getHint().toString());
-                    }
-
-                    db.setDelay(responseDelay);
-                    return true;
-                }
-                return false;
-            }
-        });*/
         setDelayNum.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}

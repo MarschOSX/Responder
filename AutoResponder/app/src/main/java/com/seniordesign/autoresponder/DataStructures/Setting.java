@@ -1,5 +1,7 @@
 package com.seniordesign.autoresponder.DataStructures;
 
+import java.util.ArrayList;
+
 /**
  * Created by Garlan on 9/28/2015.
  */
@@ -11,8 +13,12 @@ public class Setting {
     public static final String UNIVERSAL_REPLY_DEF = "Sorry I don't have my phone right now!";
     public static final String TIME_DELAY = "time_delay";
     public static final String TIME_DELAY_DEF = "20";
+    public static final String TIME_LIMIT = "time_limit";
+    public static final String TIME_LIMIT_DEF = "100";
     public static final String RESPONSE_TOGGLE = "response_toggle";
-    public static final String RESPONSE_TOGGLE_DEF = "true";
+    public static final String RESPONSE_TOGGLE_DEF = "false";
+    public static final String RESPONSE_TOGGLE_TIME_SET = "response_toggle_time_set";
+    public static final String RESPONSE_TOGGLE_TIME_SET_DEF = "0L";
     public static final String ACTIVITY_TOGGLE = "activity_toggle";
     public static final String ACTIVITY_TOGGLE_DEF = "false";
     public static final String LOCATION_TOGGLE = "location_toggle";
@@ -22,14 +28,15 @@ public class Setting {
     public static final String DRIVING_DETECTION_PERIOD = "driving_detection_period";
     public static final String DRIVING_DETECTION_PERIOD_DEF = "1";
 
-
     //if you are adding a new setting, it and its default value must be added here
     public static final String[][] DEFAULT_SETTINGS =
             {       //name        value
                     {REPLY_ALL, REPLY_ALL_DEF},
                     {UNIVERSAL_REPLY, UNIVERSAL_REPLY_DEF},
                     {TIME_DELAY, TIME_DELAY_DEF},
+                    {TIME_LIMIT, TIME_LIMIT_DEF},
                     {RESPONSE_TOGGLE, RESPONSE_TOGGLE_DEF},
+                    {RESPONSE_TOGGLE_TIME_SET, RESPONSE_TOGGLE_TIME_SET_DEF},
                     {ACTIVITY_TOGGLE, ACTIVITY_TOGGLE_DEF},
                     {LOCATION_TOGGLE, LOCATION_TOGGLE_DEF},
                     {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF},
@@ -37,10 +44,14 @@ public class Setting {
             };
 
     public static final String[] settingUIList = {
+            "Time Limit",
+            "Time Delay",
+            "Driving Detection",
             "Default Contact Location Setting",
             "Default Contact Activity Setting",
-            "Driving Detection",
             "Default Contact Response",
+            "Parental Controls",
+            "Response Log"
             "Time Delay",
             "Response Log",
             "Driving Detection Power Settings"

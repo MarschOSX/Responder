@@ -130,7 +130,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     public void onLocationChanged(Location location) {
         info.addToHistory(new LocationRecord(location, new Date(System.currentTimeMillis())));
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(DrivingDetectionService.ACTION_DEBUG_UPDATE));
-        Log.d(TAG, "lat = " + location.getLatitude() + "long = " + location.getLongitude() + "speed = " + location.getSpeed());
+        Log.d(TAG, " lat = " + location.getLatitude() + " long = " + location.getLongitude() + " speed = " + location.getSpeed());
         //start the worker thread
         /*drivingDetector = new Thread(new DrivingDetectionWorker(getApplicationContext(), info));
         drivingDetector.setDaemon(true);
@@ -181,8 +181,25 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     public LocationRecord getCurrentLocation(){
         ArrayList<LocationRecord> history = this.info.getLocationHistory();
 
+
         if(history.size() == 0) return null;
-        else return history.get(history.size()-1);
+        else if (history.size() == 1){
+            return history.get(0);
+        }
+        else {
+            LocationRecord p2 = history.get(0);
+            LocationRecord p1 = history.get(1);
+
+            p1.getLocation().setSpeed(getSpeed(p1.getLocation(), p2.getLocation(), p2.getDate().getTime() - p1.getDate().getTime()));
+
+            return p1;
+        }
+    }
+
+    public float getSpeed(Location p1, Location p2, long time){
+        float distance = p1.distanceTo(p2);
+
+        return distance / time;
     }
 
     //returns wether or not this serivce is running
