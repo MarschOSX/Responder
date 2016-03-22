@@ -93,6 +93,16 @@ public class PermDBInstance implements DBInstance {
         return getSetting_int(Setting.TIME_DELAY);
     }
 
+    public void setDrivingDetectionPeriod(int minutes){
+        Log.d(TAG, "setting delay to "+ minutes +"....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.DRIVING_DETECTION_PERIOD, DBHelper.SETTING_VALUE[0], minutes);
+    }
+
+    //will return -1 if no result returned
+    public int getDrivingDetectionPeriod(){
+        return getSetting_int(Setting.DRIVING_DETECTION_PERIOD);
+    }
+
     public void setResponseToggle(boolean responseToggle){
         Log.d(TAG, "setting  responseToggle to " + responseToggle + "....");
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.RESPONSE_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);

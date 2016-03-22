@@ -1,7 +1,5 @@
 package com.seniordesign.autoresponder.DataStructures;
 
-import java.util.ArrayList;
-
 /**
  * Created by Garlan on 9/28/2015.
  */
@@ -21,6 +19,9 @@ public class Setting {
     public static final String LOCATION_TOGGLE_DEF = "false";
     public static final String UNIVERSAL_TOGGLE = "universal_toggle";
     public static final String UNIVERSAL_TOGGLE_DEF = "false";
+    public static final String DRIVING_DETECTION_PERIOD = "driving_detection_period";
+    public static final String DRIVING_DETECTION_PERIOD_DEF = "1";
+
 
     //if you are adding a new setting, it and its default value must be added here
     public static final String[][] DEFAULT_SETTINGS =
@@ -31,15 +32,18 @@ public class Setting {
                     {RESPONSE_TOGGLE, RESPONSE_TOGGLE_DEF},
                     {ACTIVITY_TOGGLE, ACTIVITY_TOGGLE_DEF},
                     {LOCATION_TOGGLE, LOCATION_TOGGLE_DEF},
-                    {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF}
+                    {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF},
+                    {DRIVING_DETECTION_PERIOD, DRIVING_DETECTION_PERIOD_DEF}
             };
 
     public static final String[] settingUIList = {
             "Default Contact Location Setting",
             "Default Contact Activity Setting",
+            "Driving Detection",
             "Default Contact Response",
             "Time Delay",
-            "Response Log"
+            "Response Log",
+            "Driving Detection Power Settings"
     };
 
 

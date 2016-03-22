@@ -28,6 +28,10 @@ public interface DBInstance {
 
     int getDelay();
 
+    int getDrivingDetectionPeriod();
+
+    void setDrivingDetectionPeriod(int minutes);
+
     void setResponseToggle(boolean toggle);
 
     void setActivityToggle(boolean toggle);

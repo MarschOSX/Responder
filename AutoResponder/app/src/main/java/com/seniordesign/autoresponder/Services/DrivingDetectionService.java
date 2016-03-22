@@ -1,5 +1,6 @@
 package com.seniordesign.autoresponder.Services;
 
+import android.app.ActivityManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -182,5 +183,16 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
         if(history.size() == 0) return null;
         else return history.get(history.size()-1);
+    }
+
+    //returns wether or not this serivce is running
+    public static boolean isRunning(Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (DrivingDetectionService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

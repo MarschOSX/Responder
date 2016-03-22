@@ -4,6 +4,7 @@ package com.seniordesign.autoresponder.Interface.Settings;
  * Created by Garlan on 11/15/2015.
  */
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 
 
 public class SettingListAdapter extends ArrayAdapter<String> {
@@ -113,6 +115,22 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                         parentApp.startActivity(intent);
                     }
                 });
+                break;
+            case "Driving Detection":
+                title.setText(R.string.defaultGroup_location_toggle);
+
+                description.setText(R.string.defaultGroup_location_toggle_descr);
+
+                toggle.setChecked(DrivingDetectionService.isRunning(context));
+                toggle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                break;
+            case "Driving Detection Power Settings":
+
                 break;
             default:
                 Log.e(TAG, "this setting has not been configured!!!!");
