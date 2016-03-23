@@ -87,7 +87,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
         //Set new parental controls number
         String parentPhoneNumber = parentalPhoneNumber.getText().toString();
         Log.v("Parent Phone Number:", parentPhoneNumber);
-        if (parentPhoneNumber.contains(" ")  || parentPhoneNumber.matches("0")) {//Its blank, get default hint
+        if (parentPhoneNumber.contains(" ")  || parentPhoneNumber.matches("0") || parentPhoneNumber.matches("")) {//Its blank, get default hint
             db.setParentalControlsNumber("0");
             db.setParentalControlsToggle(false);
         }else{

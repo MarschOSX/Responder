@@ -34,6 +34,8 @@ public interface DBInstance {
 
     void setTimeResponseToggleSet(long milliseconds);
 
+    void setParentalControlsNumber(String parentalControlsNumber);
+
     long getTimeResponseToggleSet();
 
     void setResponseToggle(boolean toggle);
@@ -44,6 +46,8 @@ public interface DBInstance {
 
     void setUniversalToggle(boolean toggle);
 
+    void setParentalControlsToggle(boolean toggle);
+
     boolean getResponseToggle();
     
     boolean getLocationToggle();
@@ -51,6 +55,10 @@ public interface DBInstance {
     boolean getActivityToggle();
 
     boolean getUniversalToggle();
+
+    boolean getParentalControlsToggle();
+
+    String getParentalControlsNumber();
 
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
