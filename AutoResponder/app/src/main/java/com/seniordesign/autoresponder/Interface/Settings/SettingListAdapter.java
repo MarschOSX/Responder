@@ -4,6 +4,7 @@ package com.seniordesign.autoresponder.Interface.Settings;
  * Created by Garlan on 11/15/2015.
  */
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 
 
 public class SettingListAdapter extends ArrayAdapter<String> {
@@ -44,7 +46,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
 
         TextView title = (TextView) rowView.findViewById(R.id.title);
         TextView description = (TextView) rowView.findViewById(R.id.description);
-        Switch toggle = (Switch) rowView.findViewById(R.id.toggle);
+        final Switch toggle = (Switch) rowView.findViewById(R.id.toggle);
 
         switch (settingList[position]){
             case "Time Limit": //default group time limit
@@ -138,6 +140,36 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                         parentApp.startActivity(intent);
                     }
                 });
+                break;
+            case "Driving Detection":
+                title.setText(R.string.drivingDetection_toggle);
+
+                description.setText(R.string.drivingDetection_toggle_descr);
+
+                toggle.setChecked(DrivingDetectionService.isRunning(context));
+                toggle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (toggle.isChecked()) {
+                            //context.startService(new Intent(context, DrivingDetection.class));
+
+                            //if service is not running create service and start on new thread
+                            if (!DrivingDetectionService.isRunning(context)) {
+                                context.startService(new Intent(context, DrivingDetectionService.class));
+                            }
+
+                        } else {
+
+                            //disable service
+                            if (DrivingDetectionService.isRunning(context)) {
+                                context.stopService(new Intent(context, DrivingDetectionService.class));
+                            }
+                        }
+                    }
+                });
+                break;
+            case "Driving Detection Power Settings":
+
                 break;
             default:
                 Log.e(TAG, "this setting has not been configured!!!!");

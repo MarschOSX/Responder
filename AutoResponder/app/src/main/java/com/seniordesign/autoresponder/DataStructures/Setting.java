@@ -25,10 +25,6 @@ public class Setting {
     public static final String LOCATION_TOGGLE_DEF = "false";
     public static final String UNIVERSAL_TOGGLE = "universal_toggle";
     public static final String UNIVERSAL_TOGGLE_DEF = "false";
-    public static final String PARENTAL_CONTROLS_TOGGLLE = "parental_controls_toggle";
-    public static final String PARENTAL_CONTROLS_TOGGLE_DEF = "false";
-    public static final String PARENTAL_CONTROLS_NUMBER = "parental_controls_number";
-    public static final String PARENTAL_CONTROLS_NUMBER_DEF = "0";
 
     //if you are adding a new setting, it and its default value must be added here
     public static final String[][] DEFAULT_SETTINGS =
@@ -41,9 +37,7 @@ public class Setting {
                     {RESPONSE_TOGGLE_TIME_SET, RESPONSE_TOGGLE_TIME_SET_DEF},
                     {ACTIVITY_TOGGLE, ACTIVITY_TOGGLE_DEF},
                     {LOCATION_TOGGLE, LOCATION_TOGGLE_DEF},
-                    {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF},
-                    {PARENTAL_CONTROLS_TOGGLLE, PARENTAL_CONTROLS_TOGGLE_DEF},
-                    {PARENTAL_CONTROLS_NUMBER, PARENTAL_CONTROLS_NUMBER_DEF}
+                    {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF}
             };
 
     public static final String[] settingUIList = {

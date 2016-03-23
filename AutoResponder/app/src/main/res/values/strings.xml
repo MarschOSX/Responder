@@ -30,6 +30,8 @@
     <string name="defaultGroup_location_toggle_descr">Specify the default location permission</string>
     <string name="defaultGroup_activity_toggle">Default Contact Activity Setting</string>
     <string name="defaultGroup_activity_toggle_descr">Specify the default activity permission</string>
+    <string name="drivingDetection_toggle">Driving Detection</string>
+    <string name="drivingDetection_toggle_descr">enables and disables the responder based on your speed</string>
     <string name="setting_timeLimit">Time Limit</string>
     <string name="setting_timeLimit_descr">Choose how long the responder will be active</string>
     <string name="setting_timeDelay">Time Delay</string>
