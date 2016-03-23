@@ -138,6 +138,19 @@ public class PermDBInstance implements DBInstance {
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.UNIVERSAL_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
     }
 
+    /**
+    Parental Controls Setters
+     */
+    public void setParentalControlsToggle(boolean parentalControlsToggle){
+        Log.d(TAG, "setting  parentalControlsToggle to " + parentalControlsToggle + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.PARENTAL_CONTROLS_TOGGLLE, DBHelper.SETTING_VALUE[0], parentalControlsToggle);
+    }
+
+    public void setParentalControlsNumber(String parentalControlsNumber){
+        Log.d(TAG, "setting  parentalControlsNumber to " + parentalControlsNumber + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.PARENTAL_CONTROLS_NUMBER, DBHelper.SETTING_VALUE[0], parentalControlsNumber);
+    }
+
     public boolean getResponseToggle(){
         Log.d(TAG, "Getting Response Toggle");
         if(getSetting_bool(Setting.RESPONSE_TOGGLE)) {
@@ -179,6 +192,18 @@ public class PermDBInstance implements DBInstance {
     public boolean getLocationToggle(){
         return getSetting_bool(Setting.LOCATION_TOGGLE);
     }
+
+    /**
+     Parental Controls getters
+     */
+    public boolean getParentalControlsToggle(){
+        return getSetting_bool(Setting.PARENTAL_CONTROLS_TOGGLLE);
+    }
+
+    public String getParentalControlsNumber(){
+        return getSetting_str(Setting.PARENTAL_CONTROLS_NUMBER);
+    }
+
 
     public boolean getUniversalToggle(){
         final String query =

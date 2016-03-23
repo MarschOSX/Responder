@@ -130,6 +130,22 @@ public class TestDBInstance implements DBInstance {
         this.settings.put(Setting.UNIVERSAL_TOGGLE, responseToggleText);
     }
 
+    public void setParentalControlsToggle(boolean parentalControlsToggle){
+        String responseToggleText;
+        if(parentalControlsToggle){
+            responseToggleText = "true";
+        }
+        else{
+            responseToggleText = "false";
+        }
+        this.settings.put(Setting.PARENTAL_CONTROLS_TOGGLLE, responseToggleText);
+    }
+
+    public void setParentalControlsNumber(String parentalControlsNumber){
+        this.settings.put(Setting.PARENTAL_CONTROLS_NUMBER, parentalControlsNumber);
+    }
+
+
     public boolean getUniversalToggle(){
         String value = this.settings.get(Setting.UNIVERSAL_TOGGLE);
         if(value.compareTo("true") == 0){
@@ -139,7 +155,7 @@ public class TestDBInstance implements DBInstance {
             return false;
         }
         else{
-            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.UNIVERSAL_TOGGLE + " set to " + value + " when true/false was expected");
+            Log.e(TAG, "ERROR: getUniversalToggle: found " + Setting.UNIVERSAL_TOGGLE + " set to " + value + " when true/false was expected");
             throw new InputMismatchException();
         }
     }
@@ -167,7 +183,7 @@ public class TestDBInstance implements DBInstance {
             return false;
         }
         else{
-            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.ACTIVITY_TOGGLE + " set to " + value + " when true/false was expected");
+            Log.e(TAG, "ERROR: getActivityToggle: found " + Setting.ACTIVITY_TOGGLE + " set to " + value + " when true/false was expected");
             throw new InputMismatchException();
         }
     }
@@ -181,9 +197,28 @@ public class TestDBInstance implements DBInstance {
             return false;
         }
         else{
-            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.LOCATION_TOGGLE + " set to " + value + " when true/false was expected");
+            Log.e(TAG, "ERROR: getLocationToggle: found " + Setting.LOCATION_TOGGLE + " set to " + value + " when true/false was expected");
             throw new InputMismatchException();
         }
+    }
+
+
+    public boolean getParentalControlsToggle(){
+        String value = this.settings.get(Setting.PARENTAL_CONTROLS_TOGGLLE);
+        if(value.compareTo("true") == 0){
+            return true;
+        }
+        else if(value.compareTo("false") == 0){
+            return false;
+        }
+        else{
+            Log.e(TAG, "ERROR: PARENTAL_CONTROLS_TOGGLE: found " + Setting.PARENTAL_CONTROLS_TOGGLLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
+    }
+
+    public String getParentalControlsNumber(){
+        return this.settings.get(Setting.PARENTAL_CONTROLS_NUMBER);
     }
 
     ////////////////////////////////

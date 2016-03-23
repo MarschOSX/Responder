@@ -44,6 +44,10 @@ public interface DBInstance {
 
     void setUniversalToggle(boolean toggle);
 
+    void setParentalControlsToggle(boolean toggle);
+
+    void setParentalControlsNumber(String parentPhoneNumber);
+
     boolean getResponseToggle();
     
     boolean getLocationToggle();
@@ -51,6 +55,10 @@ public interface DBInstance {
     boolean getActivityToggle();
 
     boolean getUniversalToggle();
+
+    boolean getParentalControlsToggle();
+
+    String getParentalControlsNumber();
 
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
