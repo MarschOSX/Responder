@@ -4,9 +4,13 @@ package com.seniordesign.autoresponder.Interface.Settings;
  * Created by Garlan on 11/15/2015.
  */
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,6 +33,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
     private final String[] settingList;
     private final DBInstance db;
     private AppCompatActivity parentApp;
+    int LOCATION_PERMISSIONS = 0;
 
     public SettingListAdapter(Context context, String[] settingList, AppCompatActivity parentApp) {
         super(context, R.layout.setting_row, settingList);
@@ -142,6 +147,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                 });
                 break;
             case "Driving Detection":
+                //TODO make it so that clicking anywhere that isnt the switch will take the user to a page describing the feature
                 title.setText(R.string.drivingDetection_toggle);
 
                 description.setText(R.string.drivingDetection_toggle_descr);
@@ -153,13 +159,16 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                         if (toggle.isChecked()) {
                             //context.startService(new Intent(context, DrivingDetection.class));
 
-                            //if service is not running create service and start on new thread
-                            if (!DrivingDetectionService.isRunning(context)) {
+                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(parentApp, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSIONS);
+                                toggle.setChecked(false);
+                            }
+                                //if service is not running create service and start on new thread
+                            else if (!DrivingDetectionService.isRunning(context) && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                                 context.startService(new Intent(context, DrivingDetectionService.class));
                             }
 
                         } else {
-
                             //disable service
                             if (DrivingDetectionService.isRunning(context)) {
                                 context.stopService(new Intent(context, DrivingDetectionService.class));
@@ -168,11 +177,21 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
-            case "Driving Detection Power Settings":
+            case "Driving Detection Interval":
+                title.setText(R.string.drivingDetection_interval);
+                description.setText(R.string.drivingDetection_interval_descr);
+                toggle.setVisibility(View.GONE);
 
+                rowView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(parentApp, DrivingDetectionInterval.class);
+                        parentApp.startActivity(intent);
+                    }
+                });
                 break;
             default:
-                Log.e(TAG, "this setting has not been configured!!!!");
+                Log.e(TAG, "this setting (" + settingList[position] + ") has not been configured!!!!");
         }
 
         return rowView;

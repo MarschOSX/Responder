@@ -7,12 +7,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
 import com.seniordesign.autoresponder.Interface.Groups.GroupList;
@@ -20,7 +18,6 @@ import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
-import com.seniordesign.autoresponder.Services.TimeLimitChecker;
 
 
 public class Main extends AppCompatActivity {
@@ -28,7 +25,7 @@ public class Main extends AppCompatActivity {
     private Switch mCalenderToggle;
     private Switch mResponseToggle;
     int CALENDAR_PERMISSIONS = 0;
-    int LOACTION_PERMISSIONS = 0;
+    int LOCATION_PERMISSIONS = 0;
     int SEND_SMS_PERMISSIONS = 0;
     int RECEIVE_SMS_PERMISSIONS = 0;
     public static final String TAG = "Main";
@@ -119,7 +116,7 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
                 //Get Location Permissions
                 if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOACTION_PERMISSIONS);
+                    ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSIONS);
                 }
 
                 //Check Again

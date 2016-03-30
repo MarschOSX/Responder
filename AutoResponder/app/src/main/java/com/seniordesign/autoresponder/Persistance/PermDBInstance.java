@@ -6,17 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
-import android.widget.Switch;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
-import com.seniordesign.autoresponder.DataStructures.DeveloperLog;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
-import com.seniordesign.autoresponder.R;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.concurrent.TimeUnit;
@@ -120,12 +115,12 @@ public class PermDBInstance implements DBInstance {
 
     public void setDrivingDetectionPeriod(int minutes){
         Log.d(TAG, "setting delay to "+ minutes +"....");
-        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.DRIVING_DETECTION_PERIOD, DBHelper.SETTING_VALUE[0], minutes);
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.DRIVING_DETECTION_INTERVAL, DBHelper.SETTING_VALUE[0], minutes);
     }
 
     //will return -1 if no result returned
     public int getDrivingDetectionPeriod(){
-        return getSetting_int(Setting.DRIVING_DETECTION_PERIOD);
+        return getSetting_int(Setting.DRIVING_DETECTION_INTERVAL);
     }
 
     public void setResponseToggle(boolean responseToggle){

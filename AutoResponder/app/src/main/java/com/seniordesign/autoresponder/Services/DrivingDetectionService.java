@@ -28,6 +28,7 @@ import java.util.ArrayList;
  * Created by Garlan on 2/28/2016.
  */
 public class DrivingDetectionService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    private final boolean isTesting = false;
     private final LocalBinder mBinder = new LocalBinder();
     public static final String ACTION_DEBUG_UPDATE = "ACTION_DEBUG_UPDATE";
     private String TAG = "DrivingDetection";
