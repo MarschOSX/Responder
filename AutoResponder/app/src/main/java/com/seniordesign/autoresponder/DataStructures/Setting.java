@@ -29,9 +29,6 @@ public class Setting {
     public static final String PARENTAL_CONTROLS_NUMBER_DEF = "0";
     public static final String PARENTAL_CONTROLS_TOGGLLE = "parental_controls_toggle";
     public static final String PARENTAL_CONTROLS_TOGGLLE_DEF = "false";
-    /**
-    From Martin To Garlan: the below declrations were deleted, I added them back to try to fix it temporally
-     */
     public static final String DRIVING_DETECTION_PERIOD = "driving_detection_period";
     public static final String DRIVING_DETECTION_PERIOD_DEF = "5";
 
