@@ -133,6 +133,16 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                     toast = Toast.makeText(context, toastText, duration);
                     toast.show();
                 }
+
+                if(parentalControlsEnabler.isChecked()){
+                    SMSSender sender = new SMSSender(db);
+                    sender.sendSMS("This number has enabled AutoResponder parental controls", "",
+                                db.getParentalControlsNumber(), 0L, false, false);
+                }else{
+                    SMSSender sender = new SMSSender(db);
+                    sender.sendSMS("This number has disabled AutoResponder parental controls", "",
+                            db.getParentalControlsNumber(), 0L, false, false);
+                }
             }
         });
     }

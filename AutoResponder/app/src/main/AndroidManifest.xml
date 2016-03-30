@@ -49,6 +49,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".Services.ParentalControlsWatcher" >
+            <intent-filter android:priority="1000" >
+                <action android:name="android.provider.Telephony.SMS_SENT" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".Interface.Contacts.ContactsList"
             android:label="@string/title_activity_contacts_list" >
