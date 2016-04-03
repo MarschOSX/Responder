@@ -3,6 +3,8 @@ package com.seniordesign.autoresponder.Interface;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,7 @@ import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Services.ParentalControlsWatcher;
 import com.seniordesign.autoresponder.Services.TimeLimitChecker;
 
 
@@ -31,6 +34,7 @@ public class Main extends AppCompatActivity {
     int LOACTION_PERMISSIONS = 0;
     int SEND_SMS_PERMISSIONS = 0;
     int RECEIVE_SMS_PERMISSIONS = 0;
+    int READ_SMS_PERMISSIONS = 0;
     public static final String TAG = "Main";
 
 
@@ -69,6 +73,7 @@ public class Main extends AppCompatActivity {
 
         //build the all the toggles
         buildSwitches();
+
 
 
     }

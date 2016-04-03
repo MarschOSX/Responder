@@ -7,7 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
- * Created by MarschOSX on 3/23/2016.
+ * Created by MarschOSX on 3/23/2016
+ *
+ *
  */
 public class SMSSender {
 
@@ -22,19 +24,17 @@ public class SMSSender {
     public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Long timeRecieved, Boolean locShared, Boolean actShared){
         android.util.Log.v(TAG, "sendSMS recieved: mesSent " + messageSent + " messageRecieved " + messageRecieved + " phoneNumber " + phoneNumber + " timeRecieved " + timeRecieved + " locShared " + locShared + " actShared " + actShared);
 
-        //Send the UniversalReply Message
-        SmsManager sms = SmsManager.getDefault();
-        android.util.Log.v(TAG, "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
-        sms.sendTextMessage(phoneNumber, null, messageSent, null, null);
-
+        //Update Response Log
         String timeRecievedReadable = getDate(timeRecieved);
         String timeSentReadable = getDate(System.currentTimeMillis());
-
-        //Update Response Log
         ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeRecievedReadable, timeSentReadable, locShared, actShared);
         android.util.Log.v(TAG, "New ResponseLog: "+messageSent+ " " +messageRecieved+ " " +phoneNumber+ " " +timeRecievedReadable+ " " +timeSentReadable+ " " +locShared+ " " +actShared);
         db.addToResponseLog(updateLog);
 
+        //Send the Message
+        SmsManager sms = SmsManager.getDefault();
+        android.util.Log.v(TAG, "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
+        sms.sendTextMessage(phoneNumber, null, messageSent, null, null);
     }
     //convert milliseconds into a date readable format
     public static String getDate(long milliSeconds) {

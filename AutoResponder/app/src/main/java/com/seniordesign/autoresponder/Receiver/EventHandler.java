@@ -181,20 +181,21 @@ public class EventHandler implements Runnable{
     public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Long timeRecieved, Boolean locShared, Boolean actShared){
         android.util.Log.v("EventHandler,", "sendSMS recieved: mesSent " + messageSent + " messageRecieved " + messageRecieved + " phoneNumber " + phoneNumber + " timeRecieved " + timeRecieved + " locShared " + locShared + " actShared " + actShared);
 
-        //Send the UniversalReply Message
-        SmsManager sms = SmsManager.getDefault();
-        android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
-        sms.sendTextMessage(phoneNumber, null, messageSent, null, null);
 
         String timeRecievedReadable = getDate(timeRecieved);
         String timeSentReadable = getDate(System.currentTimeMillis());
-
-
 
         //Update Response Log
         ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeRecievedReadable, timeSentReadable, locShared, actShared);
         android.util.Log.v("EventHandler,", "New ResponseLog: "+messageSent+ " " +messageRecieved+ " " +phoneNumber+ " " +timeRecievedReadable+ " " +timeSentReadable+ " " +locShared+ " " +actShared);
         db.addToResponseLog(updateLog);
+
+        //Send the UniversalReply Message
+        SmsManager sms = SmsManager.getDefault();
+        android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
+        sms.sendTextMessage(phoneNumber, null, messageSent, null, null);
+
+
 
         /*Get Contact Info
         Contact contact = db.getContactInfo(phoneNumber);
