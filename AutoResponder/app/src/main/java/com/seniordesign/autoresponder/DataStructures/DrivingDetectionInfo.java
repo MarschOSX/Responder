@@ -27,4 +27,8 @@ public class DrivingDetectionInfo {
             mLocationHistory.remove(mLocationHistory.size()-1);
         }
     }
+
+    public LocationRecord getMostRectent(){
+        return mLocationHistory.get(mLocationHistory.size()-1);
+    }
 }

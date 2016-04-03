@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.seniordesign.autoresponder.DataStructures.DrivingDetectionInfo;
 import com.seniordesign.autoresponder.DataStructures.LocationRecord;
+import com.seniordesign.autoresponder.Interface.Settings.SettingListAdapter;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 
@@ -67,6 +68,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(DrivingDetectionWorker.ACTION_UPDATE);
         intentFilter.addAction(DrivingDetectionWorker.ACTION_NOTIFY_SHUTDOWN);
+        intentFilter.addAction(SettingListAdapter.ACTION_UPDATE_INTERVAL);
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, intentFilter);
 
         //build location request
@@ -103,6 +105,26 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         }
     }
 
+    public boolean isDriving(){
+        return isDriving;
+    }
+
+    private float getSpeed(Location p1, Location p2, long time){
+        float distance = p1.distanceTo(p2);
+
+        float inMiles = Math.abs((distance / 1000f) * 0.62f);
+
+        float hours = time / 3600000f;
+
+        if (inMiles / hours < 0.1) return 0;
+        else return inMiles / hours;
+    }
+
+    private void checkDrivingStatus(){
+        isDriving = !isDriving;
+        Log.d(TAG, "is driving is now: " + isDriving);
+    }
+
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -136,6 +158,13 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     public void onLocationChanged(Location location) {
         info.addToHistory(new LocationRecord(location, new Date(System.currentTimeMillis())));
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(DrivingDetectionService.ACTION_DEBUG_UPDATE));
+
+        if (!isDriving && info.getMostRectent().getLocation().getSpeed() >= 20.0f){
+            checkDrivingStatus();
+        }
+        else if (isDriving && info.getMostRectent().getLocation().getSpeed() < 20.0f ){
+            checkDrivingStatus();
+        }
 
         //Log.d(TAG, " lat = " + location.getLatitude() + " long = " + location.getLongitude() + " speed = " + location.getSpeed());
         //start the worker thread
@@ -208,18 +237,6 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
             return p1;
         }
     }
-
-    public float getSpeed(Location p1, Location p2, long time){
-        float distance = p1.distanceTo(p2);
-
-        float inMiles = Math.abs((distance / 1000f) * 0.62f);
-
-        float hours = time / 3600000f;
-
-        if (inMiles / hours < 0.1) return 0;
-        else return inMiles / hours;
-    }
-
 
     /** @return whether or not this service is running*/
     public static boolean isRunning(Context context) {

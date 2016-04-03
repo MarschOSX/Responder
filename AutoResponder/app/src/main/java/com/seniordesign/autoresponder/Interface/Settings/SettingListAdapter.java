@@ -32,7 +32,8 @@ public class SettingListAdapter extends ArrayAdapter<String> {
     private final String[] settingList;
     private final DBInstance db;
     private AppCompatActivity parentApp;
-    int LOCATION_PERMISSIONS = 0;
+    private int LOCATION_PERMISSIONS = 0;
+    public static final String ACTION_UPDATE_INTERVAL = "ACTION_UPDATE_INTERVAL";
 
     public SettingListAdapter(Context context, String[] settingList, AppCompatActivity parentApp) {
         super(context, R.layout.setting_row, settingList);
