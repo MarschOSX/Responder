@@ -19,25 +19,30 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.seniordesign.autoresponder.DataStructures.DrivingDetectionInfo;
 import com.seniordesign.autoresponder.DataStructures.LocationRecord;
+import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.DBProvider;
 
 import java.sql.Date;
-import java.text.DateFormat;
 import java.util.ArrayList;
 
 /**
  * Created by Garlan on 2/28/2016.
  */
 public class DrivingDetectionService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
-    private final boolean isTesting = false;
-    private final LocalBinder mBinder = new LocalBinder();
     public static final String ACTION_DEBUG_UPDATE = "ACTION_DEBUG_UPDATE";
     private String TAG = "DrivingDetection";
-    private Thread drivingDetector;
-    private boolean isDriving = false;
-    private boolean shuttingDown = false;
-    private DrivingDetectionInfo info;
-    private Date lastUpdate;
+
+    private final LocalBinder mBinder = new LocalBinder();
     private GoogleApiClient googleApiClient;
+
+    private DrivingDetectionInfo info;
+    private Thread worker;
+    private Date lastUpdate;
+    private DBInstance db;
+
+    private boolean isDriving = false;
+    private boolean isTesting = true;
+    private boolean shuttingDown = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
@@ -73,7 +78,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
             Log.e(TAG, "could not find Google Play Services");
         }
 
-
+        this.db = DBProvider.getInstance(false, getApplicationContext());
         //to start in foreground
        /* Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.drawable.something)
@@ -87,7 +92,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     public void onDestroy(){
         shuttingDown = true;
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-        if(drivingDetector != null) drivingDetector.interrupt();
+        if(worker != null) worker.interrupt();
         Log.d(TAG, "is dead");
     }
 
@@ -108,8 +113,8 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
                     case DrivingDetectionWorker.ACTION_NOTIFY_SHUTDOWN:
                         if (!shuttingDown){
                             Log.e(TAG, "unexpected shutdown detected, restarting");
-                            drivingDetector = new Thread(new DrivingDetectionWorker(getApplicationContext(), info));
-                            drivingDetector.start();
+                            worker = new Thread(new DrivingDetectionWorker(getApplicationContext(), info));
+                            worker.start();
                         }
                         else{
                             Log.d(TAG, "allowing driving detection shutdown");
@@ -131,11 +136,12 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     public void onLocationChanged(Location location) {
         info.addToHistory(new LocationRecord(location, new Date(System.currentTimeMillis())));
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(DrivingDetectionService.ACTION_DEBUG_UPDATE));
-        Log.d(TAG, " lat = " + location.getLatitude() + " long = " + location.getLongitude() + " speed = " + location.getSpeed());
+
+        //Log.d(TAG, " lat = " + location.getLatitude() + " long = " + location.getLongitude() + " speed = " + location.getSpeed());
         //start the worker thread
-        /*drivingDetector = new Thread(new DrivingDetectionWorker(getApplicationContext(), info));
-        drivingDetector.setDaemon(true);
-        drivingDetector.start();*/
+        /*worker = new Thread(new DrivingDetectionWorker(getApplicationContext(), info));
+        worker.setDaemon(true);
+        worker.start();*/
     }
 
     @Override
@@ -152,14 +158,19 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     @Override
     public void onConnected(Bundle arg0) {
+        int interval = db.getDrivingDetectionInterval() * 60000;
 
+        if (isTesting) interval /= 60;
+
+        Log.d(TAG, "setting interval to: " + interval + " ms");
         LocationRequest lr = new LocationRequest();
-        lr.setInterval(1000);
+        lr.setInterval(interval);
         lr.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, lr, this);
     }
 
+    /** creates a new client to connect to the Google Api for this object */
     protected synchronized void buildGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
@@ -170,6 +181,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         googleApiClient.connect();
     }
 
+    /** @return the availability of Google Play Services*/
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
         return resultCode == ConnectionResult.SUCCESS;
@@ -200,10 +212,16 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     public float getSpeed(Location p1, Location p2, long time){
         float distance = p1.distanceTo(p2);
 
-        return distance / time;
+        float inMiles = Math.abs((distance / 1000f) * 0.62f);
+
+        float hours = time / 3600000f;
+
+        if (inMiles / hours < 0.1) return 0;
+        else return inMiles / hours;
     }
 
-    /** @return wether or not this service is running*/
+
+    /** @return whether or not this service is running*/
     public static boolean isRunning(Context context) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {

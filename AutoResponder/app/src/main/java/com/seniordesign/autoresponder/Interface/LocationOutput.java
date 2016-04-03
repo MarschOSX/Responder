@@ -28,14 +28,27 @@ public class LocationOutput extends Activity {
     private TextView latitudeTextView;
     private TextView longitudeTextView;
     private TextView speedTextView;
-    private Switch serviceSwitch;
-    private Switch serviceBindSwitch;
     private Button serviceStatusButton;
     private Context context;
     private boolean isBound = false;
     private boolean isRegistered = false;
     private DrivingDetectionService mService;
     private LocationOutput me;
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            DrivingDetectionService.LocalBinder myBinder = (DrivingDetectionService.LocalBinder) service;
+            mService = myBinder.getService();
+            isBound = true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +61,6 @@ public class LocationOutput extends Activity {
         this.latitudeTextView = (TextView)findViewById(R.id.latitude_text);
         this.longitudeTextView = (TextView)findViewById(R.id.longitude_text);
         this.speedTextView = (TextView)findViewById(R.id.speed_text);
-        this.serviceSwitch = (Switch)findViewById(R.id.service_switch);
-        this.serviceBindSwitch = (Switch)findViewById(R.id.bind_switch);
         this.serviceStatusButton = (Button)findViewById(R.id.service_status_button);
 
         //initialize the textviews to 0
@@ -58,11 +69,10 @@ public class LocationOutput extends Activity {
         this.speedTextView.setText("0");
 
         //check if service is running
-        if (isMyServiceRunning(DrivingDetectionService.class)) serviceSwitch.setChecked(true);
 
 
         //build switch to turn on/off driving detection
-        this.serviceSwitch.setOnClickListener(new View.OnClickListener() {
+        /*this.serviceSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (serviceSwitch.isChecked()) {
@@ -81,44 +91,39 @@ public class LocationOutput extends Activity {
                     }
                 }
             }
-        });
+        });*/
 
 
         //build the switch to bind/unbind the application to the service
-        this.serviceBindSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if (serviceBindSwitch.isChecked()) {
-                    //context.startService(new Intent(context, DrivingDetection.class));
 
-                    if (!isBound && isMyServiceRunning(DrivingDetectionService.class)) {
-                        //register service to receive broadcasts
-                        IntentFilter intentFilter = new IntentFilter();
-                        intentFilter.addAction(DrivingDetectionService.ACTION_DEBUG_UPDATE);
-                        LocalBroadcastManager.getInstance(me).registerReceiver(messageReceiver, intentFilter);
+        if (DrivingDetectionService.isRunning(context)) {
+            //context.startService(new Intent(context, DrivingDetection.class));
 
-                        bindService(new Intent(context, DrivingDetectionService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
-                        Log.d(TAG, "service is bound");
-                    } else {
-                        serviceBindSwitch.setChecked(false);
-                    }
+            if (!isBound && isMyServiceRunning(DrivingDetectionService.class)) {
+                //register service to receive broadcasts
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(DrivingDetectionService.ACTION_DEBUG_UPDATE);
+                LocalBroadcastManager.getInstance(me).registerReceiver(messageReceiver, intentFilter);
 
-                } else {
-
-                    if (isBound && isMyServiceRunning(DrivingDetectionService.class)) {
-                        LocalBroadcastManager.getInstance(context).unregisterReceiver(messageReceiver);
-                        unbindService(mServiceConnection);
-                        isBound = false;
-                        mService = null;
-                        latitudeTextView.setText("0");
-                        longitudeTextView.setText("0");
-                        speedTextView.setText("0");
-                        Log.d(TAG, "service is no longer bound");
-                    }
-                }
+                bindService(new Intent(context, DrivingDetectionService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
+                Log.d(TAG, "service is bound");
             }
-        });
+
+        } else {
+
+            if (isBound && DrivingDetectionService.isRunning(context)) {
+                LocalBroadcastManager.getInstance(context).unregisterReceiver(messageReceiver);
+                unbindService(mServiceConnection);
+                isBound = false;
+                mService = null;
+                latitudeTextView.setText("0");
+                longitudeTextView.setText("0");
+                speedTextView.setText("0");
+                Log.d(TAG, "service is no longer bound");
+            }
+        }
+
 
         //displays whether or not the service is running and updats the textviews
         serviceStatusButton.setOnClickListener(new View.OnClickListener() {
@@ -136,20 +141,7 @@ public class LocationOutput extends Activity {
         if(isBound) unbindService(mServiceConnection);
     }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            isBound = false;
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            DrivingDetectionService.LocalBinder myBinder = (DrivingDetectionService.LocalBinder) service;
-            mService = myBinder.getService();
-            isBound = true;
-        }
-    };
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
