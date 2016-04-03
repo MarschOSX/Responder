@@ -1,7 +1,5 @@
 package com.seniordesign.autoresponder.DataStructures;
 
-import java.util.ArrayList;
-
 /**
  * Created by Garlan on 9/28/2015.
  */
@@ -29,8 +27,8 @@ public class Setting {
     public static final String PARENTAL_CONTROLS_NUMBER_DEF = "0";
     public static final String PARENTAL_CONTROLS_TOGGLLE = "parental_controls_toggle";
     public static final String PARENTAL_CONTROLS_TOGGLLE_DEF = "false";
-    public static final String DRIVING_DETECTION_PERIOD = "driving_detection_period";
-    public static final String DRIVING_DETECTION_PERIOD_DEF = "5";
+    public static final String DRIVING_DETECTION_INTERVAL = "driving_detection_interval";
+    public static final String DRIVING_DETECTION_INTERVAL_DEF = "5";
 
 
     //if you are adding a new setting, it and its default value must be added here
@@ -47,18 +45,20 @@ public class Setting {
                     {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF},
                     {PARENTAL_CONTROLS_NUMBER, PARENTAL_CONTROLS_NUMBER_DEF},
                     {PARENTAL_CONTROLS_TOGGLLE, PARENTAL_CONTROLS_TOGGLLE_DEF},
-                    {DRIVING_DETECTION_PERIOD, DRIVING_DETECTION_PERIOD_DEF}
+                    {DRIVING_DETECTION_INTERVAL, DRIVING_DETECTION_INTERVAL_DEF}
 
             };
 
     public static final String[] settingUIList = {
-            "Time Limit",
-            "Time Delay",
             "Default Contact Location Setting",
             "Default Contact Activity Setting",
+            "Driving Detection",
+            "Time Limit",
+            "Time Delay",
             "Default Contact Response",
             "Parental Controls",
-            "Response Log"
+            "Response Log",
+            "Driving Detection Interval"
     };
 
 
