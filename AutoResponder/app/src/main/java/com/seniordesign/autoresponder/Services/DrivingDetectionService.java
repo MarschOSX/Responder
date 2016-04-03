@@ -143,6 +143,16 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
                             LocalBroadcastManager.getInstance(context).unregisterReceiver(messageReceiver);
                         }
                         break;
+                    case SettingListAdapter.ACTION_UPDATE_INTERVAL:
+                        googleApiClient.disconnect();
+                        Log.d(TAG, "updating interval");
+                        if (checkPlayServices()){
+                            buildGoogleApiClient();
+                        }
+                        else{
+                            Log.e(TAG, "could not find Google Play Services");
+                        }
+                        break;
                     default:
                         Log.d(TAG, "unknown broadcast received");
                 }
