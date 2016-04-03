@@ -5,7 +5,6 @@ package com.seniordesign.autoresponder.Interface.Settings;
  */
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -179,7 +178,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                 break;
             case "Driving Detection Interval":
                 title.setText(R.string.drivingDetection_interval);
-                description.setText(R.string.drivingDetection_interval_descr);
+                description.setText(R.string.drivingDetection_interval_descr_short);
                 toggle.setVisibility(View.GONE);
 
                 rowView.setOnClickListener(new View.OnClickListener() {

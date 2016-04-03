@@ -36,6 +36,10 @@ public interface DBInstance {
 
     void setParentalControlsNumber(String parentalControlsNumber);
 
+    void setDrivingDetectionInterval(int minutes);
+
+    int getDrivingDetectionInterval();
+
     long getTimeResponseToggleSet();
 
     void setResponseToggle(boolean toggle);

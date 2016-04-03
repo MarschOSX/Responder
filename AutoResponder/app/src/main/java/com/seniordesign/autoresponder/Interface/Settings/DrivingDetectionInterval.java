@@ -17,49 +17,28 @@ import com.seniordesign.autoresponder.R;
 
 public class DrivingDetectionInterval extends AppCompatActivity {
 
-    private static final String TAG = "DrivingDetectionInterval";
-    int activeTime = 60;
+    private static final String TAG = "DrivingDetectionInt";
     private DBInstance db;
-    EditText setTimeLimit;
 
-    RadioButton indefinite;
-    RadioButton oneHourRB;
-    RadioButton twoHourRB;
-    RadioButton eightHourRB;
-    RadioButton customHourRB;
+    private RadioButton oneMinRB;
+    private RadioButton twoMinRB;
+    private RadioButton threeMinRB;
+    private RadioButton fourMinRB;
+    private RadioButton fiveMinRB;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_time_limit);
+        setContentView(R.layout.activity_driving_detection_interval);
 
         this.db = DBProvider.getInstance(false, getApplicationContext());
 
-        this.indefinite = (RadioButton) findViewById(R.id.radioButton_IndefTimeLimit);
-        this.oneHourRB = (RadioButton) findViewById(R.id.radioButton_60timeLimit);
-        this.twoHourRB = (RadioButton) findViewById(R.id.radioButton_120timeLimit);
-        this.eightHourRB = (RadioButton) findViewById(R.id.radioButton_480timeLimit);
-        this.customHourRB = (RadioButton) findViewById(R.id.radioButton_customTimeLimit);
-
-        //set listener to be called when text is changed
-        setTimeLimit   = (EditText)findViewById(R.id.customValtimeLimit);
-        setTimeLimit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String time = s.toString();
-                if (!time.matches("")){
-                    customHourRB.setChecked(true);
-                    db.setTimeLimit(Integer.parseInt(time));
-                }
-            }
-        });
+        this.oneMinRB = (RadioButton) findViewById(R.id.radioButton_1);
+        this.twoMinRB = (RadioButton) findViewById(R.id.radioButton_2);
+        this.threeMinRB = (RadioButton) findViewById(R.id.radioButton_3);
+        this.fourMinRB = (RadioButton) findViewById(R.id.radioButton_4);
+        this.fiveMinRB = (RadioButton) findViewById(R.id.radioButton_5);
 
         setTimeLimitRadioButton();
     }
@@ -88,20 +67,26 @@ public class DrivingDetectionInterval extends AppCompatActivity {
 
     private void setTimeLimitRadioButton() {
         //DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-        Integer timeDelay = db.getTimeLimit();
-        Log.v(TAG, "time limit from DB is " + Integer.toString(timeDelay));
-        if(timeDelay == 100){
-            indefinite.setChecked(true);
-        }else if(timeDelay == 1){
-            oneHourRB.setChecked(true);
-        }else if(timeDelay == 2){
-            twoHourRB.setChecked(true);
-        }else if(timeDelay == 8){
-            eightHourRB.setChecked(true);
-        }else{
-            customHourRB.setChecked(true);
-            EditText customValTimeLimit = (EditText) findViewById(R.id.customValtimeLimit);
-            customValTimeLimit.setHint(Integer.toString(timeDelay));
+        Integer interval = db.getDrivingDetectionInterval();
+
+        if(interval == 1){
+            oneMinRB.setChecked(true);
+        }else if(interval == 2){
+            twoMinRB.setChecked(true);
+        }else if(interval == 3){
+            threeMinRB.setChecked(true);
+        }else if(interval == 4){
+            fourMinRB.setChecked(true);
+        }else if(interval == 5){
+            fiveMinRB.setChecked(true);
+        }
+        else if(interval < 0){
+            db.setDrivingDetectionInterval(1);
+            oneMinRB.setChecked(true);
+        }
+        else{
+            db.setDrivingDetectionInterval(5);
+            fiveMinRB.setChecked(true);
         }
 
     }
@@ -109,37 +94,32 @@ public class DrivingDetectionInterval extends AppCompatActivity {
     public void radioButtonTimeLimitSet(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
-
+        int interval = 1;
         // Check which radio button was clicked
         switch(view.getId()) {
-            case R.id.radioButton_IndefTimeLimit:
+            case R.id.radioButton_1:
                 if (checked)
-                    activeTime = 100;
+                    interval = 1;
                 break;
-            case R.id.radioButton_60timeLimit:
+            case R.id.radioButton_2:
                 if (checked)
-                    activeTime = 1;
+                    interval = 2;
                 break;
-            case R.id.radioButton_120timeLimit:
+            case R.id.radioButton_3:
                 if (checked)
-                    activeTime = 2;
+                    interval = 3;
                 break;
-            case R.id.radioButton_480timeLimit:
+            case R.id.radioButton_4:
                 if (checked)
-                    activeTime = 8;
+                    interval = 4;
                 break;
-            case R.id.radioButton_customTimeLimit:
+            case R.id.radioButton_5:
                 if (checked)
-                    try {
-                        activeTime = Integer.parseInt(setTimeLimit.getText().toString());
-                    } catch (NumberFormatException e) {
-                        activeTime = Integer.parseInt(setTimeLimit.getHint().toString());
-                    }
+                    if (checked)
+                        interval = 5;
                 break;
         }
-        Log.v(TAG, "setting time limit to (in hours): " + Integer.toString(activeTime));
-        db.setTimeLimit(activeTime);
-        db.setTimeResponseToggleSet(System.currentTimeMillis());
-        db.getResponseToggle();
+
+        db.setDrivingDetectionInterval(interval);
     }
 }
