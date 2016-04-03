@@ -16,7 +16,7 @@ import java.util.InputMismatchException;
 /**
  * Created by Garlan on 10/5/2015.
  */
-public class TestDBInstance implements DBInstance {
+public class TestDBInstance /*implements DBInstance*/ {
     private static final String TAG = "TestDBInstance";
     private HashMap<String,String> settings;
     private ArrayList<ResponseLog> responseLog;
@@ -298,8 +298,6 @@ public class TestDBInstance implements DBInstance {
     public ArrayList<ResponseLog> getResponseLogList(){
         return  responseLog;
     }
-    @Override
-    public void deleteResponseLogs() {}
 
 
     ///////////////////////////

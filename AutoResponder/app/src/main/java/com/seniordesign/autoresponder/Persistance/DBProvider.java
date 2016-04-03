@@ -12,12 +12,14 @@ public class DBProvider{
 
     public static DBInstance getInstance(boolean testMode, Context context){
         if (testMode){
-            if (testDB == null){
+            /*if (testDB == null){
                 Log.d(TAG, "creating new mock database");
                 testDB = new TestDBInstance();
             }
             Log.d(TAG, "returning mock database");
-            return testDB;
+            return testDB;*/
+            Log.e(TAG, "test mode no longer available");
+            return null;
         }
         else{
             Log.d(TAG, "accessing database");

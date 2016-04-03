@@ -107,6 +107,10 @@
             android:name=".Interface.Settings.ParentalControlsSetUp"
             android:label="@string/title_activity_parental_controls_set_up" >
         </activity>
+        <activity
+            android:name=".Interface.Settings.DrivingDetectionInterval"
+            android:label="@string/title_activity_driving_detection_interval" >
+        </activity>
     </application>
 
 </manifest>
