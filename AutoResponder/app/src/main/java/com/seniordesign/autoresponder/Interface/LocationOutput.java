@@ -129,7 +129,10 @@ public class LocationOutput extends Activity {
         serviceStatusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Driving Detection is running = " + isMyServiceRunning(DrivingDetectionService.class), Toast.LENGTH_SHORT).show();
+                String message = "Driving Detection is running = " + isMyServiceRunning(DrivingDetectionService.class);
+                if (DrivingDetectionService.isRunning(context)) message += "\n Status = " + mService.getStatus();
+
+                Toast.makeText(context, message , Toast.LENGTH_SHORT).show();
             }
         });
     }

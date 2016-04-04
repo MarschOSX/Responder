@@ -6,6 +6,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.DrivingDetectionInfo;
+import com.seniordesign.autoresponder.DataStructures.LocationRecord;
+
+import java.util.ArrayList;
 
 /**
  * Created by Garlan on 3/9/2016.
@@ -16,12 +19,12 @@ public class DrivingDetectionWorker implements Runnable{
 
     private final String TAG = "DrivingDetection";
     private LocalBroadcastManager localBroadcastManager;
-    private DrivingDetectionInfo info;
+    private ArrayList<LocationRecord> info;
 
     private float[] array;
     private int i = 0;
 
-    public DrivingDetectionWorker(Context context, DrivingDetectionInfo info){
+    public DrivingDetectionWorker(Context context, ArrayList<LocationRecord> info){
         this.info = info;
         this.localBroadcastManager = LocalBroadcastManager.getInstance(context);
     }

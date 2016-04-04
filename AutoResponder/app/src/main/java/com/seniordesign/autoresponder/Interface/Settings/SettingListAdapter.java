@@ -158,7 +158,6 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     public void onClick(View v) {
                         if (toggle.isChecked()) {
                             //context.startService(new Intent(context, DrivingDetection.class));
-
                             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                 ActivityCompat.requestPermissions(parentApp, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSIONS);
                                 toggle.setChecked(false);
@@ -169,9 +168,15 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                             }
 
                         } else {
-                            //disable service
-                            if (DrivingDetectionService.isRunning(context)) {
-                                context.stopService(new Intent(context, DrivingDetectionService.class));
+                            //make sure that parental controls is not enables
+                            if(!db.getParentalControlsToggle()) {
+                                //disable service
+                                if (DrivingDetectionService.isRunning(context)) {
+                                    context.stopService(new Intent(context, DrivingDetectionService.class));
+                                }
+                            }
+                            else {
+                                toggle.setChecked(true);
                             }
                         }
                     }
@@ -190,8 +195,8 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
-            default:
-                Log.e(TAG, "this setting (" + settingList[position] + ") has not been configured!!!!");
+                    default:
+                            Log.e(TAG, "this setting (" + settingList[position] + ") has not been configured!!!!");
         }
 
         return rowView;
