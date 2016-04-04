@@ -4,8 +4,10 @@ package com.seniordesign.autoresponder.Services;
 
 import android.app.ActivityManager;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
@@ -19,6 +21,7 @@ import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.PermDBInstance;
 import com.seniordesign.autoresponder.Receiver.SMSSender;
 
 /**
@@ -30,6 +33,12 @@ import com.seniordesign.autoresponder.Receiver.SMSSender;
  */
 public class ParentalControlsWatcher extends Service {
     public static final String TAG = "ParentalControlsWatcher";
+    private static final String alertMessage = "ALERT from AutoResponder: This user sent a text while driving";
+    private static final String alertMessage1 = "This number has just been removed from AutoResponder parental controls";
+    private static final String alertMessage2 = "This number has just been added from AutoResponder parental controls";
+    private static final String alertMessage3 = "This number has enabled AutoResponder parental controls";
+    private static final String alertMessage4 = "This number has disabled AutoResponder parental controls";
+
     private DBInstance db;
     public SMSObserver observer;
 
@@ -60,19 +69,38 @@ public class ParentalControlsWatcher extends Service {
     }
 
 
+
+
     public class SMSObserver extends ContentObserver {
         private Handler m_handler;
         private Context mContext;
         Long last_id = 0l;
+        private boolean isBound = false;
+        private DrivingDetectionService mService;
+
 
 
         public SMSObserver(Handler handler) {
             super(handler);
             m_handler = handler;
             mContext = getApplicationContext();
+            db = new PermDBInstance(mContext);
             Log.e(TAG, "SMSObserver Created");
         }
 
+        private ServiceConnection mServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                isBound = false;
+            }
+
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                DrivingDetectionService.LocalBinder myBinder = (DrivingDetectionService.LocalBinder) service;
+                mService = myBinder.getService();
+                isBound = true;
+            }
+        };
 
 
         @Override
@@ -96,44 +124,52 @@ public class ParentalControlsWatcher extends Service {
             }
             last_id = cursor.getLong(cursor.getColumnIndex("_id"));
             String protocol = cursor.getString(cursor.getColumnIndex("protocol"));
-
             if (protocol == null) {
                 //the message is sent out just now
                 Log.e(TAG, "SMS Sent Detected!!");
-                try{
+                try {
                     cursor.moveToFirst();
-                    String[] columns = new String[] { "address", "date", "body"};
-                        String address = cursor.getString(cursor.getColumnIndex(columns[0]));
-                        String date = cursor.getString(cursor.getColumnIndex(columns[1]));
-                        String msg = cursor.getString(cursor.getColumnIndex(columns[2]));
-                        Log.d(TAG, "Address: "+address);
-                        Log.d(TAG, "Date: "+date);
-                        Log.d(TAG, "Message: "+msg);
+                    String[] columns = new String[]{"address", "date", "body"};
+                    String address = cursor.getString(cursor.getColumnIndex(columns[0]));
+                    String date = cursor.getString(cursor.getColumnIndex(columns[1]));
+                    String msg = cursor.getString(cursor.getColumnIndex(columns[2]));
+                    Log.d(TAG, "Address: " + address);
+                    Log.d(TAG, "Date: " + date);
+                    Log.d(TAG, "Message: " + msg);
 
-                    //Todo resume here with notes on GitHub Issue #79
-                    /*ResponseLog lastLog = db.getLastResponseByNum(db.getParentalControlsNumber());
-                    android.util.Log.v(TAG, "last response log retrieved");
-                    if(!lastLog.getMessageSent().matches(db.getParentalControlsNumber())){
-                        android.util.Log.v(TAG, "Message WAS NOT SENT from AutoResponder!");
-                        /*boolean isDriving = true;
-                        //TODO get data from DB
-                        if(isDriving){
-                            android.util.Log.v(TAG, "A text was sent WHILE DRIVING! BAD DOGGY, alert parent");
-                            SMSSender sender = new SMSSender(db);
-                            sender.sendSMS("ALERT this user sent a text while driving", "",
-                                    db.getParentalControlsNumber(), 0L, false, false);
+                    if(msg.matches(alertMessage) || msg.matches(alertMessage1) || msg.matches(alertMessage2) || msg.matches(alertMessage3) || msg.matches(alertMessage4)){
+                        android.util.Log.v(TAG, "Just catching an alert message from AR, we can ignore this");
+                        return;
+                    }
 
-                        }
+                    ResponseLog lastLog = db.getLastResponseByNum(address);
+                    if(msg.matches(lastLog.getMessageSent())){
+                        android.util.Log.v(TAG, "This message was sent by AutoResponder, just ignore");
+                        return;
+                    }
 
-                    }else{
-                        android.util.Log.v(TAG, "Message WAS SENT from AutoResponder! No worries!");
-                    }*/
-                }
-                catch (Exception e){
+                    //Determine if driving
+                    Log.d(TAG, "binding driving service");
+                    bindService(new Intent(mContext, DrivingDetectionService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
+                    Log.d(TAG, "service is bound");
+                    boolean isDriving = mService.isDriving();
+                    unbindService(mServiceConnection);
+                    if(!isDriving){
+                        android.util.Log.v(TAG, "Message WAS NOT SENT while driving! No Worries...");
+                        return;
+                    }
+                    android.util.Log.v(TAG, "A text was sent WHILE DRIVING! BAD DOGGY, alert parent");
+                    SMSSender sender = new SMSSender(db);
+                    sender.sendSMS(alertMessage, "", db.getParentalControlsNumber(), System.currentTimeMillis(), false, false);
+
+
+                }catch (Exception e){
                     Log.e(TAG, "Exception trying to read outgoing sms");
+                    e.printStackTrace();
                 }
                 finally{
                     cursor.close();
+
                 }
 
 

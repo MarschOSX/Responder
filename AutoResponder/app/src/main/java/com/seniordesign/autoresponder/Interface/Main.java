@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Switch;
 
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
 import com.seniordesign.autoresponder.Interface.Groups.GroupList;
+import com.seniordesign.autoresponder.Interface.Settings.ParentalControlsSetUp;
 import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
@@ -28,6 +30,7 @@ public class Main extends AppCompatActivity {
     private Switch mLocationToggle;
     private Switch mCalenderToggle;
     private Switch mResponseToggle;
+    private DBInstance db;
     int CALENDAR_PERMISSIONS = 0;
     int LOCATION_PERMISSIONS = 0;
     int SEND_SMS_PERMISSIONS = 0;
@@ -39,15 +42,17 @@ public class Main extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+        db = DBProvider.getInstance(false, getApplicationContext());
         mLocationToggle.setChecked(db.getLocationToggle());
         mCalenderToggle.setChecked(db.getActivityToggle());
         mResponseToggle.setChecked(db.getResponseToggle());
+        checkParentalControls();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = DBProvider.getInstance(false, getApplicationContext());
 
         setContentView(R.layout.activity_main);
 
@@ -69,10 +74,34 @@ public class Main extends AppCompatActivity {
             SEND_SMS_PERMISSIONS = 1;
         }
 
+
+
         //build the all the toggles
+        checkParentalControls();
         buildSwitches();
 
 
+    }
+
+    private void checkParentalControls(){
+        //if Parental Controls are on
+        //Get Read SMS Permissions
+        if(ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.READ_SMS}, READ_SMS_PERMISSIONS);
+        }else{
+            READ_SMS_PERMISSIONS = 1;
+        }
+
+        //builds at start of application
+        if(db.getParentalControlsToggle()){
+            //Start service to monitor text messages
+            if (!ParentalControlsWatcher.isRunning(getApplicationContext())) {
+                Log.d(TAG, "ParentalControls Service is starting!");
+                getApplicationContext().startService(new Intent(getApplicationContext(), ParentalControlsWatcher.class));
+            }else{
+                Log.d(TAG, "ParentalControls Service is already running!");
+            }
+        }
     }
 
     //build the switches and add the listeners

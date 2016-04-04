@@ -19,6 +19,7 @@ import java.util.InputMismatchException;
 public class TestDBInstance /*implements DBInstance*/ {
     private static final String TAG = "TestDBInstance";
     private HashMap<String,String> settings;
+    private ResponseLog responseLogSingle;
     private ArrayList<ResponseLog> responseLog;
     private ArrayList<Contact> contactTable;
     private ArrayList<Group> groupTable;
@@ -294,6 +295,8 @@ public class TestDBInstance /*implements DBInstance*/ {
 
         return range;
     }*/
+
+    public ResponseLog getLastResponse(){return  responseLogSingle;}
 
     public ArrayList<ResponseLog> getResponseLogList(){
         return  responseLog;

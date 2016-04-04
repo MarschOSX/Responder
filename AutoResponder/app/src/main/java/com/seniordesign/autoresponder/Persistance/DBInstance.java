@@ -72,6 +72,8 @@ public interface DBInstance {
 
     ResponseLog getLastResponseByNum(String phoneNum);
 
+    ResponseLog getLastResponse();
+
     ArrayList<ResponseLog> getResponseLogList();
 
     void deleteResponseLogs();
