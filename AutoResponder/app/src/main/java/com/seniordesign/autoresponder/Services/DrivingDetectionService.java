@@ -38,7 +38,6 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     private DrivingDetectionInfo info;
     private Thread worker;
-    private Date lastUpdate;
     private DBInstance db;
     private DrivingDetectionService me;
     private  ArrayList<LocationRecord> loadResults;
@@ -49,6 +48,8 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     private int status;
     private final int checkPeriod = 60;
+    private final int timeout = 10;
+    private int shutdownCount;
 
     public static final int IDLE = 0;
     public static final int LOADING_BUFFER = 1;
@@ -71,7 +72,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         super.onCreate();
         Log.d(TAG, "is created");
 
-        //initialize data structures
+        //initialize a 2 element buffer for storing current and last location
         this.info = new DrivingDetectionInfo(2);
 
         //register service to receive broadcasts
@@ -81,10 +82,13 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         intentFilter.addAction(SettingListAdapter.ACTION_UPDATE_INTERVAL);
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, intentFilter);
 
+        //TODO make it so that service status is LOAD_BUFFER -> DETERMINE_STATUS
+        //set the status to the default of IDLE/not driving
         status = DrivingDetectionService.IDLE;
 
-        //build location request
+        shutdownCount = 0;
 
+        //start location detection
         if (checkPlayServices()){
             buildGoogleApiClient();
         }
@@ -92,7 +96,9 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
             Log.e(TAG, "could not find Google Play Services");
         }
 
+        //load connection to DB
         this.db = DBProvider.getInstance(false, getApplicationContext());
+
         //to start in foreground
        /* Notification notification = new Notification.Builder(context)
                 .setSmallIcon(R.drawable.something)
@@ -104,10 +110,18 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     @Override
     public void onDestroy(){
+        //set shut down to true so worker thread will not restart
         shuttingDown = true;
+
+        //close out location services
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
         googleApiClient.disconnect();
+
+        //if worker is running, stop it
         if(worker != null) worker.interrupt();
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(messageReceiver);
+
         Log.d(TAG, "is dead");
     }
 
@@ -118,31 +132,43 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         }
     }
 
+    /** @return driving stats */
     public boolean isDriving(){
         return isDriving;
     }
 
+    /** @return process status of the service*/
     public int getStatus(){
         return this.status;
     }
 
+    /** @param p2 the coordinates of the current location
+     * @param p1 the coordinates of the previous location
+     * @param time the time it took to travel from p1 to p2 in milliseconds
+     * @return the speed in mph
+     */
     private float getSpeed(Location p1, Location p2, long time){
+        //get the distance in meters
         float distance = p1.distanceTo(p2);
 
+        //convert the distance to miles
         float inMiles = Math.abs((distance / 1000f) * 0.62f);
 
+        //convert the time (ms) to hours
         float hours = time / 3600000f;
 
+        //arbitrarily filters out low mph deemed "white noise"
         if (inMiles / hours < 0.1) return 0;
         else return inMiles / hours;
     }
 
+    /** initializes the process of checking the driving status*/
     private void checkDrivingStatus(){
         //stop location updates so that interval can be increased
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, me);
         googleApiClient.disconnect();
 
-        //allocate a buffer large enough to get a full minute of updates and update the status
+        //allocate a buffer large enough to get checkPeriod x 1 second worth of updates and update the status
         this.status = DrivingDetectionService.LOADING_BUFFER;
         info = new DrivingDetectionInfo(this.checkPeriod);
 
@@ -155,6 +181,8 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         }
     }
 
+
+    /** local broadcast handler*/
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -162,28 +190,46 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
                 switch (intent.getAction()){
                     case DrivingDetectionWorker.ACTION_UPDATE:
                         break;
+
+                    //handles when the notification of the worker thread being interuppted
                     case DrivingDetectionWorker.ACTION_NOTIFY_SHUTDOWN:
-                        if (!shuttingDown){
+                        //if the thread is not supposed to shutdown, restart it
+                        if (!shuttingDown && shutdownCount++ < timeout){
                             Log.e(TAG, "unexpected shutdown detected, restarting");
                             worker = new Thread(new DrivingDetectionWorker(getApplicationContext(), loadResults));
                             worker.start();
                         }
-                        else{
-                            Log.d(TAG, "allowing driving detection shutdown");
-                            LocalBroadcastManager.getInstance(context).unregisterReceiver(messageReceiver);
+                        else {
+                            if (shuttingDown) {
+                                Log.d(TAG, "allowing driving detection shutdown");
+                                shutdownCount = 0;
+                                //LocalBroadcastManager.getInstance(context).unregisterReceiver(messageReceiver);
+                            }
+                            else {
+                                Log.e(TAG, "TIME OUT ERROR: worker thread was repeatedly shut down");
+                                shutdownCount = 0;
+                            }
                         }
                         break;
+
+                    //handles broadcast from Settings to update the driving detection interval
                     case SettingListAdapter.ACTION_UPDATE_INTERVAL:
-                        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, me);
-                        googleApiClient.disconnect();
-                        Log.d(TAG, "updating interval");
-                        if (checkPlayServices()){
-                            buildGoogleApiClient();
-                        }
-                        else{
-                            Log.e(TAG, "could not find Google Play Services");
+                        //check to make sure you are not currently loading the buffer
+                        if(status != DrivingDetectionService.LOADING_BUFFER){
+
+                            //refresh the location detection service which on restart grabs the new interval
+                            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, me);
+                            googleApiClient.disconnect();
+                            Log.d(TAG, "updating interval");
+                            if (checkPlayServices()){
+                                buildGoogleApiClient();
+                            }
+                            else{
+                                Log.e(TAG, "could not find Google Play Services");
+                            }
                         }
                         break;
+
                     default:
                         Log.d(TAG, "unknown broadcast received");
                 }
@@ -197,25 +243,37 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     ///////////////////////////////////
     @Override
     public void onLocationChanged(Location location) {
+        //add the location to the buffer
         info.addToHistory(new LocationRecord(location, new Date(System.currentTimeMillis())));
+
+        //notify Location output of an update
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent(DrivingDetectionService.ACTION_DEBUG_UPDATE));
 
         switch (status){
             case DrivingDetectionService.IDLE:
+                //if threshold exceed, perform a more intensive driving status check
                 if (info.getMostRectent().getLocation().getSpeed() >= 20.0f){
                     checkDrivingStatus();
                 }
                 break;
             case DrivingDetectionService.LOADING_BUFFER:
+
+                //once the buffer has been filled, remove that buffer and pass it to worker thread
                 if (info.getLocationHistory().size() >= checkPeriod){
+
                     //stop location updates so that interval can be increased
                     LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, me);
                     googleApiClient.disconnect();
 
-                    loadResults = info.getLocationHistory();
-                    info = new DrivingDetectionInfo(2);
+                    //update the service status
                     status = DrivingDetectionService.DETERMINING_STATUS;
 
+                    //segregate the buffer so that its not modified while worker thread is using it
+                    loadResults = info.getLocationHistory();
+                    info = new DrivingDetectionInfo(2);
+
+                    //pass the bufferResult to the worker and start the thread
+                    //once the worker has made a determination it will send a broadcast with the DRIVING/IDLE status
                     worker = new Thread(new DrivingDetectionWorker(getApplicationContext(), loadResults));
                     worker.setDaemon(true);
                     worker.start();
@@ -233,6 +291,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
                 //do nothing
                 break;
             case DrivingDetectionService.DRIVING:
+                //if threshold no longer exceeded, perform a more intensive driving status check
                 if (info.getMostRectent().getLocation().getSpeed() < 20.0f ){
                     checkDrivingStatus();
                 }
@@ -287,7 +346,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
                 break;
         }
 
-
+        //once connected to GooglePS, start location request services
         Log.d(TAG, "setting interval to: " + interval + " ms");
         LocationRequest lr = new LocationRequest();
         lr.setInterval(interval);
@@ -319,7 +378,6 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     public LocationRecord getCurrentLocation(){
         ArrayList<LocationRecord> history = this.info.getLocationHistory();
-
 
         if(history.size() == 0) return null;
         else if (history.size() == 1){

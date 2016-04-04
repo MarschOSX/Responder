@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.seniordesign.autoresponder.DataStructures.DrivingDetectionInfo;
 import com.seniordesign.autoresponder.DataStructures.LocationRecord;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class DrivingDetectionWorker implements Runnable{
             Thread.sleep(1000);
         }
         catch (InterruptedException e){
-            prepareShutDown();
+            shutdown();
             return;
         }
 
@@ -52,14 +51,14 @@ public class DrivingDetectionWorker implements Runnable{
         Log.d(TAG, i++ + "...");
 
         if(Thread.currentThread().isInterrupted()){
-            prepareShutDown();
+            shutdown();
             return;
         }
 
         run();
     }
 
-    private void prepareShutDown(){
+    private void shutdown(){
         Log.d(TAG, "interrupt detected, shutting down");
 
         Intent status = new Intent(DrivingDetectionWorker.ACTION_NOTIFY_SHUTDOWN);
