@@ -131,6 +131,17 @@ public class TestDBInstance /*implements DBInstance*/ {
         this.settings.put(Setting.UNIVERSAL_TOGGLE, responseToggleText);
     }
 
+    public void setWorldToggle(boolean worldToggle){
+        String worldToggleText;
+        if(worldToggle){
+            worldToggleText = "true";
+        }
+        else{
+            worldToggleText = "false";
+        }
+        this.settings.put(Setting.WORLD_TOGGLE, worldToggleText);
+    }
+
     public void setParentalControlsToggle(boolean parentalControlsToggle){
         String responseToggleText;
         if(parentalControlsToggle){
@@ -171,6 +182,20 @@ public class TestDBInstance /*implements DBInstance*/ {
         }
         else{
             Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.RESPONSE_TOGGLE + " set to " + value + " when true/false was expected");
+            throw new InputMismatchException();
+        }
+    }
+
+    public boolean getWorldToggle(){
+        String value = this.settings.get(Setting.WORLD_TOGGLE);
+        if(value.compareTo("true") == 0){
+            return true;
+        }
+        else if(value.compareTo("false") == 0){
+            return false;
+        }
+        else{
+            Log.e(TAG, "ERROR: getResponseToggle: found " + Setting.WORLD_TOGGLE + " set to " + value + " when true/false was expected");
             throw new InputMismatchException();
         }
     }

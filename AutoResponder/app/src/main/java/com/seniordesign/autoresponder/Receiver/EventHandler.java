@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.Switch;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Interface.Settings.ResponseLogList;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
@@ -84,6 +85,12 @@ public class EventHandler implements Runnable{
                 db.setResponseToggle(false);
             }
         }*/
+
+        //For World Reply
+        if(db.getWorldToggle() && contact == null){
+            //We need to populate with default group info
+            contact = new Contact(phoneNumber, phoneNumber, Group.DEFAULT_GROUP, db.getReplyAll(), false, false, true);
+        }
 
 
         //The function will only continue if the user has set the response toggle to on
