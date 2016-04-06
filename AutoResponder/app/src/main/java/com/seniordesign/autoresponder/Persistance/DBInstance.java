@@ -50,6 +50,8 @@ public interface DBInstance {
 
     void setUniversalToggle(boolean toggle);
 
+    void setWorldToggle(boolean toggle);
+
     void setParentalControlsToggle(boolean toggle);
 
     boolean getResponseToggle();
@@ -59,6 +61,8 @@ public interface DBInstance {
     boolean getActivityToggle();
 
     boolean getUniversalToggle();
+
+    boolean getWorldToggle();
 
     boolean getParentalControlsToggle();
 
@@ -71,6 +75,8 @@ public interface DBInstance {
     void addToResponseLog(ResponseLog newLog);
 
     ResponseLog getLastResponseByNum(String phoneNum);
+
+    ResponseLog getLastResponse();
 
     ArrayList<ResponseLog> getResponseLogList();
 

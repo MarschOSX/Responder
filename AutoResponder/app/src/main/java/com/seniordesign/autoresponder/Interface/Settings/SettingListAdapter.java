@@ -80,6 +80,18 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
+            case "World Toggle": //default group location toggle
+                title.setText("World Reply");
+                description.setText("Responds to any number, not just contacts");
+
+                toggle.setChecked(db.getWorldToggle());
+                toggle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        db.setWorldToggle(toggle.isChecked());
+                    }
+                });
+                break;
             case "Default Contact Activity Setting": //default group activity toggle
                 title.setText(R.string.defaultGroup_activity_toggle);
 

@@ -29,6 +29,8 @@ public class Setting {
     public static final String PARENTAL_CONTROLS_TOGGLLE_DEF = "false";
     public static final String DRIVING_DETECTION_INTERVAL = "driving_detection_interval";
     public static final String DRIVING_DETECTION_INTERVAL_DEF = "5";
+    public static final String WORLD_TOGGLE = "world_toggle";
+    public static final String WORLD_TOGGLE_DEF = "false";
 
 
     //if you are adding a new setting, it and its default value must be added here
@@ -45,20 +47,22 @@ public class Setting {
                     {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF},
                     {PARENTAL_CONTROLS_NUMBER, PARENTAL_CONTROLS_NUMBER_DEF},
                     {PARENTAL_CONTROLS_TOGGLLE, PARENTAL_CONTROLS_TOGGLLE_DEF},
-                    {DRIVING_DETECTION_INTERVAL, DRIVING_DETECTION_INTERVAL_DEF}
+                    {DRIVING_DETECTION_INTERVAL, DRIVING_DETECTION_INTERVAL_DEF},
+                    {WORLD_TOGGLE, WORLD_TOGGLE_DEF}
 
             };
 
     public static final String[] settingUIList = {
+            "World Toggle",
+            "Default Contact Response",
             "Default Contact Location Setting",
             "Default Contact Activity Setting",
             "Driving Detection",
-            "Time Limit",
-            "Time Delay",
-            "Default Contact Response",
+            "Driving Detection Interval",
             "Parental Controls",
             "Response Log",
-            "Driving Detection Interval"
+            "Time Limit",
+            "Time Delay"
     };
 
 

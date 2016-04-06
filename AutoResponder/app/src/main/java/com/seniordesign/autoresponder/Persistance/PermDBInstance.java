@@ -151,6 +151,11 @@ public class PermDBInstance implements DBInstance {
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.UNIVERSAL_TOGGLE, DBHelper.SETTING_VALUE[0], responseToggle);
     }
 
+    public void setWorldToggle(boolean worldToggle){
+        Log.d(TAG, "setting  world toggle to " + worldToggle + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.WORLD_TOGGLE, DBHelper.SETTING_VALUE[0], worldToggle);
+    }
+
     /**
     Parental Controls Setters
      */
@@ -223,6 +228,42 @@ public class PermDBInstance implements DBInstance {
                 "SELECT " + DBHelper.SETTING_VALUE[0] +
                         " FROM " + DBHelper.TABLE_SETTINGS +
                         " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.UNIVERSAL_TOGGLE + "\"";
+
+        //query database and ensure cursor returned is valid
+        Cursor result = myDB.rawQuery(query, null);
+        boolean toggle;
+        if ((result != null) && (result.moveToFirst())){
+
+            //retrieve setting value
+            String response = result.getString(result.getColumnIndex(DBHelper.SETTING_VALUE[0]));
+
+            //determine if value is true or false and returns as translates into a boolean
+            if( response.compareTo("true") == 0){
+                toggle = true;
+            }
+            else if ( response.compareTo("false") == 0){
+                toggle = false;
+            }
+            else{
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": found " + response + " when a value of true or false was expected from: " + query);
+                throw new InputMismatchException();
+            }
+            result.close();
+        } else {
+            Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not get/access cursor object from: " + query);
+            throw new NullPointerException();
+        }
+        Log.d(TAG, getMethodName(0) + ": toggle is " + toggle);
+        return toggle;
+    }
+
+
+
+    public boolean getWorldToggle(){
+        final String query =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = " + "\"" + Setting.WORLD_TOGGLE + "\"";
 
         //query database and ensure cursor returned is valid
         Cursor result = myDB.rawQuery(query, null);
@@ -340,6 +381,65 @@ public class PermDBInstance implements DBInstance {
                 result.close();
 
                 return new ResponseLog(msgSnt, msgRcv, senderNum, dateRecieved, dateSent, locShared, actShared);
+            } else {
+                Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object" );
+                return null;
+            }
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(0) + " could not retrieve data");
+            throw e;
+        }
+    }
+
+    public ResponseLog getLastResponse(){
+
+        String senderNumber;
+        String messageRecieved;
+        String messageSent;
+        String timeRecieved;
+        String timeSent;
+        Boolean locShared;
+        Boolean actShared;
+
+        String table = DBHelper.TABLE_RESPONSELOG;
+        String columns[] = {"MAX(" + DBHelper.RESPONSELOG_TIMESENT[0] + ")",
+                DBHelper.RESPONSELOG_TIMERECEIVED[0],
+                DBHelper.RESPONSELOG_SENDERNUM[0],
+                DBHelper.RESPONSELOG_MESSAGERCV[0],
+                DBHelper.RESPONSELOG_MESSAGESNT[0],
+                DBHelper.RESPONSELOG_LOCATIONSHARED[0],
+                DBHelper.RESPONSELOG_ACTIVITYSHARED[0]};
+
+        try {
+            Cursor result = this.myDB.query(table, columns, null, null, null, null, null);
+            if (result != null) {
+                int numRows = result.getCount();
+                if (numRows ==  0) {
+                    Log.d(TAG, getMethodName(0) + "No ResponseLogs Found!");
+                    return null;
+                }else{
+                    result.moveToFirst();
+                }
+                if (result.getLong(0) == 0L) {
+                    Log.d(TAG, getMethodName(0) + "First ResponseLog is Empty!");
+                    return null;
+                }
+
+                //load query result
+                timeRecieved = result.getString(1);
+                timeSent = result.getString(0);
+                senderNumber = result.getString(2);
+                messageRecieved = result.getString(3);
+                messageSent = result.getString(4);
+                locShared = convertToBool(result.getString(5));
+                actShared = convertToBool(result.getString(6));
+
+                //Generate Response Log
+                ResponseLog responseLog = new ResponseLog(messageSent, messageRecieved, senderNumber, timeRecieved, timeSent, locShared, actShared);
+                Log.d(TAG, getMethodName(0) + ": " + responseLog.toString());
+                result.close();
+                return responseLog;
             } else {
                 Log.e(TAG, "ERROR: " + getMethodName(0) + ": could not access cursor object" );
                 return null;

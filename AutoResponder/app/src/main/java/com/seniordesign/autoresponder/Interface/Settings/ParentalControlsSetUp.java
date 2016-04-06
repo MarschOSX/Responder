@@ -1,7 +1,12 @@
 package com.seniordesign.autoresponder.Interface.Settings;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,14 +23,19 @@ import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 import com.seniordesign.autoresponder.Receiver.SMSSender;
+import com.seniordesign.autoresponder.Services.DrivingDetectionService;
+import com.seniordesign.autoresponder.Services.ParentalControlsWatcher;
 
 public class ParentalControlsSetUp extends AppCompatActivity {
+    private String TAG = "ParentalControlsSetUp";
     private DBInstance db;
     Switch parentalControlsEnabler;
     Button setParentalPhoneNumber;
     Button deleteParentalPhoneNumber;
     EditText parentalPhoneNumber;
     Context context;
+    int READ_SMS_PERMISSIONS = 0;
+    int LOCATION_PERMISSIONS = 0;
 
 
     @Override
@@ -36,7 +46,6 @@ public class ParentalControlsSetUp extends AppCompatActivity {
         //Intent intent = getIntent();
         this.db = DBProvider.getInstance(false, getApplicationContext());
         context = getApplicationContext();
-
 
         //Set up the features and set them according to the DB
         parentalControlsEnabler = (Switch) findViewById(R.id.switchParentalControls);
@@ -72,33 +81,77 @@ public class ParentalControlsSetUp extends AppCompatActivity {
         if(!db.getParentalControlsNumber().matches("0")){
             parentalPhoneNumber.setHint(db.getParentalControlsNumber());
         }
+
+        //Get Read SMS Permissions
+        if(ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ParentalControlsSetUp.this, new String[]{Manifest.permission.READ_SMS}, READ_SMS_PERMISSIONS);
+        }else{
+            READ_SMS_PERMISSIONS = 1;
+        }
+
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ParentalControlsSetUp.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSIONS);
+        }else{
+            LOCATION_PERMISSIONS = 1;
+        }
+
+
+        //builds at start of application
+        parentalControlsEnabler.setChecked(db.getParentalControlsToggle());
+        if(parentalControlsEnabler.isChecked()){
+            //Start service to monitor text messages
+            if (!ParentalControlsWatcher.isRunning(context)) {
+                Log.d(TAG, "ParentalControls Service is starting!");
+                getApplicationContext().startService(new Intent(getApplicationContext(), ParentalControlsWatcher.class));
+            }
+            //Turn on Driving Detection
+            if (!DrivingDetectionService.isRunning(context)) {
+                context.startService(new Intent(context, DrivingDetectionService.class));
+            }
+        }
+
         buildSwitches();
     }
 
 
     public void setParentPhoneNumber(View view){
         //Send out SMS to old number if not 0
-        SMSSender sender = new SMSSender(db);
-        if(!db.getParentalControlsNumber().matches("0")) {
-            sender.sendSMS("This number has just been removed from AutoResponder parental controls", "",
-                    db.getParentalControlsNumber(), 0L, false, false);
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LOCATION_PERMISSIONS = 1;
         }
-
-        //Set new parental controls number
-        String parentPhoneNumber = parentalPhoneNumber.getText().toString();
-        Log.v("Parent Phone Number:", parentPhoneNumber);
-        if (parentPhoneNumber.contains(" ")  || parentPhoneNumber.matches("0") || parentPhoneNumber.matches("")) {//Its blank, get default hint
-            db.setParentalControlsNumber("0");
-            db.setParentalControlsToggle(false);
-        }else{
-            //push universalReply to DB
-            db.setParentalControlsNumber(parentPhoneNumber);
-            //Send out SMS to new number
-            sender.sendSMS("This number has just been added from AutoResponder parental controls", "",
+        if(LOCATION_PERMISSIONS == 1) {
+            SMSSender sender = new SMSSender(db);
+            if (!db.getParentalControlsNumber().matches("0")) {
+                sender.sendSMS("This number has just been removed from AutoResponder parental controls", "",
                         db.getParentalControlsNumber(), 0L, false, false);
-            db.setParentalControlsToggle(true);
+            }
+
+            //Set new parental controls number
+            String parentPhoneNumber = parentalPhoneNumber.getText().toString();
+            Log.v("Parent Phone Number:", parentPhoneNumber);
+            if (parentPhoneNumber.contains(" ") || parentPhoneNumber.matches("0") || parentPhoneNumber.matches("")) {//Its blank, get default hint
+                db.setParentalControlsNumber("0");
+                db.setParentalControlsToggle(false);
+            } else {
+                //push universalReply to DB
+                db.setParentalControlsNumber(parentPhoneNumber);
+                //Send out SMS to new number
+                sender.sendSMS("This number has just been added from AutoResponder parental controls", "",
+                        db.getParentalControlsNumber(), 0L, false, false);
+                db.setParentalControlsToggle(true);
+            }
+            setUpFeatures();
+        }else{
+            parentalControlsEnabler.setChecked(false);
+            db.setParentalControlsToggle(false);
+            int duration = Toast.LENGTH_LONG;
+            CharSequence toastText;
+            Toast toast;
+            toastText = "Must Enable Location Permissions!";
+            toast = Toast.makeText(context, toastText, duration);
+            toast.show();
         }
-        setUpFeatures();
     }
 
     public void deleteParentPhoneNumber(View view){
@@ -118,31 +171,86 @@ public class ParentalControlsSetUp extends AppCompatActivity {
 
     //build the switches
     private void buildSwitches(){
-        parentalControlsEnabler.setChecked(db.getParentalControlsToggle());
         parentalControlsEnabler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!db.getParentalControlsNumber().matches("0")) {
-                    db.setParentalControlsToggle(parentalControlsEnabler.isChecked());
-                }else{
-                    parentalControlsEnabler.setChecked(false);
-                    int duration = Toast.LENGTH_LONG;
-                    CharSequence toastText;
-                    Toast toast;
-                    toastText = "Must Enter a Phone Number!";
-                    toast = Toast.makeText(context, toastText, duration);
-                    toast.show();
+                if(parentalControlsEnabler.isChecked()){//is on
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        LOCATION_PERMISSIONS = 1;
+                    }
+                    if(LOCATION_PERMISSIONS == 1){
+                        if(!db.getParentalControlsNumber().matches("0")) {
+                            //Set info in the database
+                            db.setParentalControlsToggle(true);
+
+                            //Start service to monitor text messages
+                            if (!ParentalControlsWatcher.isRunning(context)) {
+                                Log.d(TAG, "ParentalControls Service is starting!");
+                                getApplicationContext().startService(new Intent(getApplicationContext(), ParentalControlsWatcher.class));
+                            }
+
+                            //Turn on Driving Detection
+                            if (!DrivingDetectionService.isRunning(context)) {
+                                context.startService(new Intent(context, DrivingDetectionService.class));
+                            }
+
+                            //Send info to parent that Parental Controls has been enabled
+                            SMSSender sender = new SMSSender(db);
+                            sender.sendSMS("This number has enabled AutoResponder parental controls", "",
+                                    db.getParentalControlsNumber(), 0L, false, false);
+                        }else{
+                            parentalControlsEnabler.setChecked(false);
+                            db.setParentalControlsToggle(false);
+                            int duration = Toast.LENGTH_LONG;
+                            CharSequence toastText;
+                            Toast toast;
+                            toastText = "Must Enter a Phone Number!";
+                            toast = Toast.makeText(context, toastText, duration);
+                            toast.show();
+                        }
+                    }else{
+                        parentalControlsEnabler.setChecked(false);
+                        db.setParentalControlsToggle(false);
+                        int duration = Toast.LENGTH_LONG;
+                        CharSequence toastText;
+                        Toast toast;
+                        toastText = "Must Enable Location Permissions!";
+                        toast = Toast.makeText(context, toastText, duration);
+                        toast.show();
+                    }
+                }else{//is off
+                    if(!db.getParentalControlsNumber().matches("0")) {
+                        //Update DB
+                        db.setParentalControlsToggle(false);
+
+                        //Stop service to monitor text messages
+                        if (ParentalControlsWatcher.isRunning(context)) {
+                            Log.d(TAG, "ParentalControls Service is stopping!");
+                            getApplicationContext().stopService(new Intent(getApplicationContext(), ParentalControlsWatcher.class));
+                        }
+
+                        //Send parent sms saying parental controls has been disabled
+                        SMSSender sender = new SMSSender(db);
+                        sender.sendSMS("This number has disabled AutoResponder parental controls", "",
+                                db.getParentalControlsNumber(), 0L, false, false);
+                    }else{
+                        parentalControlsEnabler.setChecked(false);
+                        db.setParentalControlsToggle(false);
+                        int duration = Toast.LENGTH_LONG;
+                        CharSequence toastText;
+                        Toast toast;
+                        toastText = "Must Enter a Phone Number!";
+                        toast = Toast.makeText(context, toastText, duration);
+                        toast.show();
+                    }
                 }
 
-                if(parentalControlsEnabler.isChecked()){
-                    SMSSender sender = new SMSSender(db);
-                    sender.sendSMS("This number has enabled AutoResponder parental controls", "",
-                                db.getParentalControlsNumber(), 0L, false, false);
-                }else{
-                    SMSSender sender = new SMSSender(db);
-                    sender.sendSMS("This number has disabled AutoResponder parental controls", "",
-                            db.getParentalControlsNumber(), 0L, false, false);
-                }
+
+
+
+
+
+
             }
         });
     }

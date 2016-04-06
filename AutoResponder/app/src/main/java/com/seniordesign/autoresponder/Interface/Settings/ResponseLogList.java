@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import com.seniordesign.autoresponder.DataStructures.Contact;
+import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
 import com.seniordesign.autoresponder.Interface.Groups.GroupInfo;
@@ -81,6 +82,9 @@ public class ResponseLogList extends AppCompatActivity {
 
                 //get the name of the contact for the header
                 Contact contact = db.getContactInfo(responseLog.getSenderNumber());
+                if(contact == null){
+                    contact = new Contact(responseLog.getSenderNumber(), responseLog.getSenderNumber(), Group.DEFAULT_GROUP, db.getReplyAll(), false, false, true);
+                }
 
                 //Both Location and Calendar Info are Shared
                 if (responseLog.getLocationShared() && responseLog.getActivityShared()) {
