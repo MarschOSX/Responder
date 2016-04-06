@@ -2,9 +2,11 @@ package com.seniordesign.autoresponder.Services;
 
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.seniordesign.autoresponder.DataStructures.DrivingDetectionInfo;
 import com.seniordesign.autoresponder.DataStructures.LocationRecord;
 
 import java.util.ArrayList;
@@ -13,15 +15,12 @@ import java.util.ArrayList;
  * Created by Garlan on 3/9/2016.
  */
 public class DrivingDetectionWorker implements Runnable{
-    public static final String ACTION_UPDATE = "ACTION_UPDATE";
+    public static final String ACTION_STATUS_UPDATE = "ACTION_STATUS_UPDATE";
     public static final String ACTION_NOTIFY_SHUTDOWN = "ACTION_NOTIFY_SHUTDOWN";
 
-    private final String TAG = "DrivingDetection";
+    public static final String TAG = "DrivingDetectionW";
     private LocalBroadcastManager localBroadcastManager;
     private ArrayList<LocationRecord> info;
-
-    private float[] array;
-    private int i = 0;
 
     public DrivingDetectionWorker(Context context, ArrayList<LocationRecord> info){
         this.info = info;
@@ -29,40 +28,58 @@ public class DrivingDetectionWorker implements Runnable{
     }
 
     public void run(){
+        Log.d(TAG, "starting " + info.size());
+        int status = determineStatus();
 
-        try{
-            Thread.sleep(1000);
+        Log.d(TAG, "status has been decided: " + status);
+
+        if (status >= 0){
+            Intent intent = new Intent(DrivingDetectionWorker.ACTION_STATUS_UPDATE);
+            intent.putExtra(DrivingDetectionWorker.ACTION_STATUS_UPDATE, status);
+            localBroadcastManager.sendBroadcast(intent);
         }
-        catch (InterruptedException e){
-            shutdown();
-            return;
-        }
+    }
 
-        Intent intent = new Intent(DrivingDetectionWorker.ACTION_UPDATE);
+    private int determineStatus(){
+        float threshHold = DrivingDetectionInfo.threshHold;
+        if (DrivingDetectionInfo.isTesting) threshHold = DrivingDetectionInfo.testingThreshHold;
 
-        for (int k = 0; k < array.length; k++){
-                array[k]++;
-        }
+        return determineStatus_rec(0, 0, 0, threshHold);
+    }
 
-        intent.putExtra("test", array);
-
-        localBroadcastManager.sendBroadcast(intent);
-
-        Log.d(TAG, i++ + "...");
-
+    private int determineStatus_rec(int index, float idlePoints, float drivingPoints, float threshHold){
         if(Thread.currentThread().isInterrupted()){
             shutdown();
-            return;
+            return -1;
         }
 
-        run();
+        Log.d(TAG, index + ", " + idlePoints + ", " + drivingPoints + ", " + threshHold);
+
+        if (index < (info.size()-1) && DrivingDetectionInfo.getSpeed(info.get(index+1), info.get(index)) < threshHold){
+            return determineStatus_rec(index + 1, idlePoints + 1, drivingPoints, threshHold);
+        }
+        else if(index < (info.size()-1) && DrivingDetectionInfo.getSpeed(info.get(index+1), info.get(index)) >= threshHold){
+            return determineStatus_rec(index + 1, idlePoints, drivingPoints + 1, threshHold);
+        }
+
+        if (drivingPoints > idlePoints){
+            return DrivingDetectionService.DRIVING;
+        }
+        if (idlePoints > drivingPoints){
+            return DrivingDetectionService.IDLE;
+        }
+        else {
+            float overallSpeed = DrivingDetectionInfo.getSpeed(info.get(info.size()-1), info.get(0));
+
+            if (overallSpeed >= threshHold) return DrivingDetectionService.DRIVING;
+            else  return DrivingDetectionService.IDLE;
+        }
     }
 
     private void shutdown(){
         Log.d(TAG, "interrupt detected, shutting down");
 
         Intent status = new Intent(DrivingDetectionWorker.ACTION_NOTIFY_SHUTDOWN);
-        status.putExtra("state", array);
 
         localBroadcastManager.sendBroadcast(status);
     }

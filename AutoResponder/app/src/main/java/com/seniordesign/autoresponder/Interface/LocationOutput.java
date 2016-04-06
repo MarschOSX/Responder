@@ -28,6 +28,7 @@ public class LocationOutput extends Activity {
     private TextView latitudeTextView;
     private TextView longitudeTextView;
     private TextView speedTextView;
+    private TextView statusTextView;
     private Button serviceStatusButton;
     private Context context;
     private boolean isBound = false;
@@ -61,12 +62,14 @@ public class LocationOutput extends Activity {
         this.latitudeTextView = (TextView)findViewById(R.id.latitude_text);
         this.longitudeTextView = (TextView)findViewById(R.id.longitude_text);
         this.speedTextView = (TextView)findViewById(R.id.speed_text);
+        this.statusTextView = (TextView)findViewById(R.id.status_text);
         this.serviceStatusButton = (Button)findViewById(R.id.service_status_button);
 
         //initialize the textviews to 0
         this.latitudeTextView.setText("0");
         this.longitudeTextView.setText("0");
         this.speedTextView.setText("0");
+        this.statusTextView.setText("0");
 
         //check if service is running
 
@@ -110,7 +113,7 @@ public class LocationOutput extends Activity {
                 Log.d(TAG, "service is bound");
             }
 
-        } else {
+        } /*else {
 
             if (isBound && DrivingDetectionService.isRunning(context)) {
                 LocalBroadcastManager.getInstance(context).unregisterReceiver(messageReceiver);
@@ -122,7 +125,7 @@ public class LocationOutput extends Activity {
                 speedTextView.setText("0");
                 Log.d(TAG, "service is no longer bound");
             }
-        }
+        }*/
 
 
         //displays whether or not the service is running and updats the textviews
@@ -163,6 +166,7 @@ public class LocationOutput extends Activity {
                 switch (intent.getAction()){
                     case DrivingDetectionService.ACTION_DEBUG_UPDATE:
                         LocationRecord lr = mService.getCurrentLocation();
+                        statusTextView.setText(intent.getIntExtra("Status", -1) + "");
                         if (lr != null){
                             latitudeTextView.setText(lr.getLocation().getLatitude() + "");
                             longitudeTextView.setText(lr.getLocation().getLongitude() + "");
