@@ -33,6 +33,9 @@ import java.util.ArrayList;
 /**
  * Created by Garlan on 2/28/2016.
  */
+
+//icon for notification created by:<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+
 public class DrivingDetectionService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public static final String ACTION_DEBUG_UPDATE = "ACTION_DEBUG_UPDATE";
     public static int notificationID = 42;
