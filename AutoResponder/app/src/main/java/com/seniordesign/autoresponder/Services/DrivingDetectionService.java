@@ -1,6 +1,8 @@
 package com.seniordesign.autoresponder.Services;
 
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
 import android.os.*;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -22,6 +25,7 @@ import com.seniordesign.autoresponder.DataStructures.LocationRecord;
 import com.seniordesign.autoresponder.Interface.Settings.SettingListAdapter;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
+import com.seniordesign.autoresponder.R;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ import java.util.ArrayList;
  */
 public class DrivingDetectionService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     public static final String ACTION_DEBUG_UPDATE = "ACTION_DEBUG_UPDATE";
+    public static int notificationID = 42;
     private String TAG = "DrivingDetectionS";
 
     private final LocalBinder mBinder = new LocalBinder();
@@ -46,7 +51,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     private boolean shuttingDown = false;
 
     private int status;
-    private final int checkPeriod = 10;
+    private final int checkPeriod = 60;
     private final int timeout = 10;
     private int shutdownCount;
 
@@ -57,6 +62,14 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
+        //to start in foreground
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.transport)
+                .setContentText("Current Status: not driving")
+                .setContentTitle("Driving Detection");
+        Notification notification = mBuilder.build();
+        startForeground(DrivingDetectionService.notificationID, notification);
+
 
         return START_STICKY;
     }
@@ -97,18 +110,12 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
         //load connection to DB
         this.db = DBProvider.getInstance(false, getApplicationContext());
-
-        //to start in foreground
-       /* Notification notification = new Notification.Builder(context)
-                .setSmallIcon(R.drawable.something)
-                .setContentText("Content")
-                .setContentTitle("Title")
-                .getNotification();
-        startForeground(17, notification); // Because it can't be zero...*/
     }
 
     @Override
     public void onDestroy(){
+
+        stopForeground(true);
         //set shut down to true so worker thread will not restart
         shuttingDown = true;
 
@@ -180,6 +187,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
                         Log.d(TAG,"status received: " + status);
 
                         isDriving = (status == DrivingDetectionService.DRIVING);
+                        updateNotification();
                         break;
 
                     //handles when the notification of the worker thread being interuppted
@@ -228,6 +236,31 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
             else Log.e(TAG, "broadcast with null intent received");
         }
     };
+
+    private void updateNotification(){
+        String msg = "Current Status: ";
+
+        if (isDriving){
+            msg += "driving";
+        }
+        else{
+            msg += "not driving";
+        }
+
+        if(status == DrivingDetectionService.DETERMINING_STATUS || status == DrivingDetectionService.LOADING_BUFFER){
+            msg += "...updating";
+        }
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                .setSmallIcon(R.drawable.transport)
+                .setContentText(msg)
+                .setContentTitle("Driving Detection");
+        Notification notification = mBuilder.build();
+
+        notificationManager.notify(DrivingDetectionService.notificationID, notification);
+    }
 
     ///////////////////////////////////
     //location & connection functions//
