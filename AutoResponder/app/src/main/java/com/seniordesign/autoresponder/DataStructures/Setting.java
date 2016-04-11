@@ -27,6 +27,8 @@ public class Setting {
     public static final String PARENTAL_CONTROLS_NUMBER_DEF = "0";
     public static final String PARENTAL_CONTROLS_TOGGLLE = "parental_controls_toggle";
     public static final String PARENTAL_CONTROLS_TOGGLLE_DEF = "false";
+    public static final String DRIVING_DETECTION_TOGGLE = "driving_detection_toggle";
+    public static final String DRIVING_DETECTION_TOGGLE_DEF = "false";
     public static final String DRIVING_DETECTION_INTERVAL = "driving_detection_interval";
     public static final String DRIVING_DETECTION_INTERVAL_DEF = "5";
     public static final String WORLD_TOGGLE = "world_toggle";
@@ -47,9 +49,9 @@ public class Setting {
                     {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF},
                     {PARENTAL_CONTROLS_NUMBER, PARENTAL_CONTROLS_NUMBER_DEF},
                     {PARENTAL_CONTROLS_TOGGLLE, PARENTAL_CONTROLS_TOGGLLE_DEF},
+                    {DRIVING_DETECTION_TOGGLE, DRIVING_DETECTION_TOGGLE_DEF},
                     {DRIVING_DETECTION_INTERVAL, DRIVING_DETECTION_INTERVAL_DEF},
                     {WORLD_TOGGLE, WORLD_TOGGLE_DEF}
-
             };
 
     public static final String[] settingUIList = {

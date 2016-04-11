@@ -32,7 +32,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
     private final String[] settingList;
     private final DBInstance db;
     private AppCompatActivity parentApp;
-    private int LOCATION_PERMISSIONS = 0;
+    public static final int DRIVING_DETECTION = 1;
     public static final String ACTION_UPDATE_INTERVAL = "ACTION_UPDATE_INTERVAL";
 
     public SettingListAdapter(Context context, String[] settingList, AppCompatActivity parentApp) {
@@ -160,30 +160,44 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                 break;
             case "Driving Detection":
                 //TODO make it so that clicking anywhere that isnt the switch will take the user to a page describing the feature
+
+                //check if parental controls enabled
+                if(db.getParentalControlsToggle()) {
+                    toggle.setEnabled(false);
+                }
+                else {
+                    toggle.setEnabled(true);
+                }
+
                 title.setText(R.string.drivingDetection_toggle);
 
                 description.setText(R.string.drivingDetection_toggle_descr);
 
-                toggle.setChecked(DrivingDetectionService.isRunning(context));
+                toggle.setChecked(db.getDrivingDetectionToggle());
+
                 toggle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (toggle.isChecked()) {
+
                             //context.startService(new Intent(context, DrivingDetection.class));
+
+                            // if app does not have Location Permissions
                             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(parentApp, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSIONS);
-                                toggle.setChecked(false);
-                            }
-                                //if service is not running create service and start on new thread
-                            else if (!DrivingDetectionService.isRunning(context) && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                                context.startService(new Intent(context, DrivingDetectionService.class));
+                                ActivityCompat.requestPermissions(parentApp, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, DRIVING_DETECTION);
                             }
 
+                            // if app does have permission and service is not running
+                            else if (!DrivingDetectionService.isRunning(context) && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                db.setDrivingDetectionToggle(true);
+                                context.startService(new Intent(context, DrivingDetectionService.class));
+                            }
                         } else {
-                            //make sure that parental controls is not enables
+                            //make sure that parental controls is not enabled
                             if(!db.getParentalControlsToggle()) {
                                 //disable service
                                 if (DrivingDetectionService.isRunning(context)) {
+                                    db.setDrivingDetectionToggle(false);
                                     context.stopService(new Intent(context, DrivingDetectionService.class));
                                 }
                             }

@@ -54,7 +54,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     private boolean shuttingDown = false;
 
     private int status;
-    private final int checkPeriod = 60;
+    private final int checkPeriod = 30;
     private final int timeout = 10;
     private int shutdownCount;
 
@@ -164,6 +164,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         //allocate a buffer large enough to get checkPeriod x 1 second worth of updates and update the status
         this.status = DrivingDetectionService.LOADING_BUFFER;
         info = new DrivingDetectionInfo(this.checkPeriod);
+        updateNotification();
 
         // restart the location detection
         if (checkPlayServices()){
@@ -270,6 +271,13 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     ///////////////////////////////////
     @Override
     public void onLocationChanged(Location location) {
+        //check and make sure service has not been disabled (safety check)
+        //prevents "rouge" service
+        if(db != null && !db.getDrivingDetectionToggle()){
+            this.stopSelf();
+            return;
+        }
+
         float threshHold = DrivingDetectionInfo.threshHold;
         ArrayList<LocationRecord> buffer = info.getLocationHistory();
 

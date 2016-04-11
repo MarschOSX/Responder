@@ -13,7 +13,7 @@ public class DrivingDetectionInfo {
     public static final float threshHold = 15.0f;
 
     //test mode params
-    public static final float testingThreshHold = 2.5f;
+    public static final float testingThreshHold = 2.0f;
     public static final boolean isTesting = false;
 
     public DrivingDetectionInfo(int maxRecords) {

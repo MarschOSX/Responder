@@ -164,6 +164,11 @@ public class PermDBInstance implements DBInstance {
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.PARENTAL_CONTROLS_TOGGLLE, DBHelper.SETTING_VALUE[0], parentalControlsToggle);
     }
 
+    public void setDrivingDetectionToggle(boolean toggle){
+        Log.d(TAG, "setting  DRIVING_DETECTION_TOGGLE to " + toggle + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.DRIVING_DETECTION_TOGGLE, DBHelper.SETTING_VALUE[0], toggle);
+    }
+
     public void setParentalControlsNumber(String parentalControlsNumber){
         Log.d(TAG, "setting  parentalControlsNumber to " + parentalControlsNumber + "....");
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.PARENTAL_CONTROLS_NUMBER, DBHelper.SETTING_VALUE[0], parentalControlsNumber);
@@ -174,7 +179,7 @@ public class PermDBInstance implements DBInstance {
         if(getSetting_bool(Setting.RESPONSE_TOGGLE)) {
             if (this.getTimeLimit() != 100) { //If == 100, then it is assumed to be indefinite
                 //android.util.Log.v(TAG, "Time Limit is not indefinite!");
-                long timeLimitInMilliseconds = Long.valueOf(this.getTimeLimit() * 3600000);
+                long timeLimitInMilliseconds = this.getTimeLimit() * 3600000;
                 //android.util.Log.e(TAG, "The set TimeLimit in milliseconds is " + timeLimitInMilliseconds);
                 long currentTime = System.currentTimeMillis();
                 //android.util.Log.e(TAG, "The CurrentTime of the system in milliseconds is " + currentTime);
@@ -216,6 +221,10 @@ public class PermDBInstance implements DBInstance {
      */
     public boolean getParentalControlsToggle(){
         return getSetting_bool(Setting.PARENTAL_CONTROLS_TOGGLLE);
+    }
+
+    public boolean getDrivingDetectionToggle(){
+        return getSetting_bool(Setting.DRIVING_DETECTION_TOGGLE);
     }
 
     public String getParentalControlsNumber(){

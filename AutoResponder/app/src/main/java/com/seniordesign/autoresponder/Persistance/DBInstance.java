@@ -54,6 +54,8 @@ public interface DBInstance {
 
     void setParentalControlsToggle(boolean toggle);
 
+    void setDrivingDetectionToggle(boolean toggle);
+
     boolean getResponseToggle();
     
     boolean getLocationToggle();
@@ -65,6 +67,8 @@ public interface DBInstance {
     boolean getWorldToggle();
 
     boolean getParentalControlsToggle();
+
+    boolean getDrivingDetectionToggle();
 
     String getParentalControlsNumber();
 
