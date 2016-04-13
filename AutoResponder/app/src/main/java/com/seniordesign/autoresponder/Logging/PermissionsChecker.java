@@ -85,7 +85,7 @@ public class PermissionsChecker {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
             if(caller != null) ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.RECEIVE_SMS}, requestCode);
 
-            //TODO PARENTAL CONTROL CHECK AND LOGGING
+            //TODO PARENTAL CONTROL CHECK AND LOGGINGing
 
             return false;
         }
