@@ -28,6 +28,7 @@ public class OnBoot extends BroadcastReceiver{
         if (db != null){
             if (db.getParentalControlsToggle()){
 
+
             }
 
             if (db.getDrivingDetectionToggle()){
