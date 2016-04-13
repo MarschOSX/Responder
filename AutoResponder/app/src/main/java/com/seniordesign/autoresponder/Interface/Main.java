@@ -19,6 +19,7 @@ import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
 import com.seniordesign.autoresponder.Interface.Groups.GroupList;
 import com.seniordesign.autoresponder.Interface.Settings.ParentalControlsSetUp;
 import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
+import com.seniordesign.autoresponder.Logging.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -73,8 +74,6 @@ public class Main extends AppCompatActivity {
         }else{
             SEND_SMS_PERMISSIONS = 1;
         }
-
-
 
         //build the all the toggles
         checkParentalControls();
