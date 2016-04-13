@@ -27,6 +27,7 @@ import java.util.HashMap;
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Interface.Groups.GroupInfo;
+import com.seniordesign.autoresponder.Logging.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -49,7 +50,7 @@ public class ContactsList extends AppCompatActivity {
     private static final int CONTACT_PICKER_RESULT = 1001;
     boolean pickerFlag = false;
     String groupName = null;
-    int CONTACT_PERMISSIONS = 0;
+    private static final int CONTACT_PERMISSIONS = 1;
 
 
     @Override
@@ -57,10 +58,10 @@ public class ContactsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_list);
         this.db = DBProvider.getInstance(false, getApplicationContext());
+
         //Get Contact Permissions
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CONTACT_PERMISSIONS);
-        }
+        PermissionsChecker.checkReadContactsPermission(this, getApplicationContext(), CONTACT_PERMISSIONS);
+
         updateContactListView();
         Intent intent = getIntent();
         groupName = intent.getStringExtra("ADD_CONTACT_TO_SINGLE_GROUP");
@@ -94,6 +95,9 @@ public class ContactsList extends AppCompatActivity {
     }
 
     public void doLaunchContactPicker(View view) {
+        //Get Contact Permissions
+        PermissionsChecker.checkReadContactsPermission(this, getApplicationContext(), CONTACT_PERMISSIONS);
+
         // Do something in response to button
         Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,Contacts.CONTENT_URI);
         startActivityForResult(contactPickerIntent, CONTACT_PICKER_RESULT);

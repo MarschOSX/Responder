@@ -14,29 +14,35 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
 import com.seniordesign.autoresponder.Interface.Groups.GroupList;
 import com.seniordesign.autoresponder.Interface.Settings.ParentalControlsSetUp;
+import com.seniordesign.autoresponder.Interface.Settings.SettingListAdapter;
 import com.seniordesign.autoresponder.Interface.Settings.UserSettings;
 import com.seniordesign.autoresponder.Logging.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 import com.seniordesign.autoresponder.Services.ParentalControlsWatcher;
 import com.seniordesign.autoresponder.Services.TimeLimitChecker;
+
+import java.security.InvalidParameterException;
 
 
 public class Main extends AppCompatActivity {
     private Switch mLocationToggle;
     private Switch mCalenderToggle;
     private Switch mResponseToggle;
+    private Main me;
     private DBInstance db;
-    int CALENDAR_PERMISSIONS = 0;
-    int LOCATION_PERMISSIONS = 0;
-    int SEND_SMS_PERMISSIONS = 0;
-    int RECEIVE_SMS_PERMISSIONS = 0;
-    int READ_SMS_PERMISSIONS = 0;
+    private final int ACTIVITY_PERMISSIONS = 1;
+    private final int LOCATION_PERMISSIONS = 2;
+    private final int SEND_SMS_PERMISSIONS = 3;
+    private final int RECEIVE_SMS_PERMISSIONS = 4;
+    private final int READ_SMS_PERMISSIONS = 5;
     public static final String TAG = "Main";
 
 
@@ -48,12 +54,14 @@ public class Main extends AppCompatActivity {
         mCalenderToggle.setChecked(db.getActivityToggle());
         mResponseToggle.setChecked(db.getResponseToggle());
         checkParentalControls();
+        buildSwitches();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = DBProvider.getInstance(false, getApplicationContext());
+        me = this;
 
         setContentView(R.layout.activity_main);
 
@@ -61,19 +69,11 @@ public class Main extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         //Get Receive SMS Permissions at startup
-        if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.RECEIVE_SMS}, RECEIVE_SMS_PERMISSIONS);
-        }else{
-            RECEIVE_SMS_PERMISSIONS = 1;
-        }
+        PermissionsChecker.checkReceiveSMSPermission(me, getApplicationContext(), RECEIVE_SMS_PERMISSIONS);
 
         //Get Send SMS Permissions at startup
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSIONS);
-        }else{
-            SEND_SMS_PERMISSIONS = 1;
-        }
+        PermissionsChecker.checkSendSMSPermission(me, getApplicationContext(), SEND_SMS_PERMISSIONS);
+
 
         //build the all the toggles
         checkParentalControls();
@@ -85,11 +85,7 @@ public class Main extends AppCompatActivity {
     private void checkParentalControls(){
         //if Parental Controls are on
         //Get Read SMS Permissions
-        if(ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.READ_SMS}, READ_SMS_PERMISSIONS);
-        }else{
-            READ_SMS_PERMISSIONS = 1;
-        }
+        PermissionsChecker.checkReadSMSPermission(me, getApplicationContext(), READ_SMS_PERMISSIONS);
 
         //builds at start of application
         if(db.getParentalControlsToggle()){
@@ -109,6 +105,7 @@ public class Main extends AppCompatActivity {
 
         mResponseToggle = (Switch)findViewById(R.id.autoRespond_switch);
         mResponseToggle.setChecked(db.getResponseToggle());
+
         mResponseToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,22 +118,20 @@ public class Main extends AppCompatActivity {
 
         mCalenderToggle = (Switch)findViewById(R.id.calendar_switch);
         mCalenderToggle.setChecked(db.getActivityToggle());
+        if(PermissionsChecker.checkReadCalendarPermission(null, getApplicationContext(), ACTIVITY_PERMISSIONS)){
+            mLocationToggle.setChecked(true);
+        }
+
         mCalenderToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Get Calendar Permissions
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.READ_CALENDAR}, CALENDAR_PERMISSIONS);
-                }
-
-                //Check Again
-                if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-                    db.setActivityToggle(mCalenderToggle.isChecked());
-                }else{
-                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                //Get Activity Permissions
+                if (!PermissionsChecker.checkReadCalendarPermission(me, getApplicationContext(), ACTIVITY_PERMISSIONS)) {
                     db.setActivityToggle(false);
                     mCalenderToggle.setChecked(false);
+                } else {
+                    db.setActivityToggle(mCalenderToggle.isChecked());
                 }
             }
         });
@@ -144,25 +139,59 @@ public class Main extends AppCompatActivity {
 
         mLocationToggle = (Switch)findViewById(R.id.location_switch);
         mLocationToggle.setChecked(db.getLocationToggle());
+        if(PermissionsChecker.checkAccessLocationPermission(null, getApplicationContext(), LOCATION_PERMISSIONS)){
+            mLocationToggle.setChecked(true);
+        }
+
         mLocationToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                 //Get Location Permissions
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(Main.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSIONS);
-                }
-
-                //Check Again
-                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
-                    db.setLocationToggle(mLocationToggle.isChecked());
-                } else {
-                    DBInstance db = DBProvider.getInstance(false, getApplicationContext());
+                if (!PermissionsChecker.checkAccessLocationPermission(me, getApplicationContext(), LOCATION_PERMISSIONS)) {
                     db.setLocationToggle(false);
                     mLocationToggle.setChecked(false);
+                } else {
+                    if(db.getParentalControlsToggle()){
+                        db.setLocationToggle(true);
+                        mLocationToggle.setChecked(true);
+                        int duration = Toast.LENGTH_LONG;
+                        CharSequence toastText;
+                        Toast toast;
+                        toastText = "Parental Controls are Enabled! Must Keep Location On!";
+                        toast = Toast.makeText(getApplicationContext(), toastText, duration);
+                        toast.show();
+                    }
+                    db.setLocationToggle(mLocationToggle.isChecked());
                 }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+        DBInstance db =  DBProvider.getInstance(false, getApplicationContext());
+
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case LOCATION_PERMISSIONS:
+                    db.setLocationToggle(mLocationToggle.isChecked());
+                    db.setLocationToggle(true);
+                    break;
+                case ACTIVITY_PERMISSIONS:
+                    db.setActivityToggle(mCalenderToggle.isChecked());
+                    db.setActivityToggle(true);
+                    break;
+                case RECEIVE_SMS_PERMISSIONS:
+                    break;
+                case SEND_SMS_PERMISSIONS:
+                    break;
+                case READ_SMS_PERMISSIONS:
+                    break;
+                default:
+                    throw new InvalidParameterException("Unknown request code: " + requestCode);
+            }
+        }
     }
 
     @Override

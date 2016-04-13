@@ -19,6 +19,7 @@ import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.seniordesign.autoresponder.Logging.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -34,14 +35,16 @@ public class ParentalControlsSetUp extends AppCompatActivity {
     Button deleteParentalPhoneNumber;
     EditText parentalPhoneNumber;
     Context context;
-    int READ_SMS_PERMISSIONS = 0;
-    int LOCATION_PERMISSIONS = 0;
+    private ParentalControlsSetUp me;
+    private static final int READ_SMS_PERMISSIONS = 1;
+    private static final int LOCATION_PERMISSIONS = 2;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Set Up the basics
         super.onCreate(savedInstanceState);
+        me = this;
         setContentView(R.layout.activity_parental_controls_set_up);
         //Intent intent = getIntent();
         this.db = DBProvider.getInstance(false, getApplicationContext());
@@ -83,19 +86,10 @@ public class ParentalControlsSetUp extends AppCompatActivity {
         }
 
         //Get Read SMS Permissions
-        if(ContextCompat.checkSelfPermission(getBaseContext(), "android.permission.READ_SMS") != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(ParentalControlsSetUp.this, new String[]{Manifest.permission.READ_SMS}, READ_SMS_PERMISSIONS);
-        }else{
-            READ_SMS_PERMISSIONS = 1;
-        }
+        PermissionsChecker.checkReadSMSPermission(this, getApplicationContext(), READ_SMS_PERMISSIONS);
 
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(ParentalControlsSetUp.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSIONS);
-        }else{
-            LOCATION_PERMISSIONS = 1;
-        }
-
+        //Get Location Permissions
+        PermissionsChecker.checkAccessLocationPermission(this,getApplicationContext(),LOCATION_PERMISSIONS);
 
         //builds at start of application
         parentalControlsEnabler.setChecked(db.getParentalControlsToggle());
@@ -117,10 +111,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
 
     public void setParentPhoneNumber(View view){
         //Send out SMS to old number if not 0
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LOCATION_PERMISSIONS = 1;
-        }
-        if(LOCATION_PERMISSIONS == 1) {
+        if(PermissionsChecker.checkAccessLocationPermission(this, getApplicationContext(), LOCATION_PERMISSIONS)) {
             SMSSender sender = new SMSSender(db);
             if (!db.getParentalControlsNumber().matches("0")) {
                 sender.sendSMS("This number has just been removed from AutoResponder parental controls", "",
@@ -175,10 +166,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(parentalControlsEnabler.isChecked()){//is on
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        LOCATION_PERMISSIONS = 1;
-                    }
-                    if(LOCATION_PERMISSIONS == 1){
+                    //if(PermissionsChecker.checkAccessLocationPermission(me, getApplicationContext(), LOCATION_PERMISSIONS)){
                         if(!db.getParentalControlsNumber().matches("0")) {
                             //Set info in the database
                             db.setParentalControlsToggle(true);
@@ -208,7 +196,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                             toast = Toast.makeText(context, toastText, duration);
                             toast.show();
                         }
-                    }else{
+                    /*}else{
                         parentalControlsEnabler.setChecked(false);
                         db.setParentalControlsToggle(false);
                         int duration = Toast.LENGTH_LONG;
@@ -217,7 +205,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                         toastText = "Must Enable Location Permissions!";
                         toast = Toast.makeText(context, toastText, duration);
                         toast.show();
-                    }
+                    }*/
                 }else{//is off
                     if(!db.getParentalControlsNumber().matches("0")) {
                         //Update DB
