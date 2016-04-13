@@ -119,60 +119,55 @@ public class EventHandler implements Runnable{
 
             //verify that a timestamp was attached to the incoming message
             if (timeReceived != null && timeReceived >= 0L) {
+                //get response from Database and set as message
+                String contactResponse;
 
+                //If universal reply is true, have that as normal message instead of contact preset one
+                if(db.getUniversalToggle()){
+                    contactResponse = db.getUniversalReply();
+                }
+                else{ //otherwise use the response for that contact
+                    contactResponse = contact.getResponse();
+                }
+
+                //retrieve the contact's permissions
+                Boolean locationPermission = contact.isLocationPermission();
+                Boolean activityPermission = contact.isActivityPermission();
+
+                //verify permissions can be used
+                if(!db.getLocationToggle()){
+                    locationPermission = false;
+                }
+                if(!db.getActivityToggle()){
+                    activityPermission = false;
+                }
+
+                //if Location permission is true
+                if(locationPermission) {
+                    if (this.messageReceived.toLowerCase().contains("where are you") ||
+                            this.messageReceived.toLowerCase().contains("where r you") ||
+                            this.messageReceived.toLowerCase().contains("where are u") ||
+                            this.messageReceived.toLowerCase().contains("where r u")) {
+                        //create locator and pass a reference of this object
+                        locator = new GoogleLocator(context, this);
+                        android.util.Log.v("EventHandler,", "Sent location info");
+                    }
+                }
+                //if Activity permission is true
+                if (activityPermission) {
+                    String actMessage = getActivityInfo(messageReceived);
+                    if(actMessage != null){
+                        sendSMS(actMessage, messageReceived, phoneNumber, timeReceived, false, true);
+                        android.util.Log.v("EventHandler,", "Sent activity info");
+                    }
+                }
                 //checks to make sure that message received does not fall within the delay period
                 if (lastTimeReceived == 0 || lastTimeReceived + delaySet < timeReceived) {
-
-                    //get response from Database and set as message
-                    String contactResponse;
-
-                    //If universal reply is true, have that as normal message instead of contact preset one
-                    if(db.getUniversalToggle()){
-                        contactResponse = db.getUniversalReply();
-                    }
-                    else{ //otherwise use the response for that contact
-                        contactResponse = contact.getResponse();
-                    }
-
-                    //retrieve the contact's permissions
-                    Boolean locationPermission = contact.isLocationPermission();
-                    Boolean activityPermission = contact.isActivityPermission();
-
-                    //verify permissions can be used
-                    if(!db.getLocationToggle()){
-                        locationPermission = false;
-                    }
-                    if(!db.getActivityToggle()){
-                        activityPermission = false;
-                    }
-
-                    //if Location permission is true
-                    if(locationPermission) {
-                        if (this.messageReceived.toLowerCase().contains("where are you") ||
-                                this.messageReceived.toLowerCase().contains("where r you") ||
-                                this.messageReceived.toLowerCase().contains("where are u") ||
-                                this.messageReceived.toLowerCase().contains("where r u"))
-                            //create locator and pass a reference of this object
-                            locator = new GoogleLocator(context, this);
-                    }
-                    //if Activity permission is true
-                    if (activityPermission) {
-                        String actMessage = getActivityInfo(messageReceived);
-                        if(actMessage != null){
-                            sendSMS(actMessage, messageReceived, phoneNumber, timeReceived, false, true);
-                        }else{
-                            sendSMS(contactResponse, messageReceived, phoneNumber, timeReceived, false, false);
-                        }
-                    }
-
-
-                    if (!locationPermission && !activityPermission){//both permissions are false, go to normal response
-                        sendSMS(contactResponse, messageReceived, phoneNumber, timeReceived, locationPermission, activityPermission);
-                    }
-                    android.util.Log.v("EventHandler,", "Finished EventHandler");
+                    sendSMS(contactResponse, messageReceived, phoneNumber, timeReceived, locationPermission, activityPermission);
+                    android.util.Log.v("EventHandler,", "Sent normal text, no location or activity info");
                     return 0;
                 } else {
-                    android.util.Log.v("EventHandler,", "Cannot send a response yet due to delay!");
+                    android.util.Log.v("EventHandler,", "Cannot send a response yet due to delay, and not a Loc/Act request!");
                     return -1;
                 }
             } else {
