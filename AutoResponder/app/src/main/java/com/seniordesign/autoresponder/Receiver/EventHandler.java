@@ -211,7 +211,7 @@ public class EventHandler implements Runnable{
         }
 
         //Send Notification to User
-        Notifications sendNotification = new Notifications();
+        Notifications sendNotificati = new Notifications();
         sendNotification.Notify("Responded To " + name, "Sent at " + timeSentReadable);
     }*/
 
