@@ -180,6 +180,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                             //Turn on Driving Detection
                             if (!DrivingDetectionService.isRunning(context)) {
                                 context.startService(new Intent(context, DrivingDetectionService.class));
+                                db.setDrivingDetectionToggle(true);
                             }
 
                             //Send info to parent that Parental Controls has been enabled

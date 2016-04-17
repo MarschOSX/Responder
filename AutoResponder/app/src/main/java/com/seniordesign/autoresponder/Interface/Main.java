@@ -54,7 +54,6 @@ public class Main extends AppCompatActivity {
         mCalenderToggle.setChecked(db.getActivityToggle());
         mResponseToggle.setChecked(db.getResponseToggle());
         checkParentalControls();
-        buildSwitches();
     }
 
     @Override
@@ -119,7 +118,7 @@ public class Main extends AppCompatActivity {
         mCalenderToggle = (Switch)findViewById(R.id.calendar_switch);
         mCalenderToggle.setChecked(db.getActivityToggle());
         if(PermissionsChecker.checkReadCalendarPermission(null, getApplicationContext(), ACTIVITY_PERMISSIONS)){
-            mLocationToggle.setChecked(true);
+            mCalenderToggle.setChecked(true);
         }
 
         mCalenderToggle.setOnClickListener(new View.OnClickListener() {
@@ -152,16 +151,6 @@ public class Main extends AppCompatActivity {
                     db.setLocationToggle(false);
                     mLocationToggle.setChecked(false);
                 } else {
-                    if(db.getParentalControlsToggle()){
-                        db.setLocationToggle(true);
-                        mLocationToggle.setChecked(true);
-                        int duration = Toast.LENGTH_LONG;
-                        CharSequence toastText;
-                        Toast toast;
-                        toastText = "Parental Controls are Enabled! Must Keep Location On!";
-                        toast = Toast.makeText(getApplicationContext(), toastText, duration);
-                        toast.show();
-                    }
                     db.setLocationToggle(mLocationToggle.isChecked());
                 }
             }
