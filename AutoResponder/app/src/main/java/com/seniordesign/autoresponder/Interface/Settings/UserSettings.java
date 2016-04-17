@@ -49,7 +49,7 @@ public class UserSettings extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
         DBInstance db =  DBProvider.getInstance(false, getApplicationContext());
 
@@ -69,7 +69,7 @@ public class UserSettings extends AppCompatActivity {
             default:
                 throw new InvalidParameterException("Unknown request code: " + requestCode);
         }
-    }
+    }*/
 
     private void loadSettings(){
         final ListView listView = (ListView) findViewById(R.id.listView);

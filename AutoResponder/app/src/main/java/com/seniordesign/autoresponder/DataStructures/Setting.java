@@ -59,7 +59,6 @@ public class Setting {
             "Default Contact Response",
             "Default Contact Location Setting",
             "Default Contact Activity Setting",
-            "Driving Detection",
             "Driving Detection Interval",
             "Parental Controls",
             "Response Log",
