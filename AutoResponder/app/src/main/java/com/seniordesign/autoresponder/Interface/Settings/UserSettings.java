@@ -77,4 +77,10 @@ public class UserSettings extends AppCompatActivity {
 
         listView.setAdapter(adapter);
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        loadSettings();
+    }
 }
