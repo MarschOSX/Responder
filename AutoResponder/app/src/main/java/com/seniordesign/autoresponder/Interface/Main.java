@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder.Interface;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -35,6 +36,7 @@ public class Main extends AppCompatActivity {
     private Switch mLocationToggle;
     private Switch mCalenderToggle;
     private Switch mResponseToggle;
+    private Switch mDrivingDetectionToggle;
     private Main me;
     private DBInstance db;
     private final int ACTIVITY_PERMISSIONS = 1;
@@ -42,6 +44,7 @@ public class Main extends AppCompatActivity {
     private final int SEND_SMS_PERMISSIONS = 3;
     private final int RECEIVE_SMS_PERMISSIONS = 4;
     private final int READ_SMS_PERMISSIONS = 5;
+    private final int DRIVING_DETECTION = 6;
     public static final String TAG = "Main";
 
 
@@ -137,9 +140,6 @@ public class Main extends AppCompatActivity {
 
         mLocationToggle = (Switch)findViewById(R.id.location_switch);
         mLocationToggle.setChecked(db.getLocationToggle());
-        if(PermissionsChecker.checkAccessLocationPermission(null, getApplicationContext(), LOCATION_PERMISSIONS)){
-            mLocationToggle.setChecked(true);
-        }
 
         mLocationToggle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,8 +149,44 @@ public class Main extends AppCompatActivity {
                 if (!PermissionsChecker.checkAccessLocationPermission(me, getApplicationContext(), LOCATION_PERMISSIONS)) {
                     db.setLocationToggle(false);
                     mLocationToggle.setChecked(false);
+                } 
+            }
+        });
+
+
+        mDrivingDetectionToggle = (Switch)findViewById(R.id.driving_detection_toggle);
+
+        mDrivingDetectionToggle.setChecked(db.getDrivingDetectionToggle());
+
+        if(db.getParentalControlsToggle()) {
+            mDrivingDetectionToggle.setEnabled(false);
+        }
+        else {
+            mDrivingDetectionToggle.setEnabled(true);
+        }
+
+        mDrivingDetectionToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                DBInstance db = DBProvider.getInstance(false, context);
+
+                if (mDrivingDetectionToggle.isChecked()) {
+                    if (!DrivingDetectionService.isRunning(context) && PermissionsChecker.checkAccessLocationPermission(me, context, DRIVING_DETECTION)) {
+                        db.setDrivingDetectionToggle(true);
+                        context.startService(new Intent(context, DrivingDetectionService.class));
+                    }
                 } else {
-                    db.setLocationToggle(mLocationToggle.isChecked());
+                    //make sure that parental controls is not enabled
+                    if (!db.getParentalControlsToggle()) {
+                        //disable service
+                        if (DrivingDetectionService.isRunning(context)) {
+                            db.setDrivingDetectionToggle(false);
+                            context.stopService(new Intent(context, DrivingDetectionService.class));
+                        }
+                    } else {
+                        mDrivingDetectionToggle.setChecked(true);
+                    }
                 }
             }
         });
@@ -160,21 +196,51 @@ public class Main extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
         DBInstance db =  DBProvider.getInstance(false, getApplicationContext());
 
+        // handle if access is granted
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             switch (requestCode) {
                 case LOCATION_PERMISSIONS:
-                    db.setLocationToggle(mLocationToggle.isChecked());
-                    db.setLocationToggle(true);
+                    if (db != null) db.setLocationToggle(true);
                     break;
                 case ACTIVITY_PERMISSIONS:
-                    db.setActivityToggle(mCalenderToggle.isChecked());
-                    db.setActivityToggle(true);
+                    if (db != null) db.setActivityToggle(true);
                     break;
                 case RECEIVE_SMS_PERMISSIONS:
                     break;
                 case SEND_SMS_PERMISSIONS:
                     break;
                 case READ_SMS_PERMISSIONS:
+                    break;
+                case DRIVING_DETECTION:
+                    // if permissions are granted
+                    if (db != null) db.setDrivingDetectionToggle(true);
+                    getApplicationContext().startService(new Intent(getApplicationContext(), DrivingDetectionService.class));
+                    // if permissions denied
+                    break;
+                default:
+                    throw new InvalidParameterException("Unknown request code: " + requestCode);
+            }
+        }
+        // handle if access is not granted
+        else {
+            switch (requestCode) {
+                case LOCATION_PERMISSIONS:
+                    if (db != null) db.setLocationToggle(false);
+                    mLocationToggle.setChecked(false);
+                    break;
+                case ACTIVITY_PERMISSIONS:
+                    if (db != null) db.setActivityToggle(false);
+                    mCalenderToggle.setChecked(false);
+                    break;
+                case RECEIVE_SMS_PERMISSIONS:
+                    break;
+                case SEND_SMS_PERMISSIONS:
+                    break;
+                case READ_SMS_PERMISSIONS:
+                    break;
+                case DRIVING_DETECTION:
+                    if (db != null) db.setDrivingDetectionToggle(false);
+                    mDrivingDetectionToggle.setChecked(false);
                     break;
                 default:
                     throw new InvalidParameterException("Unknown request code: " + requestCode);

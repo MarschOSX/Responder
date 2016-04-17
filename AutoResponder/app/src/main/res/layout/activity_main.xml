@@ -48,6 +48,14 @@
                     android:id="@+id/calendar_switch"
                     android:checked="false"
                     android:textSize="24sp" />
+
+                <Switch
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:text="@string/drivingDetection_toggle"
+                    android:id="@+id/driving_detection_toggle"
+                    android:checked="false"
+                    android:textSize="24sp" />
             </LinearLayout>
 
         </LinearLayout>

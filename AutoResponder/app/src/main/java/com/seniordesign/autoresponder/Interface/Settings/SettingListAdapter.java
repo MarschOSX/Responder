@@ -33,7 +33,6 @@ public class SettingListAdapter extends ArrayAdapter<String> {
     private final String[] settingList;
     private final DBInstance db;
     private AppCompatActivity parentApp;
-    public static final int DRIVING_DETECTION = 1;
     public static final String ACTION_UPDATE_INTERVAL = "ACTION_UPDATE_INTERVAL";
 
     public SettingListAdapter(Context context, String[] settingList, AppCompatActivity parentApp) {
@@ -159,9 +158,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
-            case "Driving Detection":
-                //TODO make it so that clicking anywhere that isnt the switch will take the user to a page describing the feature
-
+            /*case "Driving Detection":
                 //check if parental controls enabled
                 if(db.getParentalControlsToggle()) {
                     toggle.setEnabled(false);
@@ -208,7 +205,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                         }
                     }
                 });
-                break;
+                break;*/
             case "Driving Detection Interval":
                 title.setText(R.string.drivingDetection_interval);
                 description.setText(R.string.drivingDetection_interval_descr_short);
