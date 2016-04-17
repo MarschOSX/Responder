@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationServices;
 import com.seniordesign.autoresponder.DataStructures.DrivingDetectionInfo;
 import com.seniordesign.autoresponder.DataStructures.LocationRecord;
 import com.seniordesign.autoresponder.Interface.Settings.SettingListAdapter;
+import com.seniordesign.autoresponder.Logging.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -164,7 +165,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         //allocate a buffer large enough to get checkPeriod x 1 second worth of updates and update the status
         this.status = DrivingDetectionService.LOADING_BUFFER;
         info = new DrivingDetectionInfo(this.checkPeriod);
-        updateNotification();
+        updateNotification(true);
 
         // restart the location detection
         if (checkPlayServices()){
@@ -191,7 +192,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
                         Log.d(TAG,"status received: " + status);
 
                         isDriving = (status == DrivingDetectionService.DRIVING);
-                        updateNotification();
+                        updateNotification(true);
                         break;
 
                     //handles when the notification of the worker thread being interuppted
@@ -241,18 +242,22 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         }
     };
 
-    private void updateNotification(){
+    private void updateNotification(boolean permissionEnabled){
         String msg = "Current Status: ";
 
-        if (isDriving){
-            msg += "driving";
+        if (permissionEnabled) {
+            if (isDriving) {
+                msg += "driving";
+            } else {
+                msg += "not driving";
+            }
+
+            if (status == DrivingDetectionService.DETERMINING_STATUS || status == DrivingDetectionService.LOADING_BUFFER) {
+                msg += "...updating";
+            }
         }
         else{
-            msg += "not driving";
-        }
-
-        if(status == DrivingDetectionService.DETERMINING_STATUS || status == DrivingDetectionService.LOADING_BUFFER){
-            msg += "...updating";
+            msg += "location permissions have been denied by user";
         }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -402,7 +407,12 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         lr.setInterval(interval);
         lr.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, lr, this);
+        if (PermissionsChecker.checkAccessLocationPermission(null, getApplicationContext(), 1)){
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, lr, this);
+        }
+        else {
+            updateNotification(false);
+        }
     }
 
     /** creates a new client to connect to the Google Api for this object */
