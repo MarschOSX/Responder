@@ -412,6 +412,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         }
         else {
             updateNotification(false);
+            this.stopSelf();
         }
     }
 
