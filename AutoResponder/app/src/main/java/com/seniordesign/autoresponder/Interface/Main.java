@@ -27,7 +27,6 @@ import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 import com.seniordesign.autoresponder.Services.ParentalControlsWatcher;
-import com.seniordesign.autoresponder.Services.TimeLimitChecker;
 
 import java.security.InvalidParameterException;
 
