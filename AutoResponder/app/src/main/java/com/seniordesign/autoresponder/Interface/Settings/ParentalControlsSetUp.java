@@ -115,7 +115,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
             SMSSender sender = new SMSSender(db);
             if (!db.getParentalControlsNumber().matches("0")) {
                 sender.sendSMS("This number has just been removed from AutoResponder parental controls", "",
-                        db.getParentalControlsNumber(), 0L, false, false);
+                        db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
             }
 
             //Set new parental controls number
@@ -129,7 +129,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                 db.setParentalControlsNumber(parentPhoneNumber);
                 //Send out SMS to new number
                 sender.sendSMS("This number has just been added from AutoResponder parental controls", "",
-                        db.getParentalControlsNumber(), 0L, false, false);
+                        db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
                 db.setParentalControlsToggle(true);
             }
             setUpFeatures();
@@ -150,7 +150,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
         SMSSender sender = new SMSSender(db);
         if(!db.getParentalControlsNumber().matches("0")) {
             sender.sendSMS("This number has just been removed from AutoResponder parental controls", "",
-                    db.getParentalControlsNumber(), 0L, false, false);
+                    db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
         }
         //Delete parent phone number from DB
         parentalPhoneNumber.setHint("Enter Phone Number");
@@ -186,7 +186,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                             //Send info to parent that Parental Controls has been enabled
                             SMSSender sender = new SMSSender(db);
                             sender.sendSMS("This number has enabled AutoResponder parental controls", "",
-                                    db.getParentalControlsNumber(), 0L, false, false);
+                                    db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
                         }else{
                             parentalControlsEnabler.setChecked(false);
                             db.setParentalControlsToggle(false);
@@ -221,7 +221,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                         //Send parent sms saying parental controls has been disabled
                         SMSSender sender = new SMSSender(db);
                         sender.sendSMS("This number has disabled AutoResponder parental controls", "",
-                                db.getParentalControlsNumber(), 0L, false, false);
+                                db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
                     }else{
                         parentalControlsEnabler.setChecked(false);
                         db.setParentalControlsToggle(false);

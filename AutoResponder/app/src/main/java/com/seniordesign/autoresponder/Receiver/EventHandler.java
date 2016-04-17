@@ -45,6 +45,7 @@ public class EventHandler implements Runnable{
     private String phoneNumber;
     private String messageReceived;
     private Long timeReceived;
+    private SMSSender sender;
 
     public EventHandler(DBInstance db, Context context, String phoneNumber, String messageReceived, Long timeReceived) {
         this.db = db;
@@ -52,6 +53,7 @@ public class EventHandler implements Runnable{
         this.phoneNumber = phoneNumber;
         this.messageReceived = messageReceived;
         this.timeReceived = timeReceived;
+        sender = new SMSSender(db);
     }
 
     //runs as a new thread
@@ -61,12 +63,13 @@ public class EventHandler implements Runnable{
 
     public int respondToText() {
         //SMSListener passes info to EventHandler
-
         android.util.Log.v("EventHandler,", "EventHandler is active!");
         if (phoneNumber == null){
             android.util.Log.e("EventHandler,", "No PhoneNumber found");
             return -1;
         }
+
+
 
         //try to retrieve information for that phone number fromm the database
         Contact contact = db.getContactInfo(phoneNumber);
@@ -158,13 +161,13 @@ public class EventHandler implements Runnable{
                 if (activityPermission) {
                     String actMessage = getActivityInfo(messageReceived);
                     if(actMessage != null){
-                        sendSMS(actMessage, messageReceived, phoneNumber, timeReceived, false, true);
+                        sender.sendSMS(actMessage, messageReceived, phoneNumber, timeReceived, false, true, context);
                         android.util.Log.v("EventHandler,", "Sent activity info");
                     }
                 }
                 //checks to make sure that message received does not fall within the delay period
                 if (lastTimeReceived == 0 || lastTimeReceived + delaySet < timeReceived) {
-                    sendSMS(contactResponse, messageReceived, phoneNumber, timeReceived, locationPermission, activityPermission);
+                    sender.sendSMS(contactResponse, messageReceived, phoneNumber, timeReceived, locationPermission, activityPermission, context);
                     android.util.Log.v("EventHandler,", "Sent normal text, no location or activity info");
                     return 0;
                 } else {
@@ -180,7 +183,7 @@ public class EventHandler implements Runnable{
         return -1;
     }
 
-    //Sends out an SMS from the device and records it in the ResponseLog
+    /*Sends out an SMS from the device and records it in the ResponseLog
     public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Long timeRecieved, Boolean locShared, Boolean actShared){
         android.util.Log.v("EventHandler,", "sendSMS recieved: mesSent " + messageSent + " messageRecieved " + messageRecieved + " phoneNumber " + phoneNumber + " timeRecieved " + timeRecieved + " locShared " + locShared + " actShared " + actShared);
 
@@ -193,14 +196,14 @@ public class EventHandler implements Runnable{
         android.util.Log.v("EventHandler,", "New ResponseLog: "+messageSent+ " " +messageRecieved+ " " +phoneNumber+ " " +timeRecievedReadable+ " " +timeSentReadable+ " " +locShared+ " " +actShared);
         db.addToResponseLog(updateLog);
 
-        //Send the UniversalReply Message
+        //Send the Message
         SmsManager sms = SmsManager.getDefault();
         android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
         sms.sendTextMessage(phoneNumber, null, messageSent, null, null);
 
 
 
-        /*Get Contact Info
+        /Get Contact Info
         Contact contact = db.getContactInfo(phoneNumber);
         String name = phoneNumber;
         if(contact.getName() != null){
@@ -209,8 +212,8 @@ public class EventHandler implements Runnable{
 
         //Send Notification to User
         Notifications sendNotification = new Notifications();
-        sendNotification.Notify("Responded To " + name, "Sent at " + timeSentReadable);*/
-    }
+        sendNotification.Notify("Responded To " + name, "Sent at " + timeSentReadable);
+    }*/
 
     public void sendLocationInfo() {
         String addressText;
@@ -225,7 +228,7 @@ public class EventHandler implements Runnable{
         locator.close();
 
         if (currentLocation == null) {
-            sendSMS("my location cannot be determined at this time", this.messageReceived, this.phoneNumber, this.timeReceived, false, false);
+            sender.sendSMS("my location cannot be determined at this time", this.messageReceived, this.phoneNumber, this.timeReceived, false, false, context);
         } else {
 
             //build the location message w/ address and URL to google maps
@@ -234,7 +237,7 @@ public class EventHandler implements Runnable{
             message = "I am at: \n" + addressText + "\n\n" + link;
 
             //send the message
-            sendSMS(message, this.messageReceived, this.phoneNumber, this.timeReceived, true, false);
+            sender.sendSMS(message, this.messageReceived, this.phoneNumber, this.timeReceived, true, false, context);
         }
     }
 

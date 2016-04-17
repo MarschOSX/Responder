@@ -7,38 +7,39 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.seniordesign.autoresponder.Interface.Settings.ParentalControlsSetUp;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.Services.DrivingDetectionService;
+import com.seniordesign.autoresponder.Services.ParentalControlsWatcher;
 
 /**
  * Created by Garlan on 4/11/2016.
  */
 public class OnBoot extends BroadcastReceiver{
+    public static final String TAG = "OnBoot";
 
     @Override
     public void onReceive(Context context, Intent intent)
     {
+        Log.e(TAG, "Android OS was restarted! checking AutoResponder Database");
         DBInstance db = DBProvider.getInstance(false, context);
-
-        //TODO put check permissions status block here
-
         if (db != null){
+            Log.e(TAG, "Database is not null! Attempting to resume services that were running");
             if (db.getParentalControlsToggle()){
-
-
-            }
-
-            if (db.getDrivingDetectionToggle()){
-                // if app does not have Location Permissions
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    //TODO put code to notify parent that driving detection service is not enab
+                Log.e(TAG, "Parental Controls Was Running! Restarting Service");
+                if (!ParentalControlsWatcher.isRunning(context)) {
+                    context.startService(new Intent(context, ParentalControlsWatcher.class));
+                    Log.e(TAG, "Parental Controls Service was started");
                 }
-                // if app does have permission and service is not running
-                else if (!DrivingDetectionService.isRunning(context) && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            }
+            if (db.getDrivingDetectionToggle()){
+                Log.e(TAG, "Driving Detection Was Running! Restarting Service");
+                if (!DrivingDetectionService.isRunning(context)) {
                     context.startService(new Intent(context, DrivingDetectionService.class));
+                    Log.e(TAG, "Driving Detection Service was started");
                 }
             }
         }
