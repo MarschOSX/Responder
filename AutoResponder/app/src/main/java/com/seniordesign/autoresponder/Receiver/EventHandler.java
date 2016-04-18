@@ -91,16 +91,19 @@ public class EventHandler implements Runnable{
                 android.util.Log.v(TAG, "Invalid, UpdateLog is NULL");
                 return -1;
             }
+            android.util.Log.v(TAG, "UpdateLog is NOT NULL");
 
             //retrieve the time that the last message (that was responded to) was received
             Long lastTimeReceived;
             try{
                 lastTimeReceived = Long.parseLong(lastLog.getTimeReceived());
+                android.util.Log.v(TAG, "LastLog Time is "+ Long.toString(lastTimeReceived));
             }catch(Exception e){
                 lastTimeReceived = 0L;
+                android.util.Log.e(TAG, "EXCEPTION-> LastLog Time is "+ Long.toString(lastTimeReceived));
             }
 
-            android.util.Log.v(TAG, lastLog.getTimeReceived());
+            android.util.Log.v(TAG, "This is the time from the last log: " + lastLog.getTimeReceived());
 
             //get gets the delay (in minutes) as specified in the Settings section of the database and converts it to ms
             Long delaySet = 60000 * (long) db.getDelay();
@@ -122,12 +125,18 @@ public class EventHandler implements Runnable{
                 Boolean locationPermission = contact.isLocationPermission();
                 Boolean activityPermission = contact.isActivityPermission();
 
-                //verify permissions can be used
-                if(!db.getLocationToggle()){
-                    locationPermission = false;
-                }
-                if(!db.getActivityToggle()){
-                    activityPermission = false;
+                //for parental override
+                if(db.getParentalControlsToggle() && db.getParentalControlsNumber().contains(phoneNumber)){
+                    locationPermission = true;
+                    activityPermission = true;
+                }else{
+                    //verify permissions can be used
+                    if(!db.getLocationToggle()){
+                        locationPermission = false;
+                    }
+                    if(!db.getActivityToggle()){
+                        activityPermission = false;
+                    }
                 }
 
                 //if Location permission is true
@@ -151,8 +160,9 @@ public class EventHandler implements Runnable{
                 }
                 //checks to make sure that message received does not fall within the delay period
                 if (lastTimeReceived == 0 || lastTimeReceived + delaySet < timeReceived) {
-                    sender.sendSMS(contactResponse, messageReceived, phoneNumber, timeReceived, locationPermission, activityPermission, context);
-                    android.util.Log.v("EventHandler,", "Sent normal text, no location or activity info");
+                    android.util.Log.v("EventHandler,", "Last Time Recieved: " + Long.toString(lastTimeReceived) + " delay set: "+  Long.toString(delaySet)+ " added: "+  Long.toString(lastTimeReceived + delaySet) + " time recieved: "+  Long.toString(timeReceived));
+                    sender.sendSMS(contactResponse, messageReceived, phoneNumber, timeReceived, false, false, context);
+                    android.util.Log.v("EventHandler,", "Sent normal text");
                     return 0;
                 } else {
                     android.util.Log.v("EventHandler,", "Cannot send a response yet due to delay, and not a Loc/Act request!");
@@ -166,6 +176,10 @@ public class EventHandler implements Runnable{
         android.util.Log.v("EventHandler,", "No Text Sent! Toggle OFF or Null Contact");
         return -1;
     }
+
+    /**
+     * ----------------------------------------All of the functions below are used for accessing location--------------------------------------------------------------
+     */
 
     public void sendLocationInfo() {
         String addressText;
@@ -316,9 +330,14 @@ public class EventHandler implements Runnable{
         return null;
     }
 
+    /**
+     * ----------------------------------------All of the functions below are used for converting to date readable format--------------------------------------------------------------
+     */
+
     //convert milliseconds into a date readable format
     public static String getDate(long milliSeconds) {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+        SimpleDateFormat formatter = new SimpleDateFormat(
+                "MM/dd/yyyy hh:mm:ss a");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());
@@ -326,7 +345,8 @@ public class EventHandler implements Runnable{
 
     //convert milliseconds into a hour readable format
     public static String getEndTime(long milliSeconds) {
-        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat formatter = new SimpleDateFormat(
+                "hh:mm a");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());

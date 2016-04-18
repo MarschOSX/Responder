@@ -21,7 +21,10 @@ import com.seniordesign.autoresponder.Interface.Groups.GroupInfo;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ResponseLogList extends AppCompatActivity {
@@ -99,11 +102,13 @@ public class ResponseLogList extends AppCompatActivity {
 
                 //get the children information
                 List<String> child = new ArrayList<>();
+                String timeRecievedReadable = getDate(Long.parseLong(responseLog.getTimeReceived()));
+                String timeSentReadable = getDate(Long.parseLong(responseLog.getTimeSent()));
                 child.add("Phone Number:   " + responseLog.getSenderNumber());
                 child.add("Message Recieved:   " + responseLog.getMessageReceived());
-                child.add("Message Recieved At:   " + responseLog.getTimeReceived());
+                child.add("Message Recieved At:   " + timeRecievedReadable);
                 child.add("Message Sent:   " + responseLog.getMessageSent());
-                child.add("Message Sent At:   " + responseLog.getTimeSent());
+                child.add("Message Sent At:   " + timeSentReadable);
                 child.add("Location Shared:   " + responseLog.getLocationShared());
                 child.add("Calendar Event Shared:   " + responseLog.getActivityShared());
 
@@ -143,6 +148,15 @@ public class ResponseLogList extends AppCompatActivity {
             }
         });
         alert.show();
+    }
+
+    //convert milliseconds into a date readable format
+    public static String getDate(long milliSeconds) {
+        SimpleDateFormat formatter = new SimpleDateFormat(
+                "MM/dd/yyyy hh:mm:ss a");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 
 
