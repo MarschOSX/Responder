@@ -94,15 +94,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
         //builds at start of application
         parentalControlsEnabler.setChecked(db.getParentalControlsToggle());
         if(parentalControlsEnabler.isChecked()){
-            //Start service to monitor text messages
-            if (!ParentalControlsWatcher.isRunning(context)) {
-                Log.d(TAG, "ParentalControls Service is starting!");
-                getApplicationContext().startService(new Intent(getApplicationContext(), ParentalControlsWatcher.class));
-            }
-            //Turn on Driving Detection
-            if (!DrivingDetectionService.isRunning(context)) {
-                context.startService(new Intent(context, DrivingDetectionService.class));
-            }
+            startServices();
         }
 
         buildSwitches();
@@ -165,51 +157,30 @@ public class ParentalControlsSetUp extends AppCompatActivity {
         parentalControlsEnabler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(parentalControlsEnabler.isChecked()){//is on
+                if (parentalControlsEnabler.isChecked()) {//is on
                     //if(PermissionsChecker.checkAccessLocationPermission(me, getApplicationContext(), LOCATION_PERMISSIONS)){
-                        if(!db.getParentalControlsNumber().matches("0")) {
-                            //Set info in the database
-                            db.setParentalControlsToggle(true);
+                    if (!db.getParentalControlsNumber().matches("0")) {
+                        db.setParentalControlsToggle(true);
 
-                            //Start service to monitor text messages
-                            if (!ParentalControlsWatcher.isRunning(context)) {
-                                Log.d(TAG, "ParentalControls Service is starting!");
-                                getApplicationContext().startService(new Intent(getApplicationContext(), ParentalControlsWatcher.class));
-                            }
+                        //Start ParentalControlsWatcher and DD
+                        startServices();
 
-                            //Turn on Driving Detection
-                            if (!DrivingDetectionService.isRunning(context)) {
-                                context.startService(new Intent(context, DrivingDetectionService.class));
-                                db.setDrivingDetectionToggle(true);
-                                Log.d(TAG, "PDriving Detection Boolean is " + db.getDrivingDetectionToggle());
-                            }
-
-                            //Send info to parent that Parental Controls has been enabled
-                            SMSSender sender = new SMSSender(db);
-                            sender.sendSMS("This number has enabled AutoResponder parental controls", "",
-                                    db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
-                        }else{
-                            parentalControlsEnabler.setChecked(false);
-                            db.setParentalControlsToggle(false);
-                            int duration = Toast.LENGTH_LONG;
-                            CharSequence toastText;
-                            Toast toast;
-                            toastText = "Must Enter a Phone Number!";
-                            toast = Toast.makeText(context, toastText, duration);
-                            toast.show();
-                        }
-                    /*}else{
+                        //Send info to parent that Parental Controls has been enabled
+                        SMSSender sender = new SMSSender(db);
+                        sender.sendSMS("This number has enabled AutoResponder parental controls", "",
+                                db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
+                    } else {
                         parentalControlsEnabler.setChecked(false);
                         db.setParentalControlsToggle(false);
                         int duration = Toast.LENGTH_LONG;
                         CharSequence toastText;
                         Toast toast;
-                        toastText = "Must Enable Location Permissions!";
+                        toastText = "Must Enter a Phone Number!";
                         toast = Toast.makeText(context, toastText, duration);
                         toast.show();
-                    }*/
-                }else{//is off
-                    if(!db.getParentalControlsNumber().matches("0")) {
+                    }
+                } else {//is off
+                    if (!db.getParentalControlsNumber().matches("0")) {
                         //Update DB
                         db.setParentalControlsToggle(false);
 
@@ -223,7 +194,7 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                         SMSSender sender = new SMSSender(db);
                         sender.sendSMS("This number has disabled AutoResponder parental controls", "",
                                 db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
-                    }else{
+                    } else {
                         parentalControlsEnabler.setChecked(false);
                         db.setParentalControlsToggle(false);
                         int duration = Toast.LENGTH_LONG;
@@ -236,12 +207,26 @@ public class ParentalControlsSetUp extends AppCompatActivity {
                 }
 
 
-
-
-
-
-
             }
         });
+    }
+
+    private void startServices(){
+        //Start service to monitor text messages
+
+        if (!ParentalControlsWatcher.isRunning(context)) {
+            Log.d(TAG, "ParentalControls Service is starting!");
+            getApplicationContext().startService(new Intent(getApplicationContext(), ParentalControlsWatcher.class));
+        }
+
+        //Turn on Driving Detection
+        if (!DrivingDetectionService.isRunning(context)) {
+            db.setDrivingDetectionToggle(true);
+            Log.d(TAG, "Driving Detection Boolean is " + db.getDrivingDetectionToggle());
+            context.startService(new Intent(context, DrivingDetectionService.class));
+        }else{
+            Log.d(TAG, "Driving Detection is already running!");
+            Log.d(TAG, "Driving Detection Boolean is " + db.getDrivingDetectionToggle());
+        }
     }
 }

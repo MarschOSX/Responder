@@ -21,13 +21,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
 
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="Auto Response"
-                android:id="@+id/autoRespond_switch"
-                android:textSize="32sp" />
-
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
@@ -36,7 +29,7 @@
                 <Switch
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
-                    android:text="Location"
+                    android:text="Location In SMS"
                     android:id="@+id/location_switch"
                     android:checked="false"
                     android:textSize="24sp" />
@@ -44,7 +37,7 @@
                 <Switch
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
-                    android:text="Calendar"
+                    android:text="Calendar In SMS"
                     android:id="@+id/calendar_switch"
                     android:checked="false"
                     android:textSize="24sp" />
@@ -65,7 +58,8 @@
                     android:layout_height="wrap_content"
                     android:text="Contacts"
                     android:id="@+id/contacts_button"
-                    android:onClick="gotoContactsList"/>
+                    android:onClick="gotoContactsList"
+            android:layout_marginTop="10dp" />
 
         <Button
                     android:layout_width="match_parent"
@@ -105,7 +99,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="GarMar 2015"
+        android:text="GarMar 2016"
         android:id="@+id/textView2"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/linearLayout" />
@@ -114,10 +108,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Version 1.0"
+                android:text="Version 2.0"
                 android:id="@+id/textView"
         android:layout_alignBaseline="@+id/textView2"
         android:layout_alignBottom="@+id/textView2"
         android:layout_alignStart="@+id/linearLayout" />
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Auto Response"
+        android:id="@+id/autoRespond_switch"
+        android:textSize="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

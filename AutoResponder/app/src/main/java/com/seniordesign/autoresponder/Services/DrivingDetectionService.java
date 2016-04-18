@@ -80,6 +80,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     @Override
     public IBinder onBind(Intent intent){
+        Log.d(TAG, "passing binder");
         return mBinder;
     }
 
@@ -124,8 +125,10 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
         shuttingDown = true;
 
         //close out location services
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-        googleApiClient.disconnect();
+        if (googleApiClient != null && googleApiClient.isConnected()){
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+            googleApiClient.disconnect();
+        }
 
         //if worker is running, stop it
         if(worker != null) worker.interrupt();

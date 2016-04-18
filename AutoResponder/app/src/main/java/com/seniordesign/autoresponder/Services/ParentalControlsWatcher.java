@@ -42,6 +42,9 @@ public class ParentalControlsWatcher extends Service {
     private static final String alertMessageNoLocation = "ALERT from AutoResponder: This user does not have Location Permissions Enabled! Cannot tell if driving!";
     private final int LOCATION_PERMISSIONS = 4;
     private final int READ_SMS_PERMISSIONS = 5;
+    private boolean isDriving = false;
+    SMSSender sender;
+
 
     private DBInstance db;
     public SMSObserver observer;
@@ -57,6 +60,7 @@ public class ParentalControlsWatcher extends Service {
         // REGISTER ContentObserver
         Log.e(TAG, "Creating SMSObserver!");
         observer = new SMSObserver(new Handler());
+        sender = new SMSSender(db);
         if(PermissionsChecker.checkReadSMSPermission(null, getApplicationContext(), READ_SMS_PERMISSIONS)) {
             this.getContentResolver().
                     registerContentObserver(Uri.parse("content://sms/"), true, observer);
@@ -81,8 +85,6 @@ public class ParentalControlsWatcher extends Service {
     }
 
 
-
-
     public class SMSObserver extends ContentObserver {
         private Context mContext;
         Long last_id = 0l;
@@ -100,11 +102,30 @@ public class ParentalControlsWatcher extends Service {
             public void onServiceDisconnected(ComponentName name) {}
 
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
+              public void onServiceConnected(ComponentName name, IBinder service) {
                 DrivingDetectionService.LocalBinder myBinder = (DrivingDetectionService.LocalBinder) service;
+                android.util.Log.v(TAG, "Binding to DD");
                 mService = myBinder.getService();
+                android.util.Log.v(TAG, "DD is bound");
+                isDriving = mService.isDriving();
+
+
+                android.util.Log.v(TAG, "User is driving: " + isDriving);
+                afterDDBind(isDriving);
             }
         };
+
+        public void afterDDBind(boolean isDriving){
+            if (!isDriving) {
+                android.util.Log.v(TAG, "Message WAS NOT SENT while driving! No Worries...");
+            }else{
+                android.util.Log.v(TAG, "A text was sent WHILE DRIVING! BAD DOGGY, alert parent");
+                sender.sendSMS(alertMessage, "", db.getParentalControlsNumber(), System.currentTimeMillis(), false, false, getApplicationContext());
+            }
+
+            mService = null;
+            unbindService(mServiceConnection);
+        }
 
 
         @Override
@@ -152,31 +173,15 @@ public class ParentalControlsWatcher extends Service {
                             return;
                         }
                         //Determine if driving
-                        boolean isDriving = false;
-                        boolean didDrivingFail = false;
-                        SMSSender sender = new SMSSender(db);
                         if(PermissionsChecker.checkAccessLocationPermission(null, getApplicationContext(), LOCATION_PERMISSIONS)) {
                             try {
                                 Log.d(TAG, "binding driving service");
                                 bindService(new Intent(mContext, DrivingDetectionService.class), mServiceConnection, Context.BIND_AUTO_CREATE);
                                 Log.d(TAG, "service is bound");
-                                isDriving = mService.isDriving();
-                                unbindService(mServiceConnection);
                             }catch (Exception e){
                                 android.util.Log.e(TAG, "Failed to access Driving Detection Service!");
                                 e.printStackTrace();
-                                didDrivingFail = true;
-                            }finally{
-                                if (!isDriving) {
-                                    if(!didDrivingFail) {
-                                        android.util.Log.v(TAG, "Message WAS NOT SENT while driving! No Worries...");
-                                    }else{
-                                        android.util.Log.e(TAG, "Unable to tell if text was sent while driving, DD failed!");
-                                    }
-                                }else{
-                                    android.util.Log.v(TAG, "A text was sent WHILE DRIVING! BAD DOGGY, alert parent");
-                                    sender.sendSMS(alertMessage, "", db.getParentalControlsNumber(), System.currentTimeMillis(), false, false, getApplicationContext());
-                                }
+                                android.util.Log.e(TAG, "Unable to tell if text was sent while driving, DD failed!");
                             }
                         }else{
                             android.util.Log.e(TAG, "Location Permissions are not set! Alert Parent");
