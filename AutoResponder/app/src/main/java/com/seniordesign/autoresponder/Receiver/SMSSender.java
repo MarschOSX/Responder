@@ -30,7 +30,7 @@ public class SMSSender {
         //Update Response Log
         String timeRecievedReadable = getDate(timeRecieved);
         String timeSentReadable = getDate(System.currentTimeMillis());
-        ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeRecievedReadable, timeSentReadable, locShared, actShared);
+        ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, Long.toString(timeRecieved), Long.toString(System.currentTimeMillis()), locShared, actShared);
         android.util.Log.v(TAG, "New ResponseLog: "+messageSent+ " " +messageRecieved+ " " +phoneNumber+ " " +timeRecievedReadable+ " " +timeSentReadable+ " " +locShared+ " " +actShared);
         db.addToResponseLog(updateLog);
 
