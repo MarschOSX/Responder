@@ -6,6 +6,7 @@ import android.util.Log;
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
+import com.seniordesign.autoresponder.Persistance.DBHelper;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import java.sql.Date;
@@ -32,6 +33,18 @@ public class PermDBInstanceTest extends AndroidTestCase {
         String result = null;
 
         boolean testMode = true;
+
+        database.setReplyAll("INTO "+ DBHelper.TABLE_SETTINGS + "WHERE 1 = 1; DROP " + DBHelper.TABLE_SETTINGS + ";");
+
+
+        try{
+            database.getReplyAll();
+        }
+        catch (Exception e){
+            original = null;
+        }
+
+        assertNotNull(original);
 
         if (original.compareTo(testOpt1) == 0){
             testMode = false;
