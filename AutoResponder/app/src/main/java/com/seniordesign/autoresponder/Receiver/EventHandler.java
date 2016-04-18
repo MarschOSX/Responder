@@ -74,22 +74,6 @@ public class EventHandler implements Runnable{
         //try to retrieve information for that phone number fromm the database
         Contact contact = db.getContactInfo(phoneNumber);
 
-        /*See if the TimeLimit the app can run has expired
-        android.util.Log.e("EventHandler,", "TimeLimit is " + db.getTimeLimit());
-        if(db.getTimeLimit() != 100) { //If == 100, then it is assumed to be indefinite
-            long timeLimitInMilliseconds = Long.valueOf(db.getTimeLimit() * 3600000);
-            android.util.Log.e("EventHandler,", "TimeLimit in milliseconds is " + timeLimitInMilliseconds);
-            long currentTime = System.currentTimeMillis();
-            android.util.Log.e("EventHandler,", "CurrentTime in milliseconds is " + currentTime);
-            long timeToggleWasSet = db.getTimeResponseToggleSet();
-            android.util.Log.e("EventHandler,", "TimeToggleWasSet in milliseconds is " + timeToggleWasSet);
-            //if the current system time is greater than or equal to the time the app was activated + the time limit
-            //turn the app off
-            if(currentTime >= (timeToggleWasSet + timeLimitInMilliseconds)){
-                db.setResponseToggle(false);
-            }
-        }*/
-
         //For World Reply
         if(db.getWorldToggle() && contact == null){
             //We need to populate with default group info
@@ -182,38 +166,6 @@ public class EventHandler implements Runnable{
         android.util.Log.v("EventHandler,", "No Text Sent! Toggle OFF or Null Contact");
         return -1;
     }
-
-    /*Sends out an SMS from the device and records it in the ResponseLog
-    public void sendSMS(String messageSent, String messageRecieved, String phoneNumber, Long timeRecieved, Boolean locShared, Boolean actShared){
-        android.util.Log.v("EventHandler,", "sendSMS recieved: mesSent " + messageSent + " messageRecieved " + messageRecieved + " phoneNumber " + phoneNumber + " timeRecieved " + timeRecieved + " locShared " + locShared + " actShared " + actShared);
-
-
-        String timeRecievedReadable = getDate(timeRecieved);
-        String timeSentReadable = getDate(System.currentTimeMillis());
-
-        //Update Response Log
-        ResponseLog updateLog = new ResponseLog(messageSent, messageRecieved, phoneNumber, timeRecievedReadable, timeSentReadable, locShared, actShared);
-        android.util.Log.v("EventHandler,", "New ResponseLog: "+messageSent+ " " +messageRecieved+ " " +phoneNumber+ " " +timeRecievedReadable+ " " +timeSentReadable+ " " +locShared+ " " +actShared);
-        db.addToResponseLog(updateLog);
-
-        //Send the Message
-        SmsManager sms = SmsManager.getDefault();
-        android.util.Log.v("EventHandler,", "Message successfully sent to: " + phoneNumber + " Message Body: " + messageSent);
-        sms.sendTextMessage(phoneNumber, null, messageSent, null, null);
-
-
-
-        /Get Contact Info
-        Contact contact = db.getContactInfo(phoneNumber);
-        String name = phoneNumber;
-        if(contact.getName() != null){
-            name = contact.getName();
-        }
-
-        //Send Notification to User
-        Notifications sendNotificati = new Notifications();
-        sendNotification.Notify("Responded To " + name, "Sent at " + timeSentReadable);
-    }*/
 
     public void sendLocationInfo() {
         String addressText;
@@ -366,8 +318,7 @@ public class EventHandler implements Runnable{
 
     //convert milliseconds into a date readable format
     public static String getDate(long milliSeconds) {
-        SimpleDateFormat formatter = new SimpleDateFormat(
-                "MM/dd/yyyy hh:mm:ss a");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());
@@ -375,8 +326,7 @@ public class EventHandler implements Runnable{
 
     //convert milliseconds into a hour readable format
     public static String getEndTime(long milliSeconds) {
-        SimpleDateFormat formatter = new SimpleDateFormat(
-                "hh:mm a");
+        SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());

@@ -16,8 +16,7 @@ public class MMSListener extends BroadcastReceiver{
 
     //Listener gets a message
     @Override
-    public void onReceive(Context context, Intent intent)
-    {
+    public void onReceive(Context context, Intent intent) {
         //Get a MMS
         Log.v(TAG, "MMSListener Activated!");
         String action  = intent.getAction();

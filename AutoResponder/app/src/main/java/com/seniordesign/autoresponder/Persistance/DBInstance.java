@@ -16,8 +16,11 @@ public interface DBInstance {
     ///////////////////////////
     //SETTING TABLE FUNCTIONS//
     ///////////////////////////
+
+    //TESTED
     void setReplyAll(String reply);
 
+    
     String getReplyAll();
 
     void setUniversalReply(String universalReply);

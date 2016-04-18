@@ -18,7 +18,6 @@ public class SMSListener extends BroadcastReceiver{
     public void onReceive(Context context, Intent intent)
     {
         //Get an SMS
-        android.util.Log.v(TAG, "SMSListener Activated!");
         String action  = intent.getAction();
         String type = intent.getType();
         android.util.Log.v(TAG, "Intent received: " + action);
@@ -31,9 +30,9 @@ public class SMSListener extends BroadcastReceiver{
 
         //IF it's an SMS
         if(action.equals(ACTION_SMS_RECEIVED)) {
-            android.util.Log.v(TAG, "Recieved an SMS");
             Bundle bundle = intent.getExtras();
             Object[] messages = (Object[]) bundle.get("pdus");
+
             if (messages != null) {
                 SmsMessage[] sms = new SmsMessage[messages.length];
                 for (int n = 0; n < messages.length; n++) {
@@ -45,6 +44,8 @@ public class SMSListener extends BroadcastReceiver{
             }
             //pass information to EventHandler.respondToText()
             if (phoneNumber != null) {
+
+                //spawn in a new thread to prevent GUI hangups
                 Thread handler = new Thread(new EventHandler(new PermDBInstance(context), context, phoneNumber, message, timeReceived));
                 handler.setDaemon(true);
                 handler.start();
