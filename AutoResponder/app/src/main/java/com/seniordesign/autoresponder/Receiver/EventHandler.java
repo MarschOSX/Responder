@@ -74,22 +74,6 @@ public class EventHandler implements Runnable{
         //try to retrieve information for that phone number fromm the database
         Contact contact = db.getContactInfo(phoneNumber);
 
-        /*See if the TimeLimit the app can run has expired
-        android.util.Log.e("EventHandler,", "TimeLimit is " + db.getTimeLimit());
-        if(db.getTimeLimit() != 100) { //If == 100, then it is assumed to be indefinite
-            long timeLimitInMilliseconds = Long.valueOf(db.getTimeLimit() * 3600000);
-            android.util.Log.e("EventHandler,", "TimeLimit in milliseconds is " + timeLimitInMilliseconds);
-            long currentTime = System.currentTimeMillis();
-            android.util.Log.e("EventHandler,", "CurrentTime in milliseconds is " + currentTime);
-            long timeToggleWasSet = db.getTimeResponseToggleSet();
-            android.util.Log.e("EventHandler,", "TimeToggleWasSet in milliseconds is " + timeToggleWasSet);
-            //if the current system time is greater than or equal to the time the app was activated + the time limit
-            //turn the app off
-            if(currentTime >= (timeToggleWasSet + timeLimitInMilliseconds)){
-                db.setResponseToggle(false);
-            }
-        }*/
-
         //For World Reply
         if(db.getWorldToggle() && contact == null){
             //We need to populate with default group info
@@ -109,7 +93,6 @@ public class EventHandler implements Runnable{
             }
             android.util.Log.v(TAG, "UpdateLog is NOT NULL");
 
-
             //retrieve the time that the last message (that was responded to) was received
             Long lastTimeReceived;
             try{
@@ -118,7 +101,6 @@ public class EventHandler implements Runnable{
             }catch(Exception e){
                 lastTimeReceived = 0L;
                 android.util.Log.e(TAG, "EXCEPTION-> LastLog Time is "+ Long.toString(lastTimeReceived));
-
             }
 
             android.util.Log.v(TAG, "This is the time from the last log: " + lastLog.getTimeReceived());

@@ -52,9 +52,7 @@ public class Main extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         db = DBProvider.getInstance(false, getApplicationContext());
-        mLocationToggle.setChecked(db.getLocationToggle());
-        mCalenderToggle.setChecked(db.getActivityToggle());
-        mResponseToggle.setChecked(db.getResponseToggle());
+        buildSwitches();
         checkParentalControls();
     }
 

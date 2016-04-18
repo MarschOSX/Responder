@@ -24,15 +24,50 @@ public class PermDBInstanceTest extends AndroidTestCase {
         assertNotNull(database);
     }
 
-    public void testDbSetsAndGetsIssues()throws Exception {
+    public void test_SETTINGS_SetGetReplyAll(){
+        String original = database.getReplyAll();
+        String testOpt0 = "false";
+        String testOpt1 = "true";
+
+        String result = null;
+
+        boolean testMode = true;
+
+        if (original.compareTo(testOpt1) == 0){
+            testMode = false;
+        }
+
+        //if result returned is equivalent to first test option, switch to second
+        if(testMode){
+            database.setReplyAll(testOpt1);
+        }
+        else {
+            database.setReplyAll(testOpt0);
+        }
+
+        result = database.getReplyAll();
+
+        // assert that the retrieved reply all matches designated test option
+        if(testMode){
+            assertTrue(result.compareTo(testOpt1) == 0);
+        }
+        else {
+            assertTrue(result.compareTo(testOpt0) == 0);
+        }
+
+        //return reply all to original setting
+        database.setReplyAll(original);
+    }
+
+    /*public void testDbSetsAndGetsIssues()throws Exception {
         database = DBProvider.getInstance(false, getContext());
         String toSend = "HelloJUnit";
         database.setReplyAll(toSend);
         String fromDB = database.getReplyAll();
-        /**
+        *//**
          * assertEquals does not work for DB calls
          * which is why we do it this way. We can uncomment for proof
-         */
+         *//*
         //assertEquals(toSend, fromDB);
 
         if(fromDB.matches(toSend)){
@@ -61,7 +96,7 @@ public class PermDBInstanceTest extends AndroidTestCase {
         assertTrue(checker(database.getDelay(), 15));
     }
 
-    /*
+    *//*
     public void testDbSetsAndGetsResponseLogs()throws Exception {
         database = DBProvider.getInstance(false, getContext());
 
@@ -77,7 +112,7 @@ public class PermDBInstanceTest extends AndroidTestCase {
 
         assertTrue(responseLog.getMessageReceived().matches(responseLogFromDb.getMessageReceived()));
         assertTrue(responseLog.getMessageSent().matches(responseLogFromDb.getMessageSent()));
-    }*/
+    }*//*
 
     public void testDBContactTableFunctions()throws Exception {
         database = DBProvider.getInstance(false, getContext());
@@ -301,7 +336,7 @@ public class PermDBInstanceTest extends AndroidTestCase {
         database.removeGroup("testSubjectG");
         database.removeGroup("testSubjectH");
     }
-
+*/
     public boolean checker(Object A, Object B){
         if (A == B){
             return true;
