@@ -380,7 +380,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     @Override
     public void onConnected(Bundle arg0) {
-        int interval = db.getDrivingDetectionInterval() * 60000;
+        long interval = (long)(db.getDrivingDetectionInterval() * 60000);
 
         switch (status){
             case DrivingDetectionService.IDLE:
