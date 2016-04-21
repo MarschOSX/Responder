@@ -123,6 +123,10 @@
             android:name=".Interface.Settings.ParentalControlsPassword"
             android:label="@string/title_activity_parental_controls_password" >
         </activity>
+        <activity
+            android:name=".Interface.Settings.ParentalControlsInstructions"
+            android:label="@string/title_activity_parental_controls_instructions" >
+        </activity>
     </application>
 
 </manifest>

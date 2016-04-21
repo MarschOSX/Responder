@@ -221,7 +221,13 @@ public class ParentalControlsSetUp extends AppCompatActivity {
         // Do something in response to button
         Intent intent = new Intent(this, ParentalControlsPassword.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("CHANGING_PASSWORD", "change");
+        intent.putExtra("CHANGING_PASSWORD","true");
+        startActivity(intent);
+    }
+
+    public void goToInstructions(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, ParentalControlsInstructions.class);
         startActivity(intent);
     }
 

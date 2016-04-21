@@ -59,9 +59,9 @@ public class Setting {
 
     public static final String[] settingUIList = {
             "World Toggle",
-            "Default Contact Response",
-            "Default Contact Location Setting",
-            "Default Contact Activity Setting",
+            "Default Contacts",
+            //"Default Contact Location Setting",
+            //"Default Contact Activity Setting",
             "Driving Detection Interval",
             "Parental Controls",
             "Response Log",

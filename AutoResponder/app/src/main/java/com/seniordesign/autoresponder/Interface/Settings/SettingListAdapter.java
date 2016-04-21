@@ -67,6 +67,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
+            /*
             case "Default Contact Location Setting": //default group location toggle
                 title.setText(R.string.defaultGroup_location_toggle);
 
@@ -79,7 +80,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                         db.setGroupLocationPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isLocationPermission());
                     }
                 });
-                break;
+                break;*/
             case "World Toggle": //default group location toggle
                 title.setText("World Reply");
                 description.setText("Responds to any number, not just contacts");
@@ -92,6 +93,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
+            /*
             case "Default Contact Activity Setting": //default group activity toggle
                 title.setText(R.string.defaultGroup_activity_toggle);
 
@@ -104,7 +106,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                         db.setGroupActivityPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isActivityPermission());
                     }
                 });
-                break;
+                break;*/
             case "Time Delay": //default group time delay
                 toggle.setVisibility(View.GONE);
                 title.setText(R.string.setting_timeDelay);
@@ -132,10 +134,10 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
-            case "Default Contact Response":
+            case "Default Contacts":
                 toggle.setVisibility(View.GONE);
-                title.setText(R.string.defaultGroup_Response);
-                description.setText("Specify the default response");
+                title.setText("Default Contacts");
+                description.setText("Contacts with no custom settings will use the Default");
 
                 rowView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -155,6 +157,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     public void onClick(View v) {
                         Intent intent = new Intent(parentApp, ParentalControlsPassword.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("CHANGING_PASSWORD","false");
                         parentApp.startActivity(intent);
                     }
                 });

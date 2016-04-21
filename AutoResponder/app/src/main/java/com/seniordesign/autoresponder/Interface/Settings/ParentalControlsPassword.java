@@ -26,13 +26,17 @@ public class ParentalControlsPassword extends AppCompatActivity {
     private ParentalControlsPassword me;
     private DBInstance db;
     EditText input;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        intent = getIntent();
         setContentView(R.layout.activity_parental_controls_password);
         this.db = DBProvider.getInstance(false, getApplicationContext());
         me = this;
+
+
         if(checkForExistingPassword()) {
             //Password Exists! Lets check the user input
             showPasswordBox();
@@ -88,10 +92,16 @@ public class ParentalControlsPassword extends AppCompatActivity {
                         sender.sendSMS("This number is editing AutoResponder parental controls", "",
                                 db.getParentalControlsNumber(), 0L, false, false, getApplicationContext());
                     }
-                    // Moving to Parental Controls Set Up
-                    final Intent intent = new Intent(getApplicationContext(), ParentalControlsSetUp.class);
-                    startActivity(intent);
-                    finish();
+
+                    if(intent.getStringExtra("CHANGING_PASSWORD").equals("true")){
+                        //we are changing the password
+                        setUpPassword();
+                    }else {
+                        // Moving to Parental Controls Set Up
+                        final Intent intent = new Intent(getApplicationContext(), ParentalControlsSetUp.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }else {
                     //otherwise it is not correct
                     int duration = Toast.LENGTH_LONG;
@@ -134,7 +144,7 @@ public class ParentalControlsPassword extends AppCompatActivity {
                 Log.v(TAG, "Proceed with Saving Password");
                 String passwordEntered = input.getText().toString();
                 Log.v(TAG, "Password entered: " + passwordEntered);
-                if(passwordEntered.matches("") || passwordEntered.matches(" ")){
+                if (passwordEntered.matches("") || passwordEntered.matches(" ")) {
                     int duration = Toast.LENGTH_LONG;
                     CharSequence toastText;
                     Toast toast;
@@ -142,12 +152,17 @@ public class ParentalControlsPassword extends AppCompatActivity {
                     toast = Toast.makeText(getApplicationContext(), toastText, duration);
                     toast.show();
                     finish();
-                }else {
+                } else {
                     db.setParentalControlsPassword(passwordEntered);
-                    //Password is entered! Moving to Parental Controls Set Up
-                    final Intent intent = new Intent(getApplicationContext(), ParentalControlsSetUp.class);
-                    startActivity(intent);
-                    finish();
+
+                    if (intent.getStringExtra("CHANGING_PASSWORD").equals("true")) {
+                        finish();
+                    }else {
+                        //Password is entered! Moving to Parental Controls Set Up
+                        final Intent intent = new Intent(getApplicationContext(), ParentalControlsSetUp.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
         });
@@ -167,4 +182,5 @@ public class ParentalControlsPassword extends AppCompatActivity {
         Log.v(TAG, "Looking at existing password");
         return db.getParentalControlsPassword() != null;
     }
+
 }

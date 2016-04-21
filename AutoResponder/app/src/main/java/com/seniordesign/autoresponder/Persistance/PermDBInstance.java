@@ -500,10 +500,10 @@ public class PermDBInstance implements DBInstance {
                 else{
                     result.moveToFirst();
                 }
-                if (result.getLong(0) == 0L) {
+                /*if (result.getLong(0) == 0L) {
                     Log.d(TAG, getMethodName(0) + "First ResponseLog is Empty! Returning Empty Array");
                     return range;
-                }
+                }*/
 
                 for (int i = 0; i < numRows; i++) {
                     //load query result
