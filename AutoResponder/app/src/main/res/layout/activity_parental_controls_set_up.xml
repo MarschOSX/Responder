@@ -77,4 +77,13 @@
         android:layout_above="@+id/parentalControlsInstructions2"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Password"
+        android:id="@+id/button3"
+        android:layout_below="@+id/deleteParentalAlertNumber"
+        android:onClick="gotoPassword"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

@@ -153,7 +153,8 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                 rowView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(parentApp, ParentalControlsSetUp.class);
+                        Intent intent = new Intent(parentApp, ParentalControlsPassword.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         parentApp.startActivity(intent);
                     }
                 });

@@ -59,6 +59,8 @@ public interface DBInstance {
 
     void setDrivingDetectionToggle(boolean toggle);
 
+    void setParentalControlsPassword(String password);
+
     boolean getResponseToggle();
     
     boolean getLocationToggle();
@@ -74,6 +76,8 @@ public interface DBInstance {
     boolean getDrivingDetectionToggle();
 
     String getParentalControlsNumber();
+
+    String getParentalControlsPassword();
 
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//

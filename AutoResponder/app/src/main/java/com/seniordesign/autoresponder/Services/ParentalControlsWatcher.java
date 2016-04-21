@@ -39,6 +39,7 @@ public class ParentalControlsWatcher extends Service {
     private static final String alertMessage2 = "This number has just been added from AutoResponder parental controls";
     private static final String alertMessage3 = "This number has enabled AutoResponder parental controls";
     private static final String alertMessage4 = "This number has disabled AutoResponder parental controls";
+    private static final String alertMessage5 = "This number is editing AutoResponder parental controls";
     private static final String alertMessageNoLocation = "ALERT from AutoResponder: This user does not have Location Permissions Enabled! Cannot tell if driving!";
     private final int LOCATION_PERMISSIONS = 4;
     private final int READ_SMS_PERMISSIONS = 5;
@@ -162,7 +163,7 @@ public class ParentalControlsWatcher extends Service {
                         Log.d(TAG, "Date: " + date);
                         Log.d(TAG, "Message: " + msg);
 
-                        if (msg.matches(alertMessage) || msg.matches(alertMessage1) || msg.matches(alertMessage2) || msg.matches(alertMessage3) || msg.matches(alertMessage4) || msg.matches(alertMessageNoLocation)) {
+                        if (msg.matches(alertMessage) || msg.matches(alertMessage1) || msg.matches(alertMessage2) || msg.matches(alertMessage3) || msg.matches(alertMessage4) || msg.matches(alertMessage5)|| msg.matches(alertMessageNoLocation)) {
                             android.util.Log.v(TAG, "Just catching an alert message from AR, we can ignore this");
                             return;
                         }

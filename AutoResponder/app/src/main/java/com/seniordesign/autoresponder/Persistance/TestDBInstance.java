@@ -157,6 +157,10 @@ public class TestDBInstance /*implements DBInstance*/ {
         this.settings.put(Setting.PARENTAL_CONTROLS_NUMBER, parentalControlsNumber);
     }
 
+    public void setParentalControlsPassword(String parentalControlsPassword){
+        this.settings.put(Setting.PARENTAL_CONTROLS_PASSWORD, parentalControlsPassword);
+    }
+
 
     public boolean getUniversalToggle(){
         String value = this.settings.get(Setting.UNIVERSAL_TOGGLE);
@@ -247,6 +251,9 @@ public class TestDBInstance /*implements DBInstance*/ {
         return this.settings.get(Setting.PARENTAL_CONTROLS_NUMBER);
     }
 
+    public String getParentalControlsPassword(){
+        return this.settings.get(Setting.PARENTAL_CONTROLS_PASSWORD);
+    }
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
     ////////////////////////////////
