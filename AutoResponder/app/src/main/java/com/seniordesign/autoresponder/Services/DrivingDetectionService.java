@@ -260,7 +260,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
             }
         }
         else{
-            msg += "location permissions have been denied by user";
+            msg += "location permissions are disabled";
         }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

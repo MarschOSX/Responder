@@ -35,16 +35,14 @@ public class PermissionsChecker {
 
                 // shutdown parental controls if running
                 if(ParentalControlsWatcher.isRunning(context)){
-                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
-
                     if (db != null) db.setParentalControlsToggle(false);
+                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
                 }
 
                 // shut down driving detection if running
                 if(DrivingDetectionService.isRunning(context)){
-                    context.stopService(new Intent(context, DrivingDetectionService.class));
-
                     if (db != null) db.setDrivingDetectionToggle(false);
+                    context.stopService(new Intent(context, DrivingDetectionService.class));
                 }
             }
         }else{
@@ -69,16 +67,14 @@ public class PermissionsChecker {
 
                 // shutdown parental controls if running
                 if(ParentalControlsWatcher.isRunning(context)){
-                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
-
                     if (db != null) db.setParentalControlsToggle(false);
+                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
                 }
 
                 // shut down driving detection if running
                 if(DrivingDetectionService.isRunning(context)){
-                    context.stopService(new Intent(context, DrivingDetectionService.class));
-
                     if (db != null) db.setDrivingDetectionToggle(false);
+                    context.stopService(new Intent(context, DrivingDetectionService.class));
                 }
             }
         }else{
@@ -104,16 +100,14 @@ public class PermissionsChecker {
 
                 // shutdown parental controls if running
                 if(ParentalControlsWatcher.isRunning(context)){
-                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
-
                     if (db != null) db.setParentalControlsToggle(false);
+                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
                 }
 
                 // shut down driving detection if running
                 if(DrivingDetectionService.isRunning(context)){
-                    context.stopService(new Intent(context, DrivingDetectionService.class));
-
                     if (db != null) db.setDrivingDetectionToggle(false);
+                    context.stopService(new Intent(context, DrivingDetectionService.class));
                 }
             }
         }
@@ -180,16 +174,14 @@ public class PermissionsChecker {
 
             // shutdown parental controls if running
             if(ParentalControlsWatcher.isRunning(context)){
-                context.stopService(new Intent(context, ParentalControlsWatcher.class));
-
                 if (db != null) db.setParentalControlsToggle(false);
+                context.stopService(new Intent(context, ParentalControlsWatcher.class));
             }
 
             // shut down driving detection if running
             if(DrivingDetectionService.isRunning(context)){
-                context.stopService(new Intent(context, DrivingDetectionService.class));
-
                 if (db != null) db.setDrivingDetectionToggle(false);
+                context.stopService(new Intent(context, DrivingDetectionService.class));
             }
 
             return false;
@@ -216,16 +208,14 @@ public class PermissionsChecker {
 
             // shutdown parental controls if running
             if(ParentalControlsWatcher.isRunning(context)){
-                context.stopService(new Intent(context, ParentalControlsWatcher.class));
-
                 if (db != null) db.setParentalControlsToggle(false);
+                context.stopService(new Intent(context, ParentalControlsWatcher.class));
             }
 
             // shut down driving detection if running
             if(DrivingDetectionService.isRunning(context)){
-                context.stopService(new Intent(context, DrivingDetectionService.class));
-
                 if (db != null) db.setDrivingDetectionToggle(false);
+                context.stopService(new Intent(context, DrivingDetectionService.class));
             }
 
             return false;
