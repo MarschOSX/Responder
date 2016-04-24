@@ -1,11 +1,17 @@
-package com.seniordesign.autoresponder.Logging;
+package com.seniordesign.autoresponder.Permissions;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+
+import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Persistance.DBProvider;
+import com.seniordesign.autoresponder.Services.DrivingDetectionService;
+import com.seniordesign.autoresponder.Services.ParentalControlsWatcher;
 
 /**
  * Created by MarschOSX on 4/13/2016.
@@ -24,6 +30,22 @@ public class PermissionsChecker {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
             if(caller != null){
                 ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.RECEIVE_SMS}, requestCode);
+
+                DBInstance db = DBProvider.getInstance(false, context);
+
+                // shutdown parental controls if running
+                if(ParentalControlsWatcher.isRunning(context)){
+                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
+
+                    if (db != null) db.setParentalControlsToggle(false);
+                }
+
+                // shut down driving detection if running
+                if(DrivingDetectionService.isRunning(context)){
+                    context.stopService(new Intent(context, DrivingDetectionService.class));
+
+                    if (db != null) db.setDrivingDetectionToggle(false);
+                }
             }
         }else{
             return true;
@@ -43,6 +65,21 @@ public class PermissionsChecker {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
             if(caller != null){
                 ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.SEND_SMS}, requestCode);
+                DBInstance db = DBProvider.getInstance(false, context);
+
+                // shutdown parental controls if running
+                if(ParentalControlsWatcher.isRunning(context)){
+                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
+
+                    if (db != null) db.setParentalControlsToggle(false);
+                }
+
+                // shut down driving detection if running
+                if(DrivingDetectionService.isRunning(context)){
+                    context.stopService(new Intent(context, DrivingDetectionService.class));
+
+                    if (db != null) db.setDrivingDetectionToggle(false);
+                }
             }
         }else{
             return true;
@@ -62,8 +99,25 @@ public class PermissionsChecker {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
             if(caller != null){
                 ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.READ_SMS}, requestCode);
+
+                DBInstance db = DBProvider.getInstance(false, context);
+
+                // shutdown parental controls if running
+                if(ParentalControlsWatcher.isRunning(context)){
+                    context.stopService(new Intent(context, ParentalControlsWatcher.class));
+
+                    if (db != null) db.setParentalControlsToggle(false);
+                }
+
+                // shut down driving detection if running
+                if(DrivingDetectionService.isRunning(context)){
+                    context.stopService(new Intent(context, DrivingDetectionService.class));
+
+                    if (db != null) db.setDrivingDetectionToggle(false);
+                }
             }
-        }else{
+        }
+        else{
             return true;
         }
         return false;
@@ -81,7 +135,6 @@ public class PermissionsChecker {
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             if(caller != null) ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.READ_CONTACTS}, requestCode);
-            //TODO PARENTAL CONTROL CHECK AND LOGGING
 
             return false;
         }
@@ -102,7 +155,6 @@ public class PermissionsChecker {
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             if(caller != null) ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.READ_CALENDAR}, requestCode);
-            //TODO PARENTAL CONTROL CHECK AND LOGGING
 
             return false;
         }
@@ -123,7 +175,22 @@ public class PermissionsChecker {
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if(caller != null) ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
-            //TODO PARENTAL CONTROL CHECK AND LOGGING
+
+            DBInstance db = DBProvider.getInstance(false, context);
+
+            // shutdown parental controls if running
+            if(ParentalControlsWatcher.isRunning(context)){
+                context.stopService(new Intent(context, ParentalControlsWatcher.class));
+
+                if (db != null) db.setParentalControlsToggle(false);
+            }
+
+            // shut down driving detection if running
+            if(DrivingDetectionService.isRunning(context)){
+                context.stopService(new Intent(context, DrivingDetectionService.class));
+
+                if (db != null) db.setDrivingDetectionToggle(false);
+            }
 
             return false;
         }
@@ -145,7 +212,21 @@ public class PermissionsChecker {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
             if(caller != null) ActivityCompat.requestPermissions(caller, new String[]{Manifest.permission.RECEIVE_SMS}, requestCode);
 
-            //TODO PARENTAL CONTROL CHECK AND LOGGINGing
+            DBInstance db = DBProvider.getInstance(false, context);
+
+            // shutdown parental controls if running
+            if(ParentalControlsWatcher.isRunning(context)){
+                context.stopService(new Intent(context, ParentalControlsWatcher.class));
+
+                if (db != null) db.setParentalControlsToggle(false);
+            }
+
+            // shut down driving detection if running
+            if(DrivingDetectionService.isRunning(context)){
+                context.stopService(new Intent(context, DrivingDetectionService.class));
+
+                if (db != null) db.setDrivingDetectionToggle(false);
+            }
 
             return false;
         }

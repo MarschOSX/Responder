@@ -13,12 +13,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.seniordesign.autoresponder.Logging.PermissionsChecker;
+import com.seniordesign.autoresponder.Permissions.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 import com.seniordesign.autoresponder.Receiver.SMSSender;
-import com.seniordesign.autoresponder.Services.ParentalControlsWatcher;
 
 public class ParentalControlsPassword extends AppCompatActivity {
 
