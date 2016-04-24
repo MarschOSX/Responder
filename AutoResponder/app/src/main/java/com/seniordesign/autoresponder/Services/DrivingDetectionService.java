@@ -23,7 +23,7 @@ import com.google.android.gms.location.LocationServices;
 import com.seniordesign.autoresponder.DataStructures.DrivingDetectionInfo;
 import com.seniordesign.autoresponder.DataStructures.LocationRecord;
 import com.seniordesign.autoresponder.Interface.Settings.SettingListAdapter;
-import com.seniordesign.autoresponder.Logging.PermissionsChecker;
+import com.seniordesign.autoresponder.Permissions.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -260,7 +260,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
             }
         }
         else{
-            msg += "location permissions have been denied by user";
+            msg += "location permissions are disabled";
         }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -380,7 +380,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     @Override
     public void onConnected(Bundle arg0) {
-        int interval = db.getDrivingDetectionInterval() * 60000;
+        long interval = (long)(db.getDrivingDetectionInterval() * 60000);
 
         switch (status){
             case DrivingDetectionService.IDLE:

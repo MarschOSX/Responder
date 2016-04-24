@@ -12,7 +12,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.seniordesign.autoresponder.DataStructures.Group;
-import com.seniordesign.autoresponder.Logging.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;

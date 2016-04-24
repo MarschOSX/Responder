@@ -91,13 +91,13 @@ public class PermDBInstance implements DBInstance {
         return getSetting_int(Setting.TIME_DELAY);
     }
 
-    public void setDrivingDetectionInterval(int minutes){
+    public void setDrivingDetectionInterval(float minutes){
         Log.d(TAG, "setting interval to "+ minutes +"....");
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.DRIVING_DETECTION_INTERVAL, DBHelper.SETTING_VALUE[0], minutes);
     }
 
-    public int getDrivingDetectionInterval(){
-        return getSetting_int(Setting.DRIVING_DETECTION_INTERVAL);
+    public float getDrivingDetectionInterval(){
+        return getSetting_float(Setting.DRIVING_DETECTION_INTERVAL);
     }
 
     public void setTimeLimit(int hours){
@@ -1067,6 +1067,31 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
+    private int update(String table, String matchColumn, String matchValue, String updateColumn, float updateValue){
+        myDB.beginTransaction();
+
+        try {
+            //set criteria for selecting row
+            String filter = matchColumn + "=" + "\"" + matchValue + "\"";
+
+            //set new value for column to be updated
+            ContentValues args = new ContentValues();
+            args.put(updateColumn, Float.toString(updateValue));
+
+            //update column and check to make sure only 1 row was updated
+            myDB.setTransactionSuccessful();
+            Log.d(TAG, getMethodName(1) + ": update succeeded");
+            return  myDB.update(table, args, filter, null);
+        }
+        catch (Exception e){
+            Log.e(TAG, "ERROR: " + getMethodName(1) + " failed");
+            throw e;
+        }
+        finally {
+            myDB.endTransaction();
+        }
+    }
+
     private int updateForLong(String table, String matchColumn, String matchValue, String updateColumn, long updateValue){
         myDB.beginTransaction();
 
@@ -1167,6 +1192,29 @@ public class PermDBInstance implements DBInstance {
         //query db and return the results
         try{
             int value = Integer.parseInt(query.simpleQueryForString());
+            Log.d(TAG, getMethodName(1) + ": " + name + " is " + value);
+            return value;
+        }
+        catch (NumberFormatException e){ //if there is an error report it and return -1
+            Log.e(TAG, getMethodName(0) + ": setting value is not a number");
+            return -1;
+        }
+    }
+
+    private float getSetting_float(String name){
+        SQLiteStatement query;
+
+        final String form =
+                "SELECT " + DBHelper.SETTING_VALUE[0] +
+                        " FROM " + DBHelper.TABLE_SETTINGS +
+                        " WHERE " + DBHelper.SETTING_NAME[0] + " = ?";
+
+        query = this.myDB.compileStatement(form);
+        query.bindString(1, name);
+
+        //query db and return the results
+        try{
+            float value = Float.parseFloat(query.simpleQueryForString());
             Log.d(TAG, getMethodName(1) + ": " + name + " is " + value);
             return value;
         }

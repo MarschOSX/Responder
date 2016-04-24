@@ -10,17 +10,13 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.SyncStateContract;
-import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
-import com.seniordesign.autoresponder.Logging.PermissionsChecker;
+import com.seniordesign.autoresponder.Permissions.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.PermDBInstance;
 import com.seniordesign.autoresponder.Receiver.SMSSender;

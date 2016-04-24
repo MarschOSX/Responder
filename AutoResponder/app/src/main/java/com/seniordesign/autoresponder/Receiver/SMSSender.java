@@ -3,7 +3,7 @@ package com.seniordesign.autoresponder.Receiver;
 import android.content.Context;
 import android.telephony.SmsManager;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
-import com.seniordesign.autoresponder.Logging.PermissionsChecker;
+import com.seniordesign.autoresponder.Permissions.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
