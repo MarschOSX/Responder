@@ -58,6 +58,8 @@ public class EventHandler implements Runnable{
 
     //runs as a new thread
     public void run(){
+
+
         respondToText();
     }
 
