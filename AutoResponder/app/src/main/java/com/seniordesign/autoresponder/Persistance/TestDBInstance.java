@@ -551,6 +551,18 @@ public class TestDBInstance /*implements DBInstance*/ {
         return group;
     }
 
+    public int changeContactName(String oldName, String newName){
+        for (int i = 0; i < this.contactTable.size(); i++){
+            if (this.contactTable.get(i).getName().compareTo(oldName) == 0){
+                this.contactTable.get(i).setName(newName);
+                return 0;
+            }
+        }
+
+        //no group found to modify
+        return -1;
+    }
+
     /////////////////////////
     //GROUP TABLE FUNCTIONS//
     /////////////////////////

@@ -1,6 +1,7 @@
 package com.seniordesign.autoresponder.Interface.Contacts;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,8 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
@@ -29,6 +32,8 @@ public class ContactInfo extends AppCompatActivity {
     Contact singleContact;
     String phoneNumber;
     String fromSingleGroup = null;
+    TextView changeContactName;
+    private String TAG = "ContactInfo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,5 +265,50 @@ public class ContactInfo extends AppCompatActivity {
                     setUpContactInfo(singleContact);
                 break;
         }
+    }
+
+    public void changeSingleContactName(View view){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Change Contact Name");
+        alert.setMessage("Please enter a new name for this contact. Cannot be blank or have spaces:");
+        changeContactName = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        changeContactName.setLayoutParams(lp);
+        alert.setView(changeContactName);
+        alert.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //do your work here
+                Log.v(TAG, "Proceed with changing Contact name");
+                String newContactName = changeContactName.getText().toString();
+                Log.v(TAG, "New Contact Name entered: " + newContactName);
+                if (newContactName.matches("")) {
+                    int duration = Toast.LENGTH_LONG;
+                    CharSequence toastText;
+                    Toast toast;
+                    toastText = "Invalid Name Entered! Cannot be blank or have spaces!";
+                    toast = Toast.makeText(getApplicationContext(), toastText, duration);
+                    toast.show();
+                } else {
+                    db.changeContactName(singleContact.getName(), newContactName);
+                    int duration = Toast.LENGTH_LONG;
+                    CharSequence toastText;
+                    Toast toast;
+                    toastText = "Contact Name Changed!";
+                    toast = Toast.makeText(getApplicationContext(), toastText, duration);
+                    toast.show();
+                    finish();
+                }
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.v(TAG, "Canceled Contact Name Change");
+            }
+        });
+        alert.show();
     }
 }

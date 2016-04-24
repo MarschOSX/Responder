@@ -128,11 +128,82 @@ public class DBHelper extends SQLiteOpenHelper{
         }
 
         //add default group
-
         db.beginTransaction();
         try {
             ContentValues insertSetting = new ContentValues();
             insertSetting.put(GROUP_NAME[0], Group.DEFAULT_GROUP);
+            insertSetting.put(GROUP_RESPONSE[0], Setting.REPLY_ALL_DEF);
+            insertSetting.put(GROUP_ACTIVITYPERM[0], "false");
+            insertSetting.put(GROUP_LOCATIONPERM[0], "false");
+            if (db.insert(TABLE_GROUP, null, insertSetting) == -1){
+                Log.d(TAG, "could not create " + Group.DEFAULT_GROUP);
+            }
+            else{
+                Log.d(TAG, Group.DEFAULT_GROUP + " was added");
+            }
+            db.setTransactionSuccessful();
+        }
+        catch (Exception e){
+            db.endTransaction();
+            throw e;
+        }
+        finally {
+            db.endTransaction();
+        }
+
+        //add friend group
+        db.beginTransaction();
+        try {
+            ContentValues insertSetting = new ContentValues();
+            insertSetting.put(GROUP_NAME[0],"Friends");
+            insertSetting.put(GROUP_RESPONSE[0], Setting.REPLY_ALL_DEF);
+            insertSetting.put(GROUP_ACTIVITYPERM[0], "false");
+            insertSetting.put(GROUP_LOCATIONPERM[0], "false");
+            if (db.insert(TABLE_GROUP, null, insertSetting) == -1){
+                Log.d(TAG, "could not create " + Group.DEFAULT_GROUP);
+            }
+            else{
+                Log.d(TAG, Group.DEFAULT_GROUP + " was added");
+            }
+            db.setTransactionSuccessful();
+        }
+        catch (Exception e){
+            db.endTransaction();
+            throw e;
+        }
+        finally {
+            db.endTransaction();
+        }
+
+        //add Family group
+        db.beginTransaction();
+        try {
+            ContentValues insertSetting = new ContentValues();
+            insertSetting.put(GROUP_NAME[0],"Family");
+            insertSetting.put(GROUP_RESPONSE[0], Setting.REPLY_ALL_DEF);
+            insertSetting.put(GROUP_ACTIVITYPERM[0], "false");
+            insertSetting.put(GROUP_LOCATIONPERM[0], "false");
+            if (db.insert(TABLE_GROUP, null, insertSetting) == -1){
+                Log.d(TAG, "could not create " + Group.DEFAULT_GROUP);
+            }
+            else{
+                Log.d(TAG, Group.DEFAULT_GROUP + " was added");
+            }
+            db.setTransactionSuccessful();
+        }
+        catch (Exception e){
+            db.endTransaction();
+            throw e;
+        }
+        finally {
+            db.endTransaction();
+        }
+
+        //add Work group
+        db.beginTransaction();
+        try {
+            ContentValues insertSetting = new ContentValues();
+            insertSetting.put(GROUP_NAME[0],"Coworkers");
             insertSetting.put(GROUP_RESPONSE[0], Setting.REPLY_ALL_DEF);
             insertSetting.put(GROUP_ACTIVITYPERM[0], "false");
             insertSetting.put(GROUP_LOCATIONPERM[0], "false");

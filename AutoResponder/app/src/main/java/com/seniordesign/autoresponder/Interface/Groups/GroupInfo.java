@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Interface.Contacts.ContactInfo;
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
+import com.seniordesign.autoresponder.Interface.Settings.ParentalControlsSetUp;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
@@ -33,10 +36,13 @@ import java.util.HashMap;
 public class GroupInfo extends AppCompatActivity {
 
     private DBInstance db;
+    private String TAG = "GroupInfo";
     Button setTextButton;
     EditText setTextEdit;
     Group singleGroup;
-    String groupName = null;
+    String groupNameString = null;
+    String newGroupName = null;
+    EditText changeGroupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +50,11 @@ public class GroupInfo extends AppCompatActivity {
         setContentView(R.layout.activity_single_group);
         this.db = DBProvider.getInstance(false, getApplicationContext());
         Intent intent = getIntent();
-        groupName = intent.getStringExtra("GROUP_NAME");
-        if(groupName == null) {
+        groupNameString = intent.getStringExtra("GROUP_NAME");
+        if(groupNameString == null) {
             singleGroup = new Group("JUnit test", "JUnit Response", false,false);
         }else{
-            singleGroup = db.getGroupInfo(groupName);
+            singleGroup = db.getGroupInfo(groupNameString);
 
         }
         setUpGroupInfo(singleGroup);
@@ -68,12 +74,18 @@ public class GroupInfo extends AppCompatActivity {
                         setTextEdit.setText(null);
 
                         //push generalReply to DB
-                        db.setGroupResponse(groupName, groupReply);
+                        db.setGroupResponse(groupNameString, groupReply);
 
                     }
                 });
 
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        setUpGroupInfo(singleGroup);
     }
 
     @Override
@@ -102,6 +114,7 @@ public class GroupInfo extends AppCompatActivity {
         //Set Group Name
         final TextView groupName = (TextView) findViewById(R.id.singleGroupName);
         groupName.setText(singleGroup.getGroupName());
+
 
         //Set Single Group Response
         EditText groupResponse = (EditText) findViewById(R.id.singleGroupResponseText);
@@ -227,19 +240,59 @@ public class GroupInfo extends AppCompatActivity {
         startActivity(intent);
     }
 
-
-
-
-
     public void changeSingleGroupName(View view){
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_LONG;
-        CharSequence toastText;
-        Toast toast;
-        Log.v("GroupInfo", "Feature Coming Soon!");
-        toastText = "Feature Coming Soon!";
-        toast = Toast.makeText(context, toastText, duration);
-        toast.show();
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Change Group Name");
+        alert.setMessage("Please enter a new name for this group. Cannot be blank or have spaces:");
+        changeGroupName = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        changeGroupName.setLayoutParams(lp);
+        alert.setView(changeGroupName);
+        alert.setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //do your work here
+                Log.v(TAG, "Proceed with changing group name");
+                newGroupName = changeGroupName.getText().toString();
+                Log.v(TAG, "New Group Name entered: " + newGroupName);
+                if (newGroupName == null || newGroupName.matches("") || newGroupName.contains(" ")) {
+                    int duration = Toast.LENGTH_LONG;
+                    CharSequence toastText;
+                    Toast toast;
+                    toastText = "Invalid Name Entered! Cannot be blank or have spaces!";
+                    toast = Toast.makeText(getApplicationContext(), toastText, duration);
+                    toast.show();
+                } else {
+                    if (db.getGroupInfo(newGroupName) == null) {
+                        db.changeGroupName(singleGroup.getGroupName(), newGroupName);
+                        int duration = Toast.LENGTH_LONG;
+                        CharSequence toastText;
+                        Toast toast;
+                        toastText = "Group Name Changed!";
+                        toast = Toast.makeText(getApplicationContext(), toastText, duration);
+                        toast.show();
+                        finish();
+                    } else {
+                        int duration = Toast.LENGTH_LONG;
+                        CharSequence toastText;
+                        Toast toast;
+                        toastText = "Group Name Already Exists! Cannot Have 2 of the same Group!";
+                        toast = Toast.makeText(getApplicationContext(), toastText, duration);
+                        toast.show();
+                        finish();
+                    }
+                }
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.v(TAG, "Canceled Group Name Change");
+            }
+        });
+        alert.show();
     }
 
 }

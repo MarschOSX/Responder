@@ -73,6 +73,12 @@ public class ContactsList extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume(){
+        super.onResume();
+        updateContactListView();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_contacts_list, menu);

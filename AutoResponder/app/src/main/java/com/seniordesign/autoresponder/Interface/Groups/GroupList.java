@@ -40,6 +40,13 @@ public class GroupList extends AppCompatActivity {
         updateGroupsListView();
     }
 
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        updateGroupsListView();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

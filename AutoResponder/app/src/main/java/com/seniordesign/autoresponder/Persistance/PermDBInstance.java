@@ -707,6 +707,8 @@ public class PermDBInstance implements DBInstance {
                 phoneNumber = result.getString(result.getColumnIndex(DBHelper.CONTACT_PHONENUM[0]));
                 groupName = result.getString(result.getColumnIndex(DBHelper.CONTACT_GROUP[0]));
                 inheritance =  convertToBool(result.getString(result.getColumnIndex(DBHelper.CONTACT_INHERITANCE[0])));
+                Log.d(TAG, "Contact Info: " + name +" " + phoneNumber +" " + groupName +" " + inheritance);
+
 
                 if (inheritance){
                     Group parent = this.getGroupInfo(groupName);
@@ -793,6 +795,11 @@ public class PermDBInstance implements DBInstance {
         }
     }
 
+    public int changeContactName(String oldName, String newName){
+        Log.d(TAG, "changing name of contact: " + oldName + " to: " + newName + ".....");
+        return update(DBHelper.TABLE_CONTACT, DBHelper.CONTACT_NAME[0], oldName ,DBHelper.CONTACT_NAME[0], newName);
+    }
+
     /////////////////////////
     //GROUP TABLE FUNCTIONS//
     /////////////////////////
@@ -837,7 +844,22 @@ public class PermDBInstance implements DBInstance {
 
     public int changeGroupName(String oldName, String newName){
         Log.d(TAG, "changing name of " + oldName + " to " + newName + ".....");
-        return update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], oldName ,DBHelper.GROUP_NAME[0], newName);
+        ArrayList<Contact> contacts = getGroup(oldName);
+        int returner = update(DBHelper.TABLE_GROUP, DBHelper.GROUP_NAME[0], oldName ,DBHelper.GROUP_NAME[0], newName);
+        Log.d(TAG, "return result = " + Integer.toString(returner));
+        if(returner == 1 && contacts != null) {
+            Log.d(TAG, "returner was 1 and contacts list was not null");
+            for (int i = 0; i < contacts.size(); i++) {
+                Contact contact = contacts.get(i);
+                Log.d(TAG, "Original Contact Info: " + contact.getName() + " " + contact.getPhoneNumber() + " " + contact.getGroupName() + " " + contact.getResponse());
+                setContactGroup(contact.getPhoneNumber(), newName);
+                contact = getContactInfo(contact.getPhoneNumber());
+                Log.d(TAG, "Changed Contact Info: " + contact.getName() + " " + contact.getPhoneNumber() + " " + contact.getGroupName() + " " + contact.getResponse());
+            }
+        }else{
+            Log.d(TAG, "returner either was not 1 or contacts list was null");
+        }
+        return returner;
     }
 
 

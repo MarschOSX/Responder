@@ -158,6 +158,11 @@ public interface DBInstance {
    * @return contact if found, null if not found or there was an error*/
     ArrayList<Contact> getGroup(String groupName);
 
+    /*changes a group's name
+    * @param String oldName, String newName
+    * @return 0 for success, or error code as int < 0*/
+    int changeContactName(String oldName, String newName);
+
     /////////////////////////
     //GROUP TABLE FUNCTIONS//
     /////////////////////////

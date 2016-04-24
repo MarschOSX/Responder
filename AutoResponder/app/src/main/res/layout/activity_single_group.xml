@@ -88,10 +88,8 @@
         android:id="@+id/singleGroupChangeName"
         android:layout_marginLeft="30dp"
         android:onClick="changeSingleGroupName"
-        android:layout_alignEnd="@+id/singleGroupResponseText"
-        android:visibility="gone"
-        android:layout_below="@+id/singleGroupName"
-        android:layout_toEndOf="@+id/singleGroupDeleteButton" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
