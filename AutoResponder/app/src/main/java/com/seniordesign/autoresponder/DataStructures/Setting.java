@@ -25,6 +25,8 @@ public class Setting {
     public static final String UNIVERSAL_TOGGLE_DEF = "false";
     public static final String PARENTAL_CONTROLS_NUMBER = "parental_controls_num";
     public static final String PARENTAL_CONTROLS_NUMBER_DEF = "0";
+    public static final String PARENTAL_CONTROLS_PASSWORD = "parental_controls_password";
+    public static final String PARENTAL_CONTROLS_PASSWORD_DEF = null;
     public static final String PARENTAL_CONTROLS_TOGGLLE = "parental_controls_toggle";
     public static final String PARENTAL_CONTROLS_TOGGLLE_DEF = "false";
     public static final String DRIVING_DETECTION_TOGGLE = "driving_detection_toggle";
@@ -49,6 +51,7 @@ public class Setting {
                     {UNIVERSAL_TOGGLE, UNIVERSAL_TOGGLE_DEF},
                     {PARENTAL_CONTROLS_NUMBER, PARENTAL_CONTROLS_NUMBER_DEF},
                     {PARENTAL_CONTROLS_TOGGLLE, PARENTAL_CONTROLS_TOGGLLE_DEF},
+                    {PARENTAL_CONTROLS_PASSWORD, PARENTAL_CONTROLS_PASSWORD_DEF},
                     {DRIVING_DETECTION_TOGGLE, DRIVING_DETECTION_TOGGLE_DEF},
                     {DRIVING_DETECTION_INTERVAL, DRIVING_DETECTION_INTERVAL_DEF},
                     {WORLD_TOGGLE, WORLD_TOGGLE_DEF}
@@ -56,14 +59,12 @@ public class Setting {
 
     public static final String[] settingUIList = {
             "World Toggle",
-            "Default Contact Response",
-            "Default Contact Location Setting",
-            "Default Contact Activity Setting",
+            "Default Contacts",
+            "Time Limit",
+            "Time Delay",
             "Driving Detection Interval",
             "Parental Controls",
-            "Response Log",
-            "Time Limit",
-            "Time Delay"
+            "Response Log"
     };
 
 

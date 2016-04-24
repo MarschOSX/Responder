@@ -10,17 +10,13 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.SyncStateContract;
-import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
-import com.seniordesign.autoresponder.Logging.PermissionsChecker;
+import com.seniordesign.autoresponder.Permissions.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.PermDBInstance;
 import com.seniordesign.autoresponder.Receiver.SMSSender;
@@ -39,6 +35,7 @@ public class ParentalControlsWatcher extends Service {
     private static final String alertMessage2 = "This number has just been added from AutoResponder parental controls";
     private static final String alertMessage3 = "This number has enabled AutoResponder parental controls";
     private static final String alertMessage4 = "This number has disabled AutoResponder parental controls";
+    private static final String alertMessage5 = "This number is editing AutoResponder parental controls";
     private static final String alertMessageNoLocation = "ALERT from AutoResponder: This user does not have Location Permissions Enabled! Cannot tell if driving!";
     private final int LOCATION_PERMISSIONS = 4;
     private final int READ_SMS_PERMISSIONS = 5;
@@ -162,7 +159,7 @@ public class ParentalControlsWatcher extends Service {
                         Log.d(TAG, "Date: " + date);
                         Log.d(TAG, "Message: " + msg);
 
-                        if (msg.matches(alertMessage) || msg.matches(alertMessage1) || msg.matches(alertMessage2) || msg.matches(alertMessage3) || msg.matches(alertMessage4) || msg.matches(alertMessageNoLocation)) {
+                        if (msg.matches(alertMessage) || msg.matches(alertMessage1) || msg.matches(alertMessage2) || msg.matches(alertMessage3) || msg.matches(alertMessage4) || msg.matches(alertMessage5)|| msg.matches(alertMessageNoLocation)) {
                             android.util.Log.v(TAG, "Just catching an alert message from AR, we can ignore this");
                             return;
                         }

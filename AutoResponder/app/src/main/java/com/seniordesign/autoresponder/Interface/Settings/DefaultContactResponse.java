@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.seniordesign.autoresponder.DataStructures.Group;
@@ -25,11 +26,14 @@ public class DefaultContactResponse extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_contact_response);
 
+        //initialize vars
+        this.db = DBProvider.getInstance(false, getApplicationContext());
+
         //load hint into editText View
         setEditText();
 
-        //initialize vars
-        this.db = DBProvider.getInstance(false, getApplicationContext());
+        //build switches
+        buildSwitches();
         setTextButton = (Button)findViewById(R.id.button);
         setTextEdit   = (EditText)findViewById(R.id.editText);
 
@@ -69,6 +73,30 @@ public class DefaultContactResponse extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void buildSwitches(){
+
+        final Switch defaultGroupActivity = (Switch)findViewById(R.id.default_group_activity);
+        defaultGroupActivity.setChecked(db.getGroupInfo(Group.DEFAULT_GROUP).isActivityPermission());
+        defaultGroupActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.setGroupActivityPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isActivityPermission());
+            }
+        });
+
+
+        final Switch defaultGroupLocation = (Switch)findViewById(R.id.default_group_location);
+        defaultGroupLocation.setChecked(db.getGroupInfo(Group.DEFAULT_GROUP).isLocationPermission());
+
+        defaultGroupLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.setGroupLocationPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isLocationPermission());
+
+            }
+        });
     }
 
     private void setEditText(){

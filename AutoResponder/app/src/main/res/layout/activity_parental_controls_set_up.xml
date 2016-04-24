@@ -39,15 +39,6 @@
         android:onClick="setParentPhoneNumber"
         android:layout_marginTop="10dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="If the alert number is changed or deleted, or the feature is turned off, the previous number that was stored there will be notified of this change."
-        android:id="@+id/parentalControlsInstructions2"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
-
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
@@ -68,13 +59,21 @@
         android:layout_centerHorizontal="true"
         android:textSize="40dp" />
 
-    <TextView
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Parents can always request location and activity when this feature is enabled"
-        android:id="@+id/textView11"
-        android:layout_above="@+id/parentalControlsInstructions2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp" />
+        android:text="Change Password"
+        android:id="@+id/button3"
+        android:layout_below="@+id/deleteParentalAlertNumber"
+        android:onClick="gotoPassword"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="About Parental Controls..."
+        android:id="@+id/button4"
+        android:onClick="goToInstructions"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

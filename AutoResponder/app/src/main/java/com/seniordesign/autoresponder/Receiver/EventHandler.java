@@ -1,7 +1,5 @@
 package com.seniordesign.autoresponder.Receiver;
 
-import android.app.ListActivity;
-import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -9,26 +7,14 @@ import android.database.Cursor;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.provider.CalendarContract;
-import android.support.v7.app.NotificationCompat;
-import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.Switch;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
-import com.seniordesign.autoresponder.Interface.Settings.ResponseLogList;
-import com.seniordesign.autoresponder.Logging.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
-import com.seniordesign.autoresponder.Persistance.DBProvider;
-import com.seniordesign.autoresponder.R;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -58,6 +44,8 @@ public class EventHandler implements Runnable{
 
     //runs as a new thread
     public void run(){
+
+
         respondToText();
     }
 

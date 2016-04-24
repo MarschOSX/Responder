@@ -174,6 +174,11 @@ public class PermDBInstance implements DBInstance {
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.PARENTAL_CONTROLS_NUMBER, DBHelper.SETTING_VALUE[0], parentalControlsNumber);
     }
 
+    public void setParentalControlsPassword(String password){
+        Log.d(TAG, "setting  parentalControlsPasssword to " + password + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.PARENTAL_CONTROLS_PASSWORD, DBHelper.SETTING_VALUE[0], password);
+    }
+
     public boolean getResponseToggle(){
         Log.d(TAG, "Getting Response Toggle");
         if(getSetting_bool(Setting.RESPONSE_TOGGLE)) {
@@ -229,6 +234,10 @@ public class PermDBInstance implements DBInstance {
 
     public String getParentalControlsNumber(){
         return getSetting_str(Setting.PARENTAL_CONTROLS_NUMBER);
+    }
+
+    public String getParentalControlsPassword(){
+        return getSetting_str(Setting.PARENTAL_CONTROLS_PASSWORD);
     }
 
 
@@ -491,10 +500,10 @@ public class PermDBInstance implements DBInstance {
                 else{
                     result.moveToFirst();
                 }
-                if (result.getLong(0) == 0L) {
+                /*if (result.getLong(0) == 0L) {
                     Log.d(TAG, getMethodName(0) + "First ResponseLog is Empty! Returning Empty Array");
                     return range;
-                }
+                }*/
 
                 for (int i = 0; i < numRows; i++) {
                     //load query result

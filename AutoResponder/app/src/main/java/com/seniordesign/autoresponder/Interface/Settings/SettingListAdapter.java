@@ -4,12 +4,8 @@ package com.seniordesign.autoresponder.Interface.Settings;
  * Created by Garlan on 11/15/2015.
  */
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,12 +15,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.seniordesign.autoresponder.DataStructures.Group;
-import com.seniordesign.autoresponder.Logging.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
-import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 
 
 public class SettingListAdapter extends ArrayAdapter<String> {
@@ -67,6 +60,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
+            /*
             case "Default Contact Location Setting": //default group location toggle
                 title.setText(R.string.defaultGroup_location_toggle);
 
@@ -79,7 +73,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                         db.setGroupLocationPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isLocationPermission());
                     }
                 });
-                break;
+                break;*/
             case "World Toggle": //default group location toggle
                 title.setText("World Reply");
                 description.setText("Responds to any number, not just contacts");
@@ -92,6 +86,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
+            /*
             case "Default Contact Activity Setting": //default group activity toggle
                 title.setText(R.string.defaultGroup_activity_toggle);
 
@@ -104,7 +99,7 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                         db.setGroupActivityPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isActivityPermission());
                     }
                 });
-                break;
+                break;*/
             case "Time Delay": //default group time delay
                 toggle.setVisibility(View.GONE);
                 title.setText(R.string.setting_timeDelay);
@@ -132,10 +127,10 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
-            case "Default Contact Response":
+            case "Default Contacts":
                 toggle.setVisibility(View.GONE);
-                title.setText(R.string.defaultGroup_Response);
-                description.setText("Specify the default response");
+                title.setText("Default Contacts");
+                description.setText("Contacts with no custom settings will use the Default");
 
                 rowView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -153,7 +148,9 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                 rowView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(parentApp, ParentalControlsSetUp.class);
+                        Intent intent = new Intent(parentApp, ParentalControlsPassword.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("CHANGING_PASSWORD","false");
                         parentApp.startActivity(intent);
                     }
                 });

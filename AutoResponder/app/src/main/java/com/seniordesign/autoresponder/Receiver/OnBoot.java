@@ -24,22 +24,24 @@ public class OnBoot extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        Log.e(TAG, "Android OS was restarted! checking AutoResponder Database");
-        DBInstance db = DBProvider.getInstance(false, context);
-        if (db != null){
-            Log.e(TAG, "Database is not null! Attempting to resume services that were running");
-            if (db.getParentalControlsToggle()){
-                Log.e(TAG, "Parental Controls Was Running! Restarting Service");
-                if (!ParentalControlsWatcher.isRunning(context)) {
-                    context.startService(new Intent(context, ParentalControlsWatcher.class));
-                    Log.e(TAG, "Parental Controls Service was started");
+        if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())){
+            Log.e(TAG, "Android OS was restarted! checking AutoResponder Database");
+            DBInstance db = DBProvider.getInstance(false, context);
+            if (db != null){
+                Log.e(TAG, "Database is not null! Attempting to resume services that were running");
+                if (db.getParentalControlsToggle()){
+                    Log.e(TAG, "Parental Controls Was Running! Restarting Service");
+                    if (!ParentalControlsWatcher.isRunning(context)) {
+                        context.startService(new Intent(context, ParentalControlsWatcher.class));
+                        Log.e(TAG, "Parental Controls Service was started");
+                    }
                 }
-            }
-            if (db.getDrivingDetectionToggle()){
-                Log.e(TAG, "Driving Detection Was Running! Restarting Service");
-                if (!DrivingDetectionService.isRunning(context)) {
-                    context.startService(new Intent(context, DrivingDetectionService.class));
-                    Log.e(TAG, "Driving Detection Service was started");
+                if (db.getDrivingDetectionToggle()){
+                    Log.e(TAG, "Driving Detection Was Running! Restarting Service");
+                    if (!DrivingDetectionService.isRunning(context)) {
+                        context.startService(new Intent(context, DrivingDetectionService.class));
+                        Log.e(TAG, "Driving Detection Service was started");
+                    }
                 }
             }
         }

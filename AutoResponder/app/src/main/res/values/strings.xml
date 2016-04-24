@@ -48,4 +48,6 @@
     <string name="title_activity_time_limit">Time Limit</string>
     <string name="title_activity_parental_controls_set_up">Parental Controls</string>
     <string name="title_activity_driving_detection_interval">Driving Detection Interval</string>
+    <string name="title_activity_parental_controls_password">Access to Parental Controls</string>
+    <string name="title_activity_parental_controls_instructions">About Parental Controls</string>
 </resources>
