@@ -1,12 +1,10 @@
 package com.seniordesign.autoresponder.Interface.Groups;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +23,6 @@ import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.Interface.Contacts.ContactInfo;
 import com.seniordesign.autoresponder.Interface.Contacts.ContactsList;
-import com.seniordesign.autoresponder.Interface.Settings.ParentalControlsSetUp;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;

@@ -1,15 +1,10 @@
 package com.seniordesign.autoresponder.Receiver;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.seniordesign.autoresponder.Interface.Settings.ParentalControlsSetUp;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.Services.DrivingDetectionService;

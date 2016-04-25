@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder.Interface.Settings;
+package com.seniordesign.autoresponder.Interface.Settings.ParentalControls;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

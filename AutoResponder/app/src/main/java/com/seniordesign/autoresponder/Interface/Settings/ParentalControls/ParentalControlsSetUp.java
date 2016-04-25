@@ -1,4 +1,4 @@
-package com.seniordesign.autoresponder.Interface.Settings;
+package com.seniordesign.autoresponder.Interface.Settings.ParentalControls;
 
 import android.content.Context;
 import android.content.Intent;
@@ -238,5 +238,10 @@ public class ParentalControlsSetUp extends AppCompatActivity {
             Log.d(TAG, "Driving Detection is already running!");
             Log.d(TAG, "Driving Detection Boolean is " + db.getDrivingDetectionToggle());
         }
+    }
+
+    public void goToDailyNoticeSetup(View view){
+        Intent intent = new Intent(this, DailyNoticeSetup.class);
+        startActivity(intent);
     }
 }

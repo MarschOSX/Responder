@@ -50,4 +50,10 @@
     <string name="title_activity_driving_detection_interval">Driving Detection Interval</string>
     <string name="title_activity_parental_controls_password">Access to Parental Controls</string>
     <string name="title_activity_parental_controls_instructions">About Parental Controls</string>
+    <string name="title_activity_daily_notice_setup">DailyNoticeSetup</string>
+    <string name="description_daily_notice_setup">Choose a time that Auto Responder will send you a
+        message to let you know that parental controls are still running. If you stop receiving this
+        daily message, it means that something was done to the device to cause parental controls to
+        shutdown, and you will have to manually turn parental controls back on.
+    </string>
 </resources>

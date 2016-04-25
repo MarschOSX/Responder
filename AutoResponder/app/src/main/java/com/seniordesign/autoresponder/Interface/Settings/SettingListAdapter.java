@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.seniordesign.autoresponder.Interface.Settings.ParentalControls.ParentalControlsPassword;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;

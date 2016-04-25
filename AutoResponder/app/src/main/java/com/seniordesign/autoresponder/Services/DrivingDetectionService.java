@@ -135,6 +135,9 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
         LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(messageReceiver);
 
+        //make sure isDriving is false in DB
+        db.setIsDriving(false);
+
         Log.d(TAG, "is dead");
     }
 

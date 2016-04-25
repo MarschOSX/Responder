@@ -47,16 +47,17 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.seniordesign.autoresponder.Receiver.OnBoot"
+        <receiver
+            android:name=".Receiver.OnBoot"
             android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"  >
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name=".Receiver.MMSListener">
+        <receiver android:name=".Receiver.MMSListener" >
             <intent-filter android:priority="1000" >
                 <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
 
@@ -117,7 +118,7 @@
             android:label="@string/title_activity_time_limit" >
         </activity>
         <activity
-            android:name=".Interface.Settings.ParentalControlsSetUp"
+            android:name=".Interface.Settings.ParentalControls.ParentalControlsSetUp"
             android:label="@string/title_activity_parental_controls_set_up" >
         </activity>
         <activity
@@ -125,12 +126,16 @@
             android:label="@string/title_activity_driving_detection_interval" >
         </activity>
         <activity
-            android:name=".Interface.Settings.ParentalControlsPassword"
+            android:name=".Interface.Settings.ParentalControls.ParentalControlsPassword"
             android:label="@string/title_activity_parental_controls_password" >
         </activity>
         <activity
-            android:name=".Interface.Settings.ParentalControlsInstructions"
+            android:name=".Interface.Settings.ParentalControls.ParentalControlsInstructions"
             android:label="@string/title_activity_parental_controls_instructions" >
+        </activity>
+        <activity
+            android:name=".Interface.Settings.ParentalControls.DailyNoticeSetup"
+            android:label="@string/title_activity_daily_notice_setup" >
         </activity>
     </application>
 
