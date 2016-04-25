@@ -47,16 +47,17 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.seniordesign.autoresponder.Receiver.OnBoot"
+        <receiver
+            android:name=".Receiver.OnBoot"
             android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"  >
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name=".Receiver.MMSListener">
+        <receiver android:name=".Receiver.MMSListener" >
             <intent-filter android:priority="1000" >
                 <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
 
@@ -131,6 +132,14 @@
         <activity
             android:name=".Interface.Settings.ParentalControlsInstructions"
             android:label="@string/title_activity_parental_controls_instructions" >
+        </activity>
+        <activity
+            android:name=".Interface.Tutorial"
+            android:label="@string/title_activity_tutorial" >
+        </activity>
+        <activity
+            android:name=".Interface.Settings.MyFragmentCreator"
+            android:label="@string/title_activity_my_fragment_creator" >
         </activity>
     </application>
 

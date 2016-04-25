@@ -299,4 +299,10 @@ public class Main extends AppCompatActivity {
         Intent intent = new Intent(this, GroupList.class);
         startActivity(intent);
     }
+
+    public void goToTutorial(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, Tutorial.class);
+        startActivity(intent);
+    }
 }

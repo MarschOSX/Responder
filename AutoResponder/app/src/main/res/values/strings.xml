@@ -50,4 +50,6 @@
     <string name="title_activity_driving_detection_interval">Driving Detection Interval</string>
     <string name="title_activity_parental_controls_password">Access to Parental Controls</string>
     <string name="title_activity_parental_controls_instructions">About Parental Controls</string>
+    <string name="title_activity_tutorial">Tutorial</string>
+    <string name="title_activity_my_fragment_creator">MyFragmentCreator</string>
 </resources>
