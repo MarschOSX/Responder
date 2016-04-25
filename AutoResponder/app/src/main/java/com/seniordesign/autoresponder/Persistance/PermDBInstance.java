@@ -11,6 +11,7 @@ import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.DataStructures.Setting;
+import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class PermDBInstance implements DBInstance {
     private static final String TAG = "PermDBInstance";
     private SQLiteDatabase myDB;
+    private Context context;
 
 
     public PermDBInstance(Context context) {
@@ -33,12 +35,14 @@ public class PermDBInstance implements DBInstance {
         //access DB via helper class
         DBHelper myLittleHelper = new DBHelper(context);
         this.myDB = myLittleHelper.getWritableDatabase();
+        this.context = context;
     }
 
 
     ///////////////////////////
     //SETTING TABLE FUNCTIONS//
     ///////////////////////////
+
 
     public void setReplyAll(String reply){
         Log.d(TAG, "setting replyAll to " + reply + "....");
@@ -154,6 +158,21 @@ public class PermDBInstance implements DBInstance {
     public void setWorldToggle(boolean worldToggle){
         Log.d(TAG, "setting  world toggle to " + worldToggle + "....");
         update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.WORLD_TOGGLE, DBHelper.SETTING_VALUE[0], worldToggle);
+    }
+
+    public boolean getIsDriving(){
+        if (DrivingDetectionService.isRunning(context)) {
+            return getSetting_bool(Setting.IS_DRIVING);
+        }
+        else{
+            this.setIsDriving(false);
+            return false;
+        }
+    }
+
+    public void setIsDriving(boolean status){
+        Log.d(TAG, "setting  isDriving to " + status + "....");
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.IS_DRIVING, DBHelper.SETTING_VALUE[0], status);
     }
 
     /**
