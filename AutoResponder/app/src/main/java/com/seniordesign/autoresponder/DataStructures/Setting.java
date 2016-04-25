@@ -35,6 +35,8 @@ public class Setting {
     public static final String DRIVING_DETECTION_INTERVAL_DEF = "5";
     public static final String WORLD_TOGGLE = "world_toggle";
     public static final String WORLD_TOGGLE_DEF = "false";
+    public static final String IS_DRIVING = "is_driving";
+    public static final String IS_DRIVING_DEF = "false";
 
 
     //if you are adding a new setting, it and its default value must be added here
@@ -54,7 +56,8 @@ public class Setting {
                     {PARENTAL_CONTROLS_PASSWORD, PARENTAL_CONTROLS_PASSWORD_DEF},
                     {DRIVING_DETECTION_TOGGLE, DRIVING_DETECTION_TOGGLE_DEF},
                     {DRIVING_DETECTION_INTERVAL, DRIVING_DETECTION_INTERVAL_DEF},
-                    {WORLD_TOGGLE, WORLD_TOGGLE_DEF}
+                    {WORLD_TOGGLE, WORLD_TOGGLE_DEF},
+                    {IS_DRIVING, IS_DRIVING_DEF}
             };
 
     public static final String[] settingUIList = {

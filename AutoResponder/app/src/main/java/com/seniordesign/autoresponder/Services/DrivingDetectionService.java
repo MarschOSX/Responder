@@ -49,7 +49,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
     private Thread worker;
     private DBInstance db;
     private DrivingDetectionService me;
-    private  ArrayList<LocationRecord> loadResults;
+    private ArrayList<LocationRecord> loadResults;
 
     private boolean isDriving = false;
     private boolean shuttingDown = false;
@@ -147,7 +147,7 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
 
     /** @return driving stats */
     public boolean isDriving(){
-        return isDriving;
+        return true;
     }
 
     /** @return process status of the service*/
@@ -195,6 +195,14 @@ public class DrivingDetectionService extends Service implements GoogleApiClient.
                         Log.d(TAG,"status received: " + status);
 
                         isDriving = (status == DrivingDetectionService.DRIVING);
+
+                        if (isDriving){
+
+                        }
+                        else {
+
+                        }
+
                         updateNotification(true);
                         break;
 

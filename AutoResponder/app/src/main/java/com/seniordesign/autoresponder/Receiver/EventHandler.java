@@ -1,12 +1,16 @@
 package com.seniordesign.autoresponder.Receiver;
 
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
+import android.os.IBinder;
 import android.provider.CalendarContract;
 import android.util.Log;
 
@@ -14,6 +18,7 @@ import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -45,7 +50,6 @@ public class EventHandler implements Runnable{
     //runs as a new thread
     public void run(){
 
-
         respondToText();
     }
 
@@ -71,7 +75,7 @@ public class EventHandler implements Runnable{
 
         //The function will only continue if the user has set the response toggle to on
         // and the phone number has a corresponding contact stored in the database
-        if (db.getResponseToggle() && contact != null) {
+        if ((db.getResponseToggle() || db.getIsDriving()) && contact != null) {
 
             //get last message received for that contact from the database
             ResponseLog lastLog = db.getLastResponseByNum(phoneNumber);

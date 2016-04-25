@@ -79,6 +79,10 @@ public interface DBInstance {
 
     String getParentalControlsPassword();
 
+    boolean getIsDriving();
+
+    void setIsDriving(boolean status);
+
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//
     ////////////////////////////////
