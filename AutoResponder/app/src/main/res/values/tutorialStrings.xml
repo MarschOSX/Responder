@@ -3,8 +3,8 @@
 
 
     <string name="start_direction">Swipe Left for more information</string>
-    <string name="middle_direction">Swipe Left for more information, Right to go back</string>
-    <string name="end_direction">Swipe Right to go back</string>
+    <string name="middle_direction">Swipe Left for more information, or Swipe Right to go back</string>
+    <string name="end_direction">Swipe Right to go back, or press Exit</string>
 
     <string name="what_is_it">"
         AutoResponder is an application that automatically replies to incoming SMS and MMS messages for you!

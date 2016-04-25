@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.seniordesign.autoresponder.Interface.Settings.MyFragmentCreator;
 import com.seniordesign.autoresponder.Interface.Settings.PageAdapter;
@@ -62,8 +63,12 @@ public class Tutorial extends FragmentActivity {
         fList.add(MyFragmentCreator.newInstance("Time Limit VS Time Delay", this.getString(R.string.time_limit_and_delay),this.getString(R.string.middle_direction)));
         fList.add(MyFragmentCreator.newInstance("Driving Detection", this.getString(R.string.driving_detection),this.getString(R.string.middle_direction)));
         fList.add(MyFragmentCreator.newInstance("Parental Controls", this.getString(R.string.parental_controls),this.getString(R.string.middle_direction)));
-        fList.add(MyFragmentCreator.newInstance("Response Log", this.getString(R.string.response_log),this.getString(R.string.middle_direction)));
+        fList.add(MyFragmentCreator.newInstance("Response Log", this.getString(R.string.response_log),this.getString(R.string.end_direction)));
 
         return fList;
+    }
+
+    public void goBackToMain(View view) {
+        finish();
     }
 }

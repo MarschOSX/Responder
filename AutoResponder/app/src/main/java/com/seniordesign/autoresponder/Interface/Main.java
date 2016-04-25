@@ -70,6 +70,12 @@ public class Main extends AppCompatActivity {
         checkParentalControls();
         buildSwitches();
 
+        //if first boot
+        if(db.getContactList() == null){
+            Intent intentTutorial = new Intent(this, Tutorial.class);
+            startActivity(intentTutorial);
+        }
+
 
     }
 
