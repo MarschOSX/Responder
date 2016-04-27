@@ -13,9 +13,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 
-/**
+/**@deprecated
  * Created by Garlan on 10/5/2015.
  */
+
 public class TestDBInstance /*implements DBInstance*/ {
     private static final String TAG = "TestDBInstance";
     private HashMap<String,String> settings;

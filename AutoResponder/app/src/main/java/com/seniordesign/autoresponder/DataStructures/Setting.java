@@ -37,8 +37,10 @@ public class Setting {
     public static final String WORLD_TOGGLE_DEF = "false";
     public static final String IS_DRIVING = "is_driving";
     public static final String IS_DRIVING_DEF = "false";
-    public static final String DAILY_NOTICE_TIME = "DAILY_NOTICE_TIME";
-    public static final String DAILY_NOTICE_TIME_DEF = "12:00-PM";
+    public static final String DAILY_NOTICE_TIME_HR = "DAILY_NOTICE_TIME_HR";
+    public static final String DAILY_NOTICE_TIME_HR_DEF = "12";
+    public static final String DAILY_NOTICE_TIME_MIN = "DAILY_NOTICE_TIME_MIN";
+    public static final String DAILY_NOTICE_TIME_MIN_DEF = "0";
 
 
     //if you are adding a new setting, it and its default value must be added here
@@ -59,7 +61,9 @@ public class Setting {
                     {DRIVING_DETECTION_TOGGLE, DRIVING_DETECTION_TOGGLE_DEF},
                     {DRIVING_DETECTION_INTERVAL, DRIVING_DETECTION_INTERVAL_DEF},
                     {WORLD_TOGGLE, WORLD_TOGGLE_DEF},
-                    {IS_DRIVING, IS_DRIVING_DEF}
+                    {IS_DRIVING, IS_DRIVING_DEF},
+                    {DAILY_NOTICE_TIME_HR, DAILY_NOTICE_TIME_HR_DEF},
+                    {DAILY_NOTICE_TIME_MIN, DAILY_NOTICE_TIME_MIN_DEF}
             };
 
     public static final String[] settingUIList = {

@@ -20,7 +20,6 @@ public interface DBInstance {
     //TESTED
     void setReplyAll(String reply);
 
-    
     String getReplyAll();
 
     void setUniversalReply(String universalReply);
@@ -82,6 +81,12 @@ public interface DBInstance {
     boolean getIsDriving();
 
     void setIsDriving(boolean status);
+
+    void setDailyNoticeTime(int hour, int minute);
+
+    int getDailyNoticeTime_hour();
+
+    int getDailyNoticeTime_minute();
 
     ////////////////////////////////
     //RESPONSE LOG TABLE FUNCTIONS//

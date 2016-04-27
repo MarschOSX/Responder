@@ -240,6 +240,20 @@ public class PermDBInstance implements DBInstance {
         return getSetting_bool(Setting.LOCATION_TOGGLE);
     }
 
+    public void setDailyNoticeTime(int hour, int minute){
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.DAILY_NOTICE_TIME_HR, DBHelper.SETTING_VALUE[0], hour);
+        update(DBHelper.TABLE_SETTINGS, DBHelper.SETTING_NAME[0], Setting.DAILY_NOTICE_TIME_MIN, DBHelper.SETTING_VALUE[0], minute);
+
+    }
+
+    public int getDailyNoticeTime_hour(){
+        return getSetting_int(Setting.DAILY_NOTICE_TIME_HR);
+    }
+
+    public int getDailyNoticeTime_minute(){
+        return getSetting_int(Setting.DAILY_NOTICE_TIME_MIN);
+    }
+
     /**
      Parental Controls getters
      */
