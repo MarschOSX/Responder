@@ -37,6 +37,8 @@ public class Setting {
     public static final String WORLD_TOGGLE_DEF = "false";
     public static final String IS_DRIVING = "is_driving";
     public static final String IS_DRIVING_DEF = "false";
+    public static final String DAILY_NOTICE_TIME = "DAILY_NOTICE_TIME";
+    public static final String DAILY_NOTICE_TIME_DEF = "12:00-PM";
 
 
     //if you are adding a new setting, it and its default value must be added here
