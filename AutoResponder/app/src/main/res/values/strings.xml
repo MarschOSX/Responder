@@ -56,4 +56,6 @@
         message, then something was done to the device to force parental controls to
         shutdown. You will have to manually turn parental controls back on.
     </string>
+    <string name="title_activity_tutorial">Tutorial</string>
+    <string name="title_activity_my_fragment_creator">MyFragmentCreator</string>
 </resources>

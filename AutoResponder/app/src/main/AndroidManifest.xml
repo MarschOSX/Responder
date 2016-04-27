@@ -53,7 +53,6 @@
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -64,6 +63,8 @@
                 <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
+
+        <receiver android:process=":remote" android:name=".Services.TimeLimitExpired"></receiver>
 
         <service
             android:name=".Services.ParentalControlsWatcher"
@@ -137,6 +138,11 @@
             android:name=".Interface.Settings.ParentalControls.DailyNoticeSetup"
             android:label="@string/title_activity_daily_notice_setup" >
         </activity>
+        <activity
+            android:name=".Interface.Tutorial"
+            android:label="@string/title_activity_tutorial" >
+        </activity>
+
     </application>
 
 </manifest>

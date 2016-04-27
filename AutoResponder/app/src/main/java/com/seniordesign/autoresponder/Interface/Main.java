@@ -1,8 +1,11 @@
 package com.seniordesign.autoresponder.Interface;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +21,7 @@ import com.seniordesign.autoresponder.Permissions.PermissionsChecker;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
+import com.seniordesign.autoresponder.Services.AlarmService;
 import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 import com.seniordesign.autoresponder.Services.ParentalControlsWatcher;
 
@@ -37,6 +41,7 @@ public class Main extends AppCompatActivity {
     private final int RECEIVE_SMS_PERMISSIONS = 4;
     private final int READ_SMS_PERMISSIONS = 5;
     private final int DRIVING_DETECTION = 6;
+    public static int AutoResponseNotificationID = 24;
     public static final String TAG = "Main";
 
 
@@ -70,6 +75,12 @@ public class Main extends AppCompatActivity {
         checkParentalControls();
         buildSwitches();
 
+        //if first boot
+        if(db.getContactList() == null){
+            Intent intentTutorial = new Intent(this, Tutorial.class);
+            startActivity(intentTutorial);
+        }
+
 
     }
 
@@ -96,6 +107,7 @@ public class Main extends AppCompatActivity {
 
         mResponseToggle = (Switch)findViewById(R.id.autoRespond_switch);
         mResponseToggle.setChecked(db.getResponseToggle());
+        updateNotification(db.getResponseToggle());
 
         mResponseToggle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +115,17 @@ public class Main extends AppCompatActivity {
                 DBInstance db = DBProvider.getInstance(false, getApplicationContext());
                 db.setResponseToggle(mResponseToggle.isChecked());
                 db.setTimeResponseToggleSet(System.currentTimeMillis());
-                db.getResponseToggle();//to see if timeLimit is se;
+                updateNotification(db.getResponseToggle());
+                if(mResponseToggle.isChecked() && db.getTimeLimit() != 100) {//if set to on, activate TimeLimitExpired alarm to turn off notification!
+                    Log.e(TAG, "Setting the alarm");
+                    int timeLimitInSeconds = db.getTimeLimit() * 3600;
+                    AlarmService alarmService = new AlarmService(getApplicationContext());
+                    Log.e(TAG, "Service was created!");
+                    alarmService.setTimeLimitCountdown(timeLimitInSeconds);
+                    Log.e(TAG, "Alarm was started");
+                }else{
+                    Log.e(TAG, "Alarm was NOT started, either time limit is indefinite or toggle is off!");
+                }
             }
         });
 
@@ -299,4 +321,34 @@ public class Main extends AppCompatActivity {
         Intent intent = new Intent(this, GroupList.class);
         startActivity(intent);
     }
+
+    public void goToTutorial(View view) {
+        // Do something in response to button
+        Intent intent = new Intent(this, Tutorial.class);
+        startActivity(intent);
+    }
+
+    public void updateNotification(boolean permissionEnabled){
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (permissionEnabled) {
+            String msg = "Responder is ON and replying to Texts!";
+
+
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext())
+                    .setSmallIcon(R.drawable.sms)
+                    .setContentText(msg)
+                    .setContentTitle("AutoResponder");
+            Notification notification = mBuilder.build();
+
+            notificationManager.notify(AutoResponseNotificationID, notification);
+        }
+        else{
+            notificationManager.cancel(AutoResponseNotificationID);
+        }
+
+
+    }
+
+
 }

@@ -77,6 +77,13 @@
                     android:onClick="gotoUniversalReply" />
 
         <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tutorial"
+            android:onClick="goToTutorial"
+            android:id="@+id/button5" />
+
+        <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Settings"
@@ -91,7 +98,8 @@
             android:id="@+id/button2"
             android:onClick="goToLocationOutput"
             android:layout_column="6"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -61,20 +61,13 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
-            /*
+
             case "Default Contact Location Setting": //default group location toggle
                 title.setText(R.string.defaultGroup_location_toggle);
+                title.setText(R.string.end_direction);
 
                 description.setText(R.string.defaultGroup_location_toggle_descr);
-
-                toggle.setChecked(db.getGroupInfo(Group.DEFAULT_GROUP).isLocationPermission());
-                toggle.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        db.setGroupLocationPermission(Group.DEFAULT_GROUP, !db.getGroupInfo(Group.DEFAULT_GROUP).isLocationPermission());
-                    }
-                });
-                break;*/
+                break;
             case "World Toggle": //default group location toggle
                 title.setText("World Reply");
                 description.setText("Responds to any number, not just contacts");

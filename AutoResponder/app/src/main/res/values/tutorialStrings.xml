@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="start_direction">Swipe Left for more information</string>
+    <string name="middle_direction">Swipe Left for more information, or Swipe Right to go back</string>
+    <string name="end_direction">Swipe Right to go back, or press Exit</string>
+
+    <string name="what_is_it">"
+        AutoResponder is an application that automatically replies to incoming SMS and MMS messages for you!
+
+        This allows you to not be constantly replying to messages if you are driving, at the gym, at work, or would rather not be bothered!
+
+        To enable this, simply toggle the main switch to ON, and the app will answer messages for you! This status is displayed in the Notification Drawer.
+
+        For a complete experience, please enable all Permissions. Having one of them off could cause erratic behavior.
+    "</string>
+    <string name="adding_contacts">"
+        AutoResponder will only reply to Contacts you specify.
+
+        You can import contacts from your Address Book, customize the responses, location and calendar requests, groups, and more!
+    "</string>
+    <string name="creating_groups">"
+        Groups are collections of contacts, such as Friends, Family, and Coworkers.
+
+        The same response and permissions can be set for all Contacts in this Group.
+
+        Members can be added and removed, and a Contact may belong to only one Group.
+
+        Deleting a Group WILL NOT delete a Contact associated with it.
+    "</string>
+    <string name="location_and_activity">"
+        Contacts with set permissions may access your current location and calendar information.
+
+        Location permissions are useful when a Contact wants to know "where are you?" and if you are driving, it will send them a link to show them!
+
+        Calendar access allows Contacts to know "are you busy?", and if you have an event in you calendar, it will tell them!
+
+        These can be completely turned OFF using the toggles on the main screen, and can be set on a per Contact/Group basis.
+    "</string>
+    <string name="universal_reply">"
+        Universal Reply overrides all preset Contact/Group responses with a single message to everyone!
+
+        This does not affect location and activity requests.
+
+        This can be used by clicking the button on the main screen.
+    </string>
+    <string name="world_reply">"
+        This switch, located in the settings, responds to ANY number! Not just the ones you list in your contacts!
+
+        Any number can get a response, but if they are not a contact, they do not have permission to know your location or calendar info.
+    "</string>
+    <string name="time_limit_and_delay">"
+        Time Limit sets how long AutoResponder will be activated, in the event you forget to turn it off later on. This time can be specified in Settings->Time Limit/Time Delay.
+
+        Time Delay sets how long AutoResponder will wait before replying to the same Contact. This prevents spamming. This does not however override Location and Calendar requests.
+    "</string>
+    <string name="driving_detection">"
+        Driving Detection automatically turns AutoResponder Off and On, based if the app knows you are driving or not.
+
+        If you manually turn AutoResponder ON, it will stay on, even if you are not driving.
+
+        This status is displayed in the Notification Drawer.
+    "</string>
+    <string name="parental_controls">"
+        See Settings->Parental Controls for more information.
+
+        This alerts the parent of a teen driver if the teen sent a text while they were driving! A major problem and road hazard.
+
+        DISCLAIMER: THIS DOES NOT PREVENT TEXTING WHILE DRIVING, but allows alerts to the parent if the event occurs.
+    "</string>
+    <string name="response_log">"
+        This is a history of all messages AutoResponder has sent out from the device.
+
+        By clicking on a log, it expands showing more detail about the message sent.
+
+        These logs can be cleared with the "Delete History" button.
+    "</string>
+
+
+
+
+</resources>

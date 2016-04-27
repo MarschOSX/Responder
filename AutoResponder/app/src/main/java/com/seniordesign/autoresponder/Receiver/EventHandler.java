@@ -1,5 +1,7 @@
 package com.seniordesign.autoresponder.Receiver;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -12,12 +14,15 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.CalendarContract;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.seniordesign.autoresponder.DataStructures.Contact;
 import com.seniordesign.autoresponder.DataStructures.Group;
 import com.seniordesign.autoresponder.DataStructures.ResponseLog;
+import com.seniordesign.autoresponder.Interface.Main;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
+import com.seniordesign.autoresponder.R;
 import com.seniordesign.autoresponder.Services.DrivingDetectionService;
 
 import java.text.SimpleDateFormat;
@@ -343,6 +348,8 @@ public class EventHandler implements Runnable{
         calendar.setTimeInMillis(milliSeconds);
         return formatter.format(calendar.getTime());
     }
+
+
 
 }
 
