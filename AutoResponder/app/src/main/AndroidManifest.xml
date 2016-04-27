@@ -65,6 +65,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:process=":remote" android:name=".Services.TimeLimitExpired"></receiver>
+
         <service
             android:name=".Services.ParentalControlsWatcher"
             android:exported="false" />
@@ -137,10 +139,7 @@
             android:name=".Interface.Tutorial"
             android:label="@string/title_activity_tutorial" >
         </activity>
-        <activity
-            android:name=".Interface.Settings.MyFragmentCreator"
-            android:label="@string/title_activity_my_fragment_creator" >
-        </activity>
+
     </application>
 
 </manifest>
