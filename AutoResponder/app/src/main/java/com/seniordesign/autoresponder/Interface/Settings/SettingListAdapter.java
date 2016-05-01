@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.seniordesign.autoresponder.Interface.LocationOutput;
 import com.seniordesign.autoresponder.Interface.Settings.ParentalControls.ParentalControlsPassword;
 import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
@@ -149,54 +150,22 @@ public class SettingListAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
-            /*case "Driving Detection":
-                //check if parental controls enabled
-                if(db.getParentalControlsToggle()) {
-                    toggle.setEnabled(false);
-                }
-                else {
-                    toggle.setEnabled(true);
-                }
 
-                title.setText(R.string.drivingDetection_toggle);
 
-                description.setText(R.string.drivingDetection_toggle_descr);
+            case "Developer Settings":
+                toggle.setVisibility(View.GONE);
+                title.setText("Developer Settings");
+                description.setText("Advanced tools for development");
 
-                toggle.setChecked(db.getDrivingDetectionToggle());
-
-                toggle.setOnClickListener(new View.OnClickListener() {
+                rowView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (toggle.isChecked()) {
-
-                            //context.startService(new Intent(context, DrivingDetection.class));
-
-                            // if app does not have Location Permissions
-                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                ActivityCompat.requestPermissions(parentApp, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, DRIVING_DETECTION);
-                            }
-
-                            // if app does have permission and service is not running
-                            else if (!DrivingDetectionService.isRunning(context) && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                                db.setDrivingDetectionToggle(true);
-                                context.startService(new Intent(context, DrivingDetectionService.class));
-                            }
-                        } else {
-                            //make sure that parental controls is not enabled
-                            if(!db.getParentalControlsToggle()) {
-                                //disable service
-                                if (DrivingDetectionService.isRunning(context)) {
-                                    db.setDrivingDetectionToggle(false);
-                                    context.stopService(new Intent(context, DrivingDetectionService.class));
-                                }
-                            }
-                            else {
-                                toggle.setChecked(true);
-                            }
-                        }
+                        Intent intent = new Intent(parentApp, LocationOutput.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        parentApp.startActivity(intent);
                     }
                 });
-                break;*/
+                break;
             case "Driving Detection Interval":
                 title.setText(R.string.drivingDetection_interval);
                 description.setText(R.string.drivingDetection_interval_descr_short);

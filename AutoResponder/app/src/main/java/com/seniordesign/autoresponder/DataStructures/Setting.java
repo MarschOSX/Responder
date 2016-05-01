@@ -73,7 +73,8 @@ public class Setting {
             "Time Delay",
             "Driving Detection Interval",
             "Parental Controls",
-            "Response Log"
+            "Response Log",
+            "Developer Settings"
     };
 
 
