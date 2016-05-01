@@ -4,9 +4,11 @@ package com.seniordesign.autoresponder.Services;
 
 import android.app.ActivityManager;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -37,15 +39,32 @@ public class ParentalControlsWatcher extends Service {
     private static final String alertMessage4 = "This number has disabled AutoResponder parental controls";
     private static final String alertMessage5 = "This number is editing AutoResponder parental controls";
     private static final String alertMessageNoLocation = "ALERT from AutoResponder: This user does not have Location Permissions Enabled! Cannot tell if driving!";
+    private static final String ACTION_NOTIFY_PARENT = "ACTION_NOTIFY_PARENT";
     private final int LOCATION_PERMISSIONS = 4;
     private final int READ_SMS_PERMISSIONS = 5;
     private boolean isDriving = false;
     SMSSender sender;
 
-
     private DBInstance db;
     public SMSObserver observer;
 
+    public BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()){
+                case ACTION_NOTIFY_PARENT:
+                    String message = "This is a message to let you know that parental controls is still running. If you stop receiving this message, that means Parental Controls has been disabled";
+                    SMSSender sender = new SMSSender(db);
+                    sender.sendSMS(message, "", db.getParentalControlsNumber(), System.currentTimeMillis(), false, false, getApplicationContext());
+
+                    AlarmService alarmService = new AlarmService(getApplicationContext(), ACTION_NOTIFY_PARENT);
+                    alarmService.setEventTime(db.getDailyNoticeTime_hour(), db.getDailyNoticeTime_minute());
+                    break;
+                default:
+                    Log.e(TAG, "unknown action encountered: " + intent.getAction());
+            }
+        }
+    };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startID){
@@ -68,10 +87,20 @@ public class ParentalControlsWatcher extends Service {
             this.stopSelf();
             Log.e(TAG, "Parental Controls Is Stopped and Turned Off");
         }
+
+        // set the
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_NOTIFY_PARENT);
+
+        registerReceiver(receiver, filter);
+
+        AlarmService alarmService = new AlarmService(getApplicationContext(), ACTION_NOTIFY_PARENT);
+        alarmService.setEventTime(db.getDailyNoticeTime_hour(), db.getDailyNoticeTime_minute());
     }
 
     @Override
     public void onDestroy(){
+        unregisterReceiver(receiver);
         this.getContentResolver().unregisterContentObserver(observer);
         Log.d(TAG, "is dead");
     }

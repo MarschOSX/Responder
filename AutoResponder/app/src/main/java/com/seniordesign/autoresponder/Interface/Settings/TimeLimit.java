@@ -15,6 +15,7 @@ import com.seniordesign.autoresponder.Persistance.DBInstance;
 import com.seniordesign.autoresponder.Persistance.DBProvider;
 import com.seniordesign.autoresponder.R;
 import com.seniordesign.autoresponder.Services.AlarmService;
+import com.seniordesign.autoresponder.Services.TimeLimitExpired;
 
 public class TimeLimit extends AppCompatActivity {
     private static final String TAG = "TimeLimit";
@@ -143,7 +144,7 @@ public class TimeLimit extends AppCompatActivity {
         if(db.getResponseToggle() && db.getTimeLimit() != 100) {//if set to on, activate TimeLimitExpired alarm to turn off notification!
             Log.e(TAG, "Setting the alarm");
             int timeLimitInSeconds = db.getTimeLimit() * 3600;
-            AlarmService alarmService = new AlarmService(getApplicationContext());
+            AlarmService alarmService = new AlarmService(getApplicationContext(), TimeLimitExpired.class);
             Log.e(TAG, "Service was created!");
             alarmService.setTimeLimitCountdown(timeLimitInSeconds);
             Log.e(TAG, "Alarm was started");
