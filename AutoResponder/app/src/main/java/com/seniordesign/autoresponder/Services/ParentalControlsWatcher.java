@@ -39,10 +39,14 @@ public class ParentalControlsWatcher extends Service {
     private static final String alertMessage4 = "This number has disabled AutoResponder parental controls";
     private static final String alertMessage5 = "This number is editing AutoResponder parental controls";
     private static final String alertMessageNoLocation = "ALERT from AutoResponder: This user does not have Location Permissions Enabled! Cannot tell if driving!";
+    private final String stillAliveMessage = "This is a message to let you know that parental controls is still running. If you stop receiving this message, that means Parental Controls has been disabled";
     private static final String ACTION_NOTIFY_PARENT = "ACTION_NOTIFY_PARENT";
     private final int LOCATION_PERMISSIONS = 4;
     private final int READ_SMS_PERMISSIONS = 5;
     private boolean isDriving = false;
+
+    private String[] approvedMessages = {alertMessage, alertMessage1, alertMessage2, alertMessage3, alertMessage4, alertMessage5, alertMessageNoLocation, stillAliveMessage};
+
     SMSSender sender;
 
     private DBInstance db;
@@ -53,9 +57,8 @@ public class ParentalControlsWatcher extends Service {
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()){
                 case ACTION_NOTIFY_PARENT:
-                    String message = "This is a message to let you know that parental controls is still running. If you stop receiving this message, that means Parental Controls has been disabled";
                     SMSSender sender = new SMSSender(db);
-                    sender.sendSMS(message, "", db.getParentalControlsNumber(), System.currentTimeMillis(), false, false, getApplicationContext());
+                    sender.sendSMS(stillAliveMessage, "", db.getParentalControlsNumber(), System.currentTimeMillis(), false, false, getApplicationContext());
 
                     AlarmService alarmService = new AlarmService(getApplicationContext(), ACTION_NOTIFY_PARENT);
                     alarmService.setEventTime(db.getDailyNoticeTime_hour(), db.getDailyNoticeTime_minute());
@@ -188,7 +191,16 @@ public class ParentalControlsWatcher extends Service {
                         Log.d(TAG, "Date: " + date);
                         Log.d(TAG, "Message: " + msg);
 
-                        if (msg.matches(alertMessage) || msg.matches(alertMessage1) || msg.matches(alertMessage2) || msg.matches(alertMessage3) || msg.matches(alertMessage4) || msg.matches(alertMessage5)|| msg.matches(alertMessageNoLocation)) {
+
+                        boolean allowed = false;
+
+                        for (String allowedMsg : approvedMessages){
+                            if (msg.compareTo(allowedMsg) == 0){
+                                allowed = true;
+                            }
+                        }
+
+                        if (allowed) {
                             android.util.Log.v(TAG, "Just catching an alert message from AR, we can ignore this");
                             return;
                         }
